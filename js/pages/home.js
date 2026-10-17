@@ -7,14 +7,38 @@ import { esc, key, read, write } from '../utils.js';
 import { rpc } from '../api.js';
 
 export const drawing = () =>
-  `<svg class="hero-car" viewBox="0 0 840 300" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-width="1.3">` +
-  `<path opacity=".25" d="M0 250H840M100 270H780M680 20V285M180 60V285M0 205H840"/>` +
-  `<path d="M62 201l18-42 70-20 112-71q24-13 77-14h144q43 0 87 26l94 58 94 21 21 34-9 34h-68q0-63-50-63t-50 63H239q0-63-50-63t-50 63H73z"/>` +
-  `<path d="M169 137h444l-69-45q-27-17-60-19H343q-36 0-58 12zM360 75l-18 61M466 76l35 61M322 147l-6 65h227l-4-65M570 146l19 25M273 145l-21 ` +
-  `40M84 166h62l-13 15H77M708 164l37 10 9 17h-46M354 158h24M558 158h24M244 224h350"/><circle cx="189" cy="223" r="39"/>` +
-  `<circle cx="189" cy="223" r="24"/><circle cx="189" cy="223" r="7"/><circle cx="652" cy="223" r="39"/><circle cx="652" cy="223" r="24"/>` +
-  `<circle cx="652" cy="223" r="7"/><path opacity=".5" d="M189 186v74M152 223h74M652 186v74M615 223h74M70 282h690M70 278v8M760 278v8"/></g>` +
-  `</svg>`;
+  `<svg class="hero-car" viewBox="0 0 840 300" fill="none" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M100 286H770" stroke="var(--line)"/>
+    ${[232, 650]
+      .map(
+        (x) => `<g transform="translate(${x} 232)">
+      <circle r="49" fill="var(--bg)" stroke="var(--line)" stroke-width="2"/>
+      <circle r="38" stroke="var(--muted)" stroke-width="3"/>
+      <circle r="29" fill="var(--surface)" stroke="var(--line)"/>
+      <path d="M20-18Q32-8 28 11" stroke="currentColor" stroke-width="5"/>
+      ${[0, 72, 144, 216, 288].map((a) => `<path d="M-5-8-8-33 1-36 7-9 19 24 11 31 0 9Z" fill="var(--muted)" transform="rotate(${a})"/>`).join('')}
+      <circle r="9" fill="var(--bg)" stroke="var(--text)" stroke-width="2"/>
+      <circle r="3" fill="currentColor"/>
+    </g>`,
+      )
+      .join('')}
+    <path d="M69 197 82 165Q91 151 132 146L224 126 302 73Q331 54 380 54H460Q496 54 533 81L607 129 732 148Q764 153 779 177L795 202 789 225Q761 238 709 239L706 222C703 189 681 173 650 173S595 193 594 226L590 240H286L284 223C282 190 261 173 232 173S178 193 177 227L173 240H101L80 229 69 212Z" fill="var(--surface)" stroke="var(--muted)" stroke-width="2"/>
+    <path d="M93 159 224 137 303 85Q331 65 382 65H459Q491 65 527 91L593 133 734 155 757 166 602 144H221L105 174Z" fill="var(--text)" opacity=".08"/>
+    <path d="M252 126 318 83Q340 69 380 69H458Q488 69 517 89L573 128Z" fill="var(--bg)" stroke="var(--text)" stroke-width="1.8"/>
+    <path d="M376 73 363 126M472 77 503 127" stroke="var(--muted)" stroke-width="3"/>
+    <path d="M318 88Q342 76 375 76M388 76H454Q479 76 498 86" stroke="currentColor" stroke-width="2"/>
+    <path d="M516 130 537 124Q548 124 551 135L529 141Z" fill="var(--muted)"/>
+    <path d="M90 177 154 161 227 151H558Q585 151 607 143L730 161" stroke="currentColor" stroke-width="1.7"/>
+    <path d="M296 146 286 188 293 221H548Q563 220 566 205L570 157M493 143 508 215" stroke="var(--line)" stroke-width="1.5"/>
+    <path d="M309 159H333" stroke="var(--muted)" stroke-width="3"/>
+    <path d="M301 229H575" stroke="var(--muted)" stroke-width="2"/>
+    <path d="M110 190 155 181M111 199 151 190M610 159 641 153" stroke="var(--line)" stroke-width="2"/>
+    <path d="M716 169 759 179 773 193 733 184Z" fill="var(--text)"/>
+    <path d="M732 188 774 198" stroke="currentColor" stroke-width="2"/>
+    <path d="M752 209 781 205 775 222 740 227Z" fill="var(--bg)" stroke="var(--line)"/>
+    <path d="M78 177 112 171 107 183 73 190" stroke="var(--red)" stroke-width="3"/>
+    <path d="M91 220 122 228H161M721 234 771 225" stroke="var(--muted)" stroke-width="2"/>
+  </svg>`;
 
 export function home() {
   $('#main').innerHTML =

@@ -332,7 +332,7 @@ h1 {
   color: var(--cyan);
   width: 115%;
   margin-left: -5%;
-  opacity: 0.75;
+  opacity: 1;
 }
 .search-box {
   padding: var(--s5);
