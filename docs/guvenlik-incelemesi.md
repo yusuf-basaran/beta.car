@@ -30,7 +30,7 @@ Modüllerde 92 HTML yazma noktası incelendi. Ortak HTML yardımcılarının alt
 | `js/pages/detail.js`    | 30, 40, 87, 320                                      |
 | `js/pages/editor.js`    | 23, 25, 59, 163, 182, 276, 322, 387                  |
 | `js/pages/firms.js`     | 27, 55, 97, 99, 108, 119                             |
-| `js/pages/home.js`      | 20, 121, 252, 284                                    |
+| `js/pages/home.js`      | 44, 145, 276, 308                                    |
 | `js/pages/legal.js`     | 12, 14, 19, 24, 32                                   |
 | `js/pages/list.js`      | 99, 197, 208, 234                                    |
 | `js/pages/login.js`     | 25                                                   |
