@@ -1,0 +1,287 @@
+{
+  "tables": {
+    "ilan_kartlari": [
+      {
+        "id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "no": 101,
+        "kullanici_id": "11111111-1111-4111-8111-111111111111",
+        "kategori_id": 2,
+        "marka_id": 1,
+        "model_id": 1,
+        "baslik": "Kıyı Serisi 2020",
+        "aciklama": "Bakım kayıtları mevcut.",
+        "marka": "Mercedes-Benz",
+        "model": "C 200",
+        "satici": "Arda",
+        "yil": 2020,
+        "km": 42000,
+        "fiyat": 22000,
+        "onceki_fiyat": 25000,
+        "para_birimi": "GBP",
+        "sehir": "Girne",
+        "vites": "automatic",
+        "yakit": "petrol",
+        "parca_sayisi": 13,
+        "boyali": 1,
+        "degisen": 0,
+        "hasarli": 0,
+        "durum": "yayinda",
+        "detay": {
+          "direksiyon": "right",
+          "kasa": "Sedan"
+        },
+        "onecikarma": "seckin",
+        "onecikarma_bitis": "2099-01-01",
+        "fotograflar": [],
+        "yayin": "2026-10-17T12:00:00Z",
+        "olusturma": "2026-10-17T12:00:00Z",
+        "bitis": "2099-01-01"
+      }
+    ],
+    "ilanlar": [
+      {
+        "id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "no": 101,
+        "kullanici_id": "11111111-1111-4111-8111-111111111111",
+        "kategori_id": 2,
+        "marka_id": 1,
+        "model_id": 1,
+        "baslik": "Kıyı Serisi 2020",
+        "aciklama": "Bakım kayıtları mevcut.",
+        "marka": "Mercedes-Benz",
+        "model": "C 200",
+        "satici": "Arda",
+        "yil": 2020,
+        "km": 42000,
+        "fiyat": 22000,
+        "onceki_fiyat": 25000,
+        "para_birimi": "GBP",
+        "sehir": "Girne",
+        "vites": "automatic",
+        "yakit": "petrol",
+        "parca_sayisi": 13,
+        "boyali": 1,
+        "degisen": 0,
+        "hasarli": 0,
+        "durum": "yayinda",
+        "detay": {
+          "direksiyon": "right",
+          "kasa": "Sedan"
+        },
+        "onecikarma": "seckin",
+        "onecikarma_bitis": "2099-01-01",
+        "fotograflar": [],
+        "yayin": "2026-10-17T12:00:00Z",
+        "olusturma": "2026-10-17T12:00:00Z",
+        "bitis": "2099-01-01"
+      }
+    ],
+    "kategoriler": [
+      {
+        "id": 1,
+        "ust_id": null,
+        "slug": "kullanilmis",
+        "ad": "Kullanılmış Araçlar",
+        "ad_en": "Used Vehicles",
+        "sira": 0
+      },
+      {
+        "id": 2,
+        "ust_id": 1,
+        "slug": "kullanilmis-binek",
+        "ad": "Binek Araçlar",
+        "ad_en": "Passenger Cars",
+        "arac_tipi": "otomobil",
+        "sira": 1
+      }
+    ],
+    "firmalar": [
+      {
+        "id": "ffffffff-ffff-4fff-8fff-ffffffffffff",
+        "kullanici_id": "11111111-1111-4111-8111-111111111111",
+        "ad": "Kuzey Oto",
+        "tur": "galeri",
+        "sehir": "Girne",
+        "hakkinda": "Araç satış ve danışmanlık.",
+        "dogrulandi": true,
+        "one_cikan": true,
+        "bilgiler": {}
+      }
+    ],
+    "donanimlar": [
+      {
+        "id": 1,
+        "grup": "Güvenlik",
+        "ad": "ABS",
+        "ad_en": "ABS",
+        "arac_tipi": ["otomobil"]
+      }
+    ],
+    "paketler": [
+      {
+        "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "ad": "İlan Hakkı",
+        "hedef": "kurumsal",
+        "ilan_kotasi": 10,
+        "onecikarma_hakki": 2,
+        "sure_gun": 30,
+        "fiyat": 100,
+        "para_birimi": "GBP",
+        "aktif": true,
+        "sira": 1
+      }
+    ],
+    "paket_talepleri": [
+      {
+        "id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+        "kullanici_id": "11111111-1111-4111-8111-111111111111",
+        "paket_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "referans_kodu": "BC-TEST1234",
+        "durum": "odeme_bekliyor",
+        "dekont_dosya": null,
+        "admin_notu": "",
+        "makbuz_notu": "",
+        "kullanici_notu": "",
+        "ozet": {
+          "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "ad": "İlan Hakkı",
+          "hedef": "kurumsal",
+          "ilan_kotasi": 10,
+          "onecikarma_hakki": 2,
+          "sure_gun": 30,
+          "fiyat": 100,
+          "para_birimi": "GBP",
+          "aktif": true,
+          "sira": 1
+        },
+        "son_odeme": "2099-01-01",
+        "olusturma": "2026-10-17T12:00:00Z"
+      }
+    ],
+    "abonelikler": [
+      {
+        "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "kullanici_id": "11111111-1111-4111-8111-111111111111",
+        "paket_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "talep_id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+        "baslangic": "2026-10-17T12:00:00Z",
+        "bitis": "2099-01-01",
+        "kalan_ilan": 8,
+        "kalan_onecikarma": 2,
+        "durum": "aktif"
+      }
+    ],
+    "ilan_parca": [
+      {
+        "ilan_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "parca": "kaput",
+        "durum": "boyali"
+      }
+    ],
+    "ilan_donanim": [
+      {
+        "ilan_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "donanim_id": 1
+      }
+    ],
+    "ilan_ekspertiz": [],
+    "fiyat_gecmisi": [
+      {
+        "id": 1,
+        "ilan_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "fiyat": 25000,
+        "para_birimi": "GBP",
+        "tarih": "2026-10-16"
+      },
+      {
+        "id": 2,
+        "ilan_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "fiyat": 22000,
+        "para_birimi": "GBP",
+        "tarih": "2026-10-17"
+      }
+    ],
+    "piyasa_fiyatlari": [
+      {
+        "marka_id": 1,
+        "model_id": 1,
+        "yil": 2020,
+        "para_birimi": "GBP",
+        "adet": 8,
+        "medyan": 24000,
+        "ortalama": 24500,
+        "en_dusuk": 21000,
+        "en_yuksek": 28000
+      }
+    ],
+    "konusmalar": [
+      {
+        "id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+        "ilan_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "alici_id": "22222222-2222-4222-8222-222222222222",
+        "satici_id": "11111111-1111-4111-8111-111111111111",
+        "olusturma": "2026-10-17T12:00:00Z"
+      }
+    ],
+    "mesajlar": [
+      {
+        "id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+        "konusma_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+        "gonderen_id": "22222222-2222-4222-8222-222222222222",
+        "metin": "Aracı nerede görebilirim?",
+        "uyari": false,
+        "okundu": false,
+        "olusturma": "2026-10-17T12:00:00Z"
+      }
+    ],
+    "yorumlar": [],
+    "sayfalar": [
+      {
+        "slug": "guvenli-alim",
+        "baslik": "Güvenli Alım",
+        "baslik_en": "Buying Safely",
+        "icerik": "Aracı yerinde inceleyin.",
+        "icerik_en": "Inspect the vehicle in person."
+      }
+    ],
+    "yazilar": [
+      {
+        "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "slug": "belge-kontrolu",
+        "baslik": "Belge kontrolü",
+        "baslik_en": "Checking documents",
+        "ozet": "Belgeleri karşılaştırın.",
+        "ozet_en": "Compare documents.",
+        "icerik": "Şasi ve ruhsatı karşılaştırın.",
+        "icerik_en": "Compare the VIN and registration.",
+        "aktif": true,
+        "kategori": "Araç Alımı",
+        "yayin": "2026-10-17T12:00:00Z"
+      }
+    ],
+    "talepler": [],
+    "favoriler": [],
+    "aramalar": [],
+    "takipler": [],
+    "bildirimler": [],
+    "ayarlar": [
+      {
+        "anahtar": "iban",
+        "deger": "TEST-ACCOUNT"
+      }
+    ]
+  },
+  "me": {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "ad": "Arda",
+    "tip": "kurumsal",
+    "telefon": "+905330000000",
+    "sehir": "Girne",
+    "eposta_ozet": false,
+    "telefon_goster": true
+  },
+  "lex": {
+    "markalar": [[1, "Mercedes-Benz", "otomobil"]],
+    "modeller": [[1, 1, "C 200", 2015, 2020]]
+  }
+}

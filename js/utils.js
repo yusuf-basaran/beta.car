@@ -27,6 +27,9 @@ export const key = (s) =>
     .toLowerCase()
     .replace(/[^a-z0-9]/g, '');
 
+export const formatPrice = (n, currency, locale, empty) =>
+  n == null ? empty : `${new Intl.NumberFormat(locale).format(n)} ${String(currency)}`;
+
 export function csvParse(text) {
   const rows = [];
   let row = [],

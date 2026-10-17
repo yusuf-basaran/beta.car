@@ -4,3 +4,5 @@ seed.js
 node_modules/
 .vercel/
 .build/
+test-results/
+playwright-report/

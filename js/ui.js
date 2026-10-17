@@ -1,6 +1,6 @@
-import { esc, key, read, write } from './utils.js';
+import { esc, formatPrice, key, read, write } from './utils.js';
 import { catKeys, footerGroups, nav, paths, slugs } from './data.js';
-import { D, number, t } from './i18n.js';
+import { D, locale, number, t } from './i18n.js';
 import { state } from './state.js';
 import { render } from './navigation.js';
 import { setCategory } from './pages/home.js';
@@ -182,9 +182,7 @@ export function bodySummary(c) {
 }
 
 export function price(c) {
-  return c.fiyat === null || c.fiyat === undefined
-    ? t('priceCall')
-    : `${number(c.fiyat)} ${String(c.para_birimi)}`;
+  return formatPrice(c.fiyat, c.para_birimi, locale(), t('priceCall'));
 }
 
 export function card(c) {
@@ -341,8 +339,7 @@ export async function clip(s) {
 export const safety = () =>
   `<aside class="warning"><p>${esc(t('safety'))}</p><p>${esc(t('ibanWarning'))}</p></aside>`;
 
-export const money = (n, c = 'GBP') =>
-  n == null ? t('priceContact') : `${number(n)} ${String(c)}`;
+export const money = (n, c = 'GBP') => formatPrice(n, c, locale(), t('priceContact'));
 
 export function currencyTools() {
   return label(
