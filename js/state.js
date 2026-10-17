@@ -1,0 +1,18 @@
+export const state = {
+  lang: 'tr',
+  db: undefined,
+  user: undefined,
+  cars: [],
+  cats: [],
+  firms: [],
+  posts: [],
+  banners: [],
+  counts: undefined,
+  lex: { markalar: [], modeller: [] },
+  mainCat: 'kullanilmis',
+  eqs: [],
+  me: undefined,
+  settings: {},
+  routeId: 0,
+  listed: [],
+};

@@ -1,0 +1,214 @@
+import { number, t } from '../i18n.js';
+import { esc, read } from '../utils.js';
+import {
+  $,
+  $$,
+  bindCards,
+  card,
+  currencyBind,
+  currencyTools,
+  displayPrice,
+  empty,
+  fail,
+  meta,
+  notify,
+  pageHead,
+} from '../ui.js';
+import { button, check, inp, label, safeAction, select } from '../forms.js';
+import { params } from '../context.js';
+import { cityList, nav } from '../data.js';
+import { bindEquipment, bindVehicles, equipmentEdit, vehicleForm } from '../vehicle.js';
+import { state } from '../state.js';
+import { need, query, rpc } from '../api.js';
+
+export function readFilter(form, values) {
+  const f = new FormData(form),
+    p = { ...Object.fromEntries(f), ...values() };
+  p.donanim = f.getAll('donanim').map(Number);
+  p.detay = {};
+  for (const k of Object.keys(p)) {
+    if (k.startsWith('d_')) {
+      p.detay[k.slice(2)] = p[k] === 'on' ? 'true' : p[k];
+      delete p[k];
+    }
+    if (p[k] === '' || k === 'website_check') delete p[k];
+  }
+  if (!p.ekspertizli) delete p.ekspertizli;
+  else p.ekspertizli = 'true';
+  return p;
+}
+
+export function mapContent(list) {
+  const points = {
+      Girne: [35.337, 33.319],
+      Lefkoşa: [35.185, 33.365],
+      Gazimağusa: [35.126, 33.942],
+      İskele: [35.283, 33.891],
+      Güzelyurt: [35.199, 32.994],
+      Lefke: [35.111, 32.85],
+    },
+    zoom = 9,
+    xy = ([lat, lon]) => [
+      ((lon + 180) / 360) * 2 ** zoom,
+      ((1 - Math.asinh(Math.tan((lat * Math.PI) / 180)) / Math.PI) / 2) * 2 ** zoom,
+    ],
+    center = xy([35.22, 33.4]),
+    base = [Math.floor(center[0]) - 2, Math.floor(center[1]) - 1];
+  return `<div class="map"><svg viewBox="0 0 1024 768" role="img" aria-label="${t('mapView')}">${Array.from(
+    { length: 12 },
+    (_, n) => {
+      const x = n % 4,
+        y = Math.floor(n / 4);
+      return `<image href="https://tile.openstreetmap.org/${zoom}/${base[0] + x}/${base[1] + y}.png" x="${x * 256}" y="${y * 256}" width="256" height="256"/>`;
+    },
+  ).join('')}${Object.entries(points)
+    .filter(([s]) => list.some((c) => c.sehir === s))
+    .map(([s, coord]) => {
+      const [x, y] = xy(coord),
+        n = list.filter((c) => c.sehir === s).length;
+      return `<a href="ilanlar.html?sehir=${encodeURIComponent(s)}"><g transform="translate(${(x - base[0]) * 256},${(y - base[1]) * 256})"><circle r="21" fill="#22d3ee" stroke="#0d0f12" stroke-width="3"/><text text-anchor="middle" y="6" font-size="18" fill="#0d0f12">${n}</text><text text-anchor="middle" y="-30" font-size="18" fill="#10161e" stroke="#fff" stroke-width="4" paint-order="stroke">${esc(s)}</text></g></a>`;
+    })
+    .join(
+      '',
+    )}</svg><a class="attribution" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a></div>`;
+}
+
+export async function listPage(id) {
+  meta(t('listTitle'));
+  const order = [
+    ['yeni', 'latest'],
+    ['fiyat_artan', 'priceAsc'],
+    ['fiyat_azalan', 'priceDesc'],
+    ['yil', 'yearSort'],
+    ['km', 'kmSort'],
+  ];
+  $('#main').innerHTML =
+    pageHead(
+      'listTitle',
+      `<button class="btn secondary" id="filter-toggle">${t('filter')}</button>`,
+    ) +
+    `<div class="search-layout"><form id="filters" class="panel filters"><h2>${t('filter')}</h2>${label('keywordsLabel', inp('q', 'search', params.get('q') || ''))}${label(
+      'category',
+      select(
+        'kategori',
+        nav.map(([v, k]) => [v, k]),
+        params.get('kategori'),
+      ),
+    )}${vehicleForm()}<div class="fields">${label('min', inp('min', 'number', '', 'min="0"'))}${label('max', inp('max', 'number', '', 'min="0"'))}${label('currency', select('para_birimi', ['GBP', 'EUR', 'USD', 'TL']))}${label('city', select('sehir', cityList))}${label('fuel', select('yakit', ['petrol', 'diesel', 'hybrid', 'mild', 'plugin', 'electric']))}${label('gear', select('vites', ['automatic', 'manual']))}${label('year', inp('yil_min', 'number', '', 'min="1950"'))}${label('max', inp('yil_max', 'number', '', 'min="1950"'))}${label('km', inp('km_max', 'number', '', 'min="0"'))}${label('sellerType', select('satici_tipi', [['bireysel', 'personal'], 'galeri', 'yetkili_satici']))}${label('body', inp('d_kasa'))}${label('color', inp('d_renk'))}${label('steering', select('d_direksiyon', ['right', 'left']))}${label('plate', select('d_plaka', ['localPlate', 'trPlate', 'importPlate']))}${label('origin', select('d_ulke', ['uk', 'japan', 'other']))}${label('grade', inp('d_grade'))}${label(
+      'bodyBox',
+      select('kaporta', [
+        ['orijinal', 'original'],
+        ['degisensiz', 'noReplacement'],
+        ['hasarsiz', 'noDamage'],
+        ['1', `${t('bodyLimit')}: 1`],
+        ['2', `${t('bodyLimit')}: 2`],
+        ['3', `${t('bodyLimit')}: 3`],
+      ]),
+    )}</div>${check('ekspertizli', 'expertOnly')}${['customs', 'trade', 'finance', 'warranty'].map((k) => check('d_' + k, k)).join('')}<details><summary>${t('equipment')}</summary>${equipmentEdit()}</details><div class="actions">${button('apply')}${button('clear', 'clear-filter', 'text-btn')}</div></form><div class="results"><div class="result-tools"><strong id="result-count" aria-live="polite">—</strong>${select('sira', order, params.get('sira') || 'yeni', false)}${currencyTools()}<div class="view-switch">${['listView', 'gridView', 'mapView'].map((k) => `<button data-view="${k}" aria-pressed="${k === 'listView'}">${t(k)}</button>`).join('')}</div><button class="text-btn" id="save-search">${t('saveSearch')}</button></div><div id="results"></div><div class="pagination" id="pagination"></div></div></div>`;
+  const form = $('#filters'),
+    values = bindVehicles(form);
+  let view = 'listView',
+    page = Number(params.get('sayfa') || 1),
+    timer;
+  for (const [k, v] of params) {
+    const el = form.elements.namedItem(k);
+    if (el && k !== 'marka' && k !== 'model' && k !== 'donanim') {
+      if (el.type === 'checkbox') el.checked = v === 'on' || v === 'true';
+      else el.value = v;
+    }
+  }
+  const b = state.lex.markalar.find((m) => String(m[0]) === params.get('marka')),
+    m = state.lex.modeller.find((m) => String(m[0]) === params.get('model'));
+  if (b) {
+    form.marka.value = b[1];
+    form.marka.dispatchEvent(new Event('input'));
+  }
+  if (m) {
+    form.model.value = m[2];
+    form.model.dispatchEvent(new Event('input'));
+  }
+  form.yil.value = params.get('yil') || '';
+  $$('[name=donanim]', form).forEach(
+    (e) => (e.checked = params.getAll('donanim').includes(e.value)),
+  );
+  bindEquipment();
+  async function run() {
+    const p = readFilter(form, values);
+    p.sira = $('[name=sira]').value;
+    p.sayfa = page;
+    if (params.get('satici')) p.satici = params.get('satici');
+    if (params.get('onecikarma')) p.onecikarma = params.get('onecikarma');
+    if (!state.db) {
+      $('#results').innerHTML = `<p class="empty">${t('connect')}</p>`;
+      return;
+    }
+    const r = await rpc('ilan_ara', { p });
+    if (id !== state.routeId) return;
+    state.listed = r.ilanlar;
+    if (params.has('son'))
+      state.listed = state.listed.filter((c) => read('bc-recent').includes(c.id));
+    $('#result-count').textContent = `${number(r.toplam)} ${t('resultCount')}`;
+    draw();
+    const total = Math.ceil(r.toplam / 20);
+    $('#pagination').innerHTML =
+      total > 1
+        ? `<button ${page <= 1 ? 'disabled' : ''} data-p="-1">${t('prev')}</button><span>${page} / ${total}</span><button ${page >= total ? 'disabled' : ''} data-p="1">${t('next')}</button>`
+        : '';
+    $$('[data-p]').forEach(
+      (b) =>
+        (b.onclick = safeAction(async () => {
+          page += Number(b.dataset.p);
+          await run();
+        })),
+    );
+  }
+  function draw() {
+    $('#results').className = view === 'gridView' ? 'listing-grid' : 'listing-list';
+    $('#results').innerHTML =
+      view === 'mapView' ? mapContent(state.listed) : state.listed.map(card).join('') || empty();
+    $$('#results .listing').forEach(
+      (n, i) => ($('.price', n).textContent = displayPrice(state.listed[i])),
+    );
+    bindCards();
+    currencyBind();
+  }
+  form.onsubmit = safeAction(async () => {
+    page = 1;
+    await run();
+    form.classList.remove('open');
+  });
+  form.onchange = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => run().catch(fail), 300);
+  };
+  $('#filter-toggle').onclick = () => form.classList.toggle('open');
+  $('#clear-filter').type = 'button';
+  $('#clear-filter').onclick = () => {
+    form.reset();
+    form.tip.dispatchEvent(new Event('change'));
+    page = 1;
+    run().catch(fail);
+  };
+  $('[name=sira]').onchange = () => {
+    page = 1;
+    run().catch(fail);
+  };
+  $$('[data-view]').forEach(
+    (b) =>
+      (b.onclick = () => {
+        view = b.dataset.view;
+        $$('[data-view]').forEach((n) => n.setAttribute('aria-pressed', String(n === b)));
+        draw();
+      }),
+  );
+  $('#save-search').onclick = safeAction(async () => {
+    need();
+    const p = readFilter(form, values);
+    p.sira = $('[name=sira]').value;
+    await query(
+      state.db.from('aramalar').insert({ ad: form.q.value || t('listTitle'), filtre: p }),
+    );
+    notify(t('success'));
+  });
+  await run();
+}

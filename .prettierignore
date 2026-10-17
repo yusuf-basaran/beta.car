@@ -1,0 +1,9 @@
+node_modules
+.build
+.vercel
+seed.js
+.seed-state.json
+supabase.sql
+supabase-ek.sql
+supabase-eposta.sql
+package-lock.json
