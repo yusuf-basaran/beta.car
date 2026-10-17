@@ -1,0 +1,4 @@
+seed.js
+.seed-state.json
+.env*
+node_modules/
