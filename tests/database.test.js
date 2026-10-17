@@ -395,5 +395,19 @@ grant usage on schema auth,storage to anon,authenticated; grant execute on funct
     "insert into public.iletisim(konu,metin) values('Son konu','Altıncı iletişim talebi')",
   );
   assert(passed >= 68, 'kontrol sayısı');
+  await db.exec('reset role');
+  await db.exec(readFileSync(sqlFile('docs/yasal-sablonlar.sql'), 'utf8'));
+  const legal = await run(
+    "select * from public.sayfalar where slug in ('gizlilik-politikasi','kvkk-aydinlatma','kullanim-kosullari','cerez-politikasi','iletisim','hakkimizda','guvenli-alisveris-ipuclari')",
+  );
+  assert(legal.length === 7, 'yasal sayfa sayısı');
+  for (const page of legal) {
+    for (const field of ['[İŞLETMECİ UNVANI]', '[ADRES]', '[TELEFON]', '[E-POSTA]', '[VERGİ NO]']) {
+      assert(
+        page.icerik.includes(field) && page.icerik_en.includes(field),
+        'işletmeci yer tutucusu',
+      );
+    }
+  }
   await db.close();
 });
