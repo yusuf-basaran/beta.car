@@ -1,6 +1,6 @@
 # Son kontrol
 
-Kontrol tarihi: 17 Ekim 2026.
+Kontrol tarihi: 17 Ekim 2026. Yerel komutlar ve GitHub Actions kontrolleri başarılıdır. CI, Node.js 24 ve Ubuntu 24.04 üzerinde çalışır.
 
 | Komut                    | Sonuç                                                                                      |
 | ------------------------ | ------------------------------------------------------------------------------------------ |
