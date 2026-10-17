@@ -1,0 +1,6 @@
+.git
+.env*
+seed.js
+.seed-state.json
+node_modules
+checks
