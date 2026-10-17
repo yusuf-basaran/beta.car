@@ -3,4 +3,11 @@
 seed.js
 .seed-state.json
 node_modules
-checks
+.build
+.vercel
+test-results
+playwright-report
+tests
+docs
+supabase
+*.sql
