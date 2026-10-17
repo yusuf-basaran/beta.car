@@ -8,11 +8,11 @@
 | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `js/pages/packages.js:72`, `:126`; `js/pages/admin.js:126`                                     | Referans kodları HTML metnine kaçış uygulanarak yazılır.                                                                                      |
 | `js/pages/packages.js:74`, `:122`, `:212`; `js/pages/wanted.js:58`; `js/pages/valuation.js:48` | Para birimiyle birleşen fiyat çıktıları HTML sınırında kaçırılır.                                                                             |
-| `js/ui.js:184`, `:344`                                                                         | Fiyat yardımcıları düz metin döndürür; textContent ve canvas kullanımlarında HTML varlıkları gösterilmez.                                     |
+| `js/ui.js:184`, `:342`                                                                         | Fiyat yardımcıları düz metin döndürür; textContent ve canvas kullanımlarında HTML varlıkları gösterilmez.                                     |
 | `js/pages/account.js:278`                                                                      | Bildirim durumunun sözlükte bulunmayan değeri de kaçırılır.                                                                                   |
 | `js/pages/posts.js:79`                                                                         | Paragraflar önce kaçırılır, ardından yalnızca sabit p/br etiketleri eklenir.                                                                  |
-| `js/forms.js:20`, `js/ui.js:385`                                                               | HTML döndüren ortak yardımcıların metin alanları kaçırılır. input/body/extra parametreleri yalnızca kod içindeki HTML yardımcılarından gelir. |
-| `js/pages/list.js:57`, `js/vehicle.js:137`                                                     | Harita ve kaporta işaretlemesi koddan gelir; içindeki metin ve öznitelikler ayrı kaçırılır.                                                   |
+| `js/forms.js:20`, `js/ui.js:379`                                                               | HTML döndüren ortak yardımcıların metin alanları kaçırılır. input/body/extra parametreleri yalnızca kod içindeki HTML yardımcılarından gelir. |
+| `js/pages/list.js:41`, `js/vehicle.js:143`                                                     | Harita ve kaporta işaretlemesi koddan gelir; içindeki metin ve öznitelikler ayrı kaçırılır.                                                   |
 
 `esc` metin ve alıntılı öznitelikler içindir. URL kaynakları ayrıca http/https protokol denetiminden geçer. JSON-LD, JSON.stringify ile script.textContent üzerinden atanır. Sayısal görselleştirmeler Number/Intl üzerinden işlenir. Satır içi olay özniteliği ve style özniteliği eklenmemiştir.
 
