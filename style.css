@@ -33,7 +33,7 @@ main{min-height:55vh}
 .header{background:var(--carbon),var(--bg);border-bottom:1px solid var(--line)}
 .header-inner{max-width:1440px;margin:auto;display:flex;align-items:center;gap:var(--s4);padding:var(--s3) var(--s4);min-height:76px}
 .brand{flex-shrink:0;display:flex;align-items:center;min-width:125px}
-.brand img{object-fit:contain;width:154px;height:48px}
+.brand img{object-fit:cover;width:154px;height:64px}
 .brand>span{font-size:26px;font-weight:900;font-style:italic;letter-spacing:-1.5px;line-height:1}
 .brand>span>span{color:var(--cyan)}
 .main-nav{display:flex;gap:var(--s4);margin-left:var(--s5);white-space:nowrap;font-size:13px;font-weight:700}
@@ -171,7 +171,7 @@ h2{font-size:26px}
 body{padding-bottom:68px}
 .header-inner{padding:var(--s2) var(--s4) 0;gap:0}
 .brand{min-width:115px}
-.brand img{height:40px;width:128px}
+.brand img{height:48px;width:128px}
 .brand>span{font-size:24px}
 .header-actions .sell{min-height:38px;padding:var(--s2) var(--s3);font-size:11px}
 .header-actions .sell .icon{width:15px}
