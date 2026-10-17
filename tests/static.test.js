@@ -3,6 +3,18 @@ import assert from 'node:assert/strict';
 import { readFile, readdir, access } from 'node:fs/promises';
 
 const root = new URL('../', import.meta.url);
+test('Temel migration kopyaları kaynak SQL ile aynıdır', async () => {
+  for (const [source, migration] of [
+    ['supabase.sql', '20261017000100_0001_cekirdek.sql'],
+    ['supabase-ek.sql', '20261017000200_0002_ek_ozellikler.sql'],
+    ['supabase-eposta.sql', '20261017000300_0003_eposta.sql'],
+  ]) {
+    assert.equal(
+      await readFile(new URL(source, root), 'utf8'),
+      await readFile(new URL('supabase/migrations/' + migration, root), 'utf8'),
+    );
+  }
+});
 test('Modül yolları mevcut dosyalara bağlanır', async () => {
   const files = [
     'app.js',

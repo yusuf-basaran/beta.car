@@ -12,13 +12,24 @@ create table storage.objects(id uuid primary key default gen_random_uuid(),bucke
 create function storage.foldername(text) returns text[] language sql as $$select string_to_array($1,'/')$$;
 create function cron.schedule(text,text,text) returns bigint language sql as $$select 1::bigint$$;
 grant usage on schema auth,storage to anon,authenticated; grant execute on function auth.uid() to anon,authenticated; grant select,insert on storage.objects to authenticated;`);
-  const sql = readFileSync(sqlFile('supabase.sql'), 'utf8').replace(
-    'create extension if not exists pg_cron;',
-    '',
-  );
+  const sql = readFileSync(
+    sqlFile('supabase/migrations/20261017000100_0001_cekirdek.sql'),
+    'utf8',
+  ).replace('create extension if not exists pg_cron;', '');
   {
     await db.exec(sql);
-    await db.exec(readFileSync(sqlFile('supabase-ek.sql'), 'utf8'));
+    await db.exec(
+      readFileSync(sqlFile('supabase/migrations/20261017000200_0002_ek_ozellikler.sql'), 'utf8'),
+    );
+    await db.exec(
+      "alter table auth.users add column email text;create schema vault;create table vault.decrypted_secrets(name text,decrypted_secret text);create schema net;create table net._http_response(id bigint,status_code int);create sequence net.request_seq;create function net.http_post(url text,body jsonb,headers jsonb,timeout_milliseconds int) returns bigint language plpgsql as $$declare n bigint;begin n:=nextval('net.request_seq');insert into net._http_response values(n,202);return n;end $$;",
+    );
+    await db.exec(
+      readFileSync(sqlFile('supabase/migrations/20261017000300_0003_eposta.sql'), 'utf8').replace(
+        'create extension if not exists pg_net;',
+        '',
+      ),
+    );
     await db.exec(
       readFileSync(sqlFile('supabase/migrations/20261017000400_0004_guvenlik.sql'), 'utf8'),
     );
@@ -249,15 +260,7 @@ grant usage on schema auth,storage to anon,authenticated; grant execute on funct
   );
   await db.exec('reset role');
   await db.query("select set_config('request.jwt.claim.sub','',false)");
-  await db.exec(
-    "alter table auth.users add column email text;update auth.users set email='test@example.invalid';create schema vault;create table vault.decrypted_secrets(name text,decrypted_secret text);create schema net;create table net._http_response(id bigint,status_code int);create sequence net.request_seq;create function net.http_post(url text,body jsonb,headers jsonb,timeout_milliseconds int) returns bigint language plpgsql as $$declare n bigint;begin n:=nextval('net.request_seq');insert into net._http_response values(n,202);return n;end $$;",
-  );
-  await db.exec(
-    readFileSync(sqlFile('supabase-eposta.sql'), 'utf8').replace(
-      'create extension if not exists pg_net;',
-      '',
-    ),
-  );
+  await db.exec("update auth.users set email='test@example.invalid'");
   await db.exec(
     "select private.eposta_gonder();insert into vault.decrypted_secrets values('beta_mail_url','https://mail.example.invalid'),('beta_mail_key','only-test'),('beta_mail_from','test@example.invalid');select private.eposta_gonder();",
   );
