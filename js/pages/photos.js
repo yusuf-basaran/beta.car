@@ -22,7 +22,14 @@ export async function photosPage() {
   const c = await query(table('ilanlar').eq('id', id).eq('kullanici_id', state.user.id).single());
   $('#main').insertAdjacentHTML(
     'beforeend',
-    `<form id="phone-upload" class="panel"><h2>${esc(c.baslik)}</h2><p>${t('maxPhotos')}</p><input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple required>${check('watermark', 'watermark')}${button('upload')}<output></output></form>`,
+    `<form id="phone-upload" class="panel"><h2>` +
+      `${esc(c.baslik)}` +
+      `</h2><p>` +
+      `${esc(t('maxPhotos'))}` +
+      `</p><input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple required>` +
+      `${check('watermark', 'watermark')}` +
+      `${button('upload')}` +
+      `<output></output></form>`,
   );
   guard($('#phone-upload'), async (f) => {
     let photos = (await query(table('ilanlar', 'fotograflar').eq('id', id).single())).fotograflar;

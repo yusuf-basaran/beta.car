@@ -1,3 +1,4 @@
+import { esc } from './utils.js';
 import { state } from './state.js';
 import { $, $$, fail, footer, header, icon } from './ui.js';
 import { t } from './i18n.js';
@@ -28,7 +29,14 @@ export function render() {
   else if (document.body.dataset.page === '404') {
     document.title = `${t('notFound')} | BETA.CAR`;
     $('#main').innerHTML =
-      `<section class="wrap missing"><span class="error-code">404</span><h1>${t('notFound')}</h1><p>${t('notFoundText')}</p><a class="btn" href="index.html">${t('backHome')}${icon('arrow')}</a></section>`;
+      `<section class="wrap missing"><span class="error-code">404</span><h1>` +
+      `${esc(t('notFound'))}` +
+      `</h1><p>` +
+      `${esc(t('notFoundText'))}` +
+      `</p><a class="btn" href="index.html">` +
+      `${esc(t('backHome'))}` +
+      `${icon('arrow')}` +
+      `</a></section>`;
   }
 }
 

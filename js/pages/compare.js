@@ -54,7 +54,22 @@ export async function comparePage() {
   ];
   $('#main').insertAdjacentHTML(
     'beforeend',
-    `<div class="table-scroll"><table class="compare-table"><thead><tr><th></th>${list.map((c) => `<th><a href="ilan.html?id=${c.id}">${esc(c.baslik)}</a><button class="text-btn" data-remove-compare="${c.id}">×</button></th>`).join('')}</tr></thead><tbody>${rows.map(([k, ...values]) => `<tr class="${new Set(values.map(String)).size > 1 ? 'different' : ''}"><th>${D[k] ? t(k) : esc(k)}</th>${values.map((v) => `<td>${esc(v ?? t('unknown'))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`,
+    `<div class="table-scroll"><table class="compare-table"><thead><tr><th></th>` +
+      `${list.map((c) => `<th><a href="ilan.html?id=${esc(c.id)}">${esc(c.baslik)}</a><button class="text-btn" data-remove-compare="${esc(c.id)}">×</button></th>`).join('')}` +
+      `</tr></thead><tbody>` +
+      `${rows
+        .map(
+          ([k, ...values]) =>
+            `<tr class="` +
+            `${new Set(values.map(String)).size > 1 ? 'different' : ''}` +
+            `"><th>` +
+            `${esc(D[k] ? t(k) : esc(k))}` +
+            `</th>` +
+            `${values.map((v) => `<td>${esc(v ?? t('unknown'))}</td>`).join('')}` +
+            `</tr>`,
+        )
+        .join('')}` +
+      `</tbody></table></div>`,
   );
   $$('[data-remove-compare]').forEach(
     (b) =>

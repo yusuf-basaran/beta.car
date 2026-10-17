@@ -25,14 +25,26 @@ export async function postsPage() {
     meta(title, state.lang === 'en' ? p.ozet_en : p.ozet);
     $('#main').insertAdjacentHTML(
       'beforeend',
-      `<article class="panel prose article"><h1>${esc(title)}</h1><p class="muted">${esc(p.kategori)} · ${new Date(p.yayin).toLocaleDateString(locale())}</p>${p.kapak ? `<img src="${path(p.kapak)}" alt="${esc(title)}">` : ''}<div>${paragraphs(content)}</div></article>`,
+      `<article class="panel prose article"><h1>` +
+        `${esc(title)}` +
+        `</h1><p class="muted">` +
+        `${esc(p.kategori)}` +
+        ` · ` +
+        `${esc(new Date(p.yayin).toLocaleDateString(locale()))}` +
+        `</p>` +
+        `${p.kapak ? `<img src="${path(p.kapak)}" alt="${esc(title)}">` : ''}` +
+        `<div>` +
+        `${paragraphs(content)}` +
+        `</div></article>`,
     );
     const related = await query(
       table('yazilar').eq('kategori', p.kategori).neq('id', p.id).limit(3),
     );
     $('#main').insertAdjacentHTML(
       'beforeend',
-      `<div class="articles">${related.map((p) => `<a href="yazilar.html?s=${encodeURIComponent(p.slug)}"><h2>${esc(state.lang === 'en' ? p.baslik_en : p.baslik)}</h2></a>`).join('')}</div>`,
+      `<div class="articles">` +
+        `${related.map((p) => `<a href="yazilar.html?s=${encodeURIComponent(p.slug)}"><h2>${esc(state.lang === 'en' ? p.baslik_en : p.baslik)}</h2></a>`).join('')}` +
+        `</div>`,
     );
   } else {
     const list = await query(
@@ -40,7 +52,26 @@ export async function postsPage() {
     );
     $('#main').insertAdjacentHTML(
       'beforeend',
-      `<div class="articles">${list.map((p) => `<a href="yazilar.html?s=${encodeURIComponent(p.slug)}">${p.kapak ? `<img src="${path(p.kapak)}" alt="${esc(state.lang === 'en' ? p.baslik_en : p.baslik)}" loading="lazy">` : ''}<span class="eyebrow">${esc(p.kategori)}</span><h2>${esc(state.lang === 'en' ? p.baslik_en : p.baslik)}</h2><p>${esc(state.lang === 'en' ? p.ozet_en : p.ozet)}</p></a>`).join('') || empty()}</div>`,
+      `<div class="articles">` +
+        `${
+          list
+            .map(
+              (p) =>
+                `<a href="yazilar.html?s=` +
+                `${encodeURIComponent(p.slug)}` +
+                `">` +
+                `${p.kapak ? `<img src="${path(p.kapak)}" alt="${esc(state.lang === 'en' ? p.baslik_en : p.baslik)}" loading="lazy">` : ''}` +
+                `<span class="eyebrow">` +
+                `${esc(p.kategori)}` +
+                `</span><h2>` +
+                `${esc(state.lang === 'en' ? p.baslik_en : p.baslik)}` +
+                `</h2><p>` +
+                `${esc(state.lang === 'en' ? p.ozet_en : p.ozet)}` +
+                `</p></a>`,
+            )
+            .join('') || empty()
+        }` +
+        `</div>`,
     );
   }
 }

@@ -1,3 +1,4 @@
+import { esc } from '../utils.js';
 import { params } from '../context.js';
 import { $, $$, meta, notify, pageHead } from '../ui.js';
 import { t } from '../i18n.js';
@@ -23,22 +24,48 @@ export async function loginPage() {
   function draw() {
     $('#main').innerHTML =
       pageHead('signin') +
-      `<div class="auth panel"><div class="tabs">${['signin', 'register', 'reset'].map((k) => `<button data-auth="${k}" class="${mode === k ? 'active' : ''}">${t(k)}</button>`).join('')}</div><form id="auth-form">${
-        mode === 'register'
-          ? `${label('name', inp('ad', 'text', '', 'required maxlength="100"'))}${label(
-              'type',
-              select(
-                'tip',
-                [
-                  ['bireysel', 'personal'],
-                  ['kurumsal', 'business'],
-                ],
-                'bireysel',
-                false,
-              ),
-            )}<div id="company-fields" hidden>${label('companyName', inp('firma', 'text', '', 'maxlength="140"'))}${label('companyType', select('tur', ['galeri', 'yetkili_satici', 'parca_tedarikcisi', 'ekspertiz_merkezi'], 'galeri', false))}${label('tax', inp('vergi', 'text', '', 'maxlength="40"'))}</div>`
-          : ''
-      }${mode !== 'password' ? label('email', inp('email', 'email', '', 'required autocomplete="email"')) : ''}${mode !== 'reset' ? label('password', inp('password', 'password', '', 'required minlength="10" autocomplete="' + (mode === 'signin' ? 'current-password' : 'new-password') + '"')) : ''}${mode === 'register' ? `<label class="check"><input type="checkbox" required>${t('acceptTerms')}</label><div class="actions"><a href="sayfa.html?s=bireysel-uye-sozlesmesi">${t('personalTerms')}</a><a href="sayfa.html?s=kurumsal-uye-sozlesmesi">${t('businessTerms')}</a><a href="sayfa.html?s=gizlilik-politikasi">${t('privacy')}</a></div>` : ''}${button(mode === 'password' ? 'changePassword' : mode)}</form></div>`;
+      (`<div class="auth panel"><div class="tabs">` +
+        `${['signin', 'register', 'reset'].map((k) => `<button data-auth="${esc(k)}" class="${mode === k ? 'active' : ''}">${esc(t(k))}</button>`).join('')}` +
+        `</div><form id="auth-form">` +
+        `${
+          mode === 'register'
+            ? `${label('name', inp('ad', 'text', '', 'required maxlength="100"'))}` +
+              `${label(
+                'type',
+                select(
+                  'tip',
+                  [
+                    ['bireysel', 'personal'],
+                    ['kurumsal', 'business'],
+                  ],
+                  'bireysel',
+                  false,
+                ),
+              )}` +
+              `<div id="company-fields" hidden>` +
+              `${label('companyName', inp('firma', 'text', '', 'maxlength="140"'))}` +
+              `${label('companyType', select('tur', ['galeri', 'yetkili_satici', 'parca_tedarikcisi', 'ekspertiz_merkezi'], 'galeri', false))}` +
+              `${label('tax', inp('vergi', 'text', '', 'maxlength="40"'))}` +
+              `</div>`
+            : ''
+        }` +
+        `${mode !== 'password' ? label('email', inp('email', 'email', '', 'required autocomplete="email"')) : ''}` +
+        `${mode !== 'reset' ? label('password', inp('password', 'password', '', 'required minlength="10" autocomplete="' + (mode === 'signin' ? 'current-password' : 'new-password') + '"')) : ''}` +
+        `${
+          mode === 'register'
+            ? `<label class="check"><input type="checkbox" required>` +
+              `${esc(t('acceptTerms'))}` +
+              `</label><div class="actions"><a href="sayfa.html?s=bireysel-uye-sozlesmesi">` +
+              `${esc(t('personalTerms'))}` +
+              `</a><a href="sayfa.html?s=kurumsal-uye-sozlesmesi">` +
+              `${esc(t('businessTerms'))}` +
+              `</a><a href="sayfa.html?s=gizlilik-politikasi">` +
+              `${esc(t('privacy'))}` +
+              `</a></div>`
+            : ''
+        }` +
+        `${button(mode === 'password' ? 'changePassword' : mode)}` +
+        `</form></div>`);
     $$('[data-auth]').forEach(
       (b) =>
         (b.onclick = () => {

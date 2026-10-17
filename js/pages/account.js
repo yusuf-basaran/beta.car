@@ -32,7 +32,7 @@ export async function accountPage() {
   let tab = params.get('sekme') || 'ilanlar';
   $('#main').insertAdjacentHTML(
     'beforeend',
-    `<nav class="tabs" id="account-tabs">${accountTabs.map(([k, v]) => `<button data-account="${k}">${t(v)}</button>`).join('')}</nav><div id="account-content"></div>`,
+    `<nav class="tabs" id="account-tabs">${accountTabs.map(([k, v]) => `<button data-account="${esc(k)}">${esc(t(v))}</button>`).join('')}</nav><div id="account-content"></div>`,
   );
   $('#logout').onclick = safeAction(async () => {
     await state.db.auth.signOut();
@@ -56,28 +56,62 @@ export async function accountPage() {
           .eq('kullanici_id', state.user.id)
           .order('olusturma', { ascending: false }),
       );
-      target.innerHTML = `<div class="actions"><a class="btn" href="ilan-ver.html">${t('sell')}</a>${state.me.tip === 'kurumsal' ? `<button class="text-btn" id="csv-open">${t('csv')}</button><button class="text-btn" id="bulk-price">${t('bulkPrice')}</button><button class="text-btn" id="bulk-hide">${t('bulkHide')}</button><a href="hesabim.html?sekme=profil">${t('companyName')}</a>` : ''}</div><div class="listing-list">${
-        list
-          .map(
-            (c) =>
-              `<div class="account-listing">${state.me.tip === 'kurumsal' ? `<label class="check"><input type="checkbox" data-bulk="${c.id}">${esc(c.baslik)}</label>` : ''}${card(c)}<div class="actions"><span>${status(c.durum)}</span><a href="ilan-ver.html?id=${c.id}">${t('edit')}</a>${[
-                ['copy', 'copy'],
-                ['kaldir', 'unpublish'],
-                ['satildi', 'markSold'],
-                ['yayinla', 'renew'],
-                ['yukari', 'bump'],
-                ['arsiv', 'remove'],
-              ]
-                .map(
-                  ([op, k]) =>
-                    `<button class="text-btn" data-listing-op="${op}" data-id="${c.id}">${t(k)}</button>`,
-                )
-                .join(
-                  '',
-                )}<button class="text-btn" data-own-promote="${c.id}">${t('promote')}</button><span data-stat="${c.id}"></span></div></div>`,
-          )
-          .join('') || empty()
-      }</div>`;
+      target.innerHTML =
+        `<div class="actions"><a class="btn" href="ilan-ver.html">` +
+        `${esc(t('sell'))}` +
+        `</a>` +
+        `${
+          state.me.tip === 'kurumsal'
+            ? `<button class="text-btn" id="csv-open">` +
+              `${esc(t('csv'))}` +
+              `</button><button class="text-btn" id="bulk-price">` +
+              `${esc(t('bulkPrice'))}` +
+              `</button><button class="text-btn" id="bulk-hide">` +
+              `${esc(t('bulkHide'))}` +
+              `</button><a href="hesabim.html?sekme=profil">` +
+              `${esc(t('companyName'))}` +
+              `</a>`
+            : ''
+        }` +
+        `</div><div class="listing-list">` +
+        `${
+          list
+            .map(
+              (c) =>
+                `<div class="account-listing">` +
+                `${state.me.tip === 'kurumsal' ? `<label class="check"><input type="checkbox" data-bulk="${esc(c.id)}">${esc(c.baslik)}</label>` : ''}` +
+                `${card(c)}` +
+                `<div class="actions"><span>` +
+                `${esc(status(c.durum))}` +
+                `</span><a href="ilan-ver.html?id=` +
+                `${esc(c.id)}` +
+                `">` +
+                `${esc(t('edit'))}` +
+                `</a>` +
+                `${[
+                  ['copy', 'copy'],
+                  ['kaldir', 'unpublish'],
+                  ['satildi', 'markSold'],
+                  ['yayinla', 'renew'],
+                  ['yukari', 'bump'],
+                  ['arsiv', 'remove'],
+                ]
+                  .map(
+                    ([op, k]) =>
+                      `<button class="text-btn" data-listing-op="${esc(op)}" data-id="${esc(c.id)}">${esc(t(k))}</button>`,
+                  )
+                  .join('')}` +
+                `<button class="text-btn" data-own-promote="` +
+                `${esc(c.id)}` +
+                `">` +
+                `${esc(t('promote'))}` +
+                `</button><span data-stat="` +
+                `${esc(c.id)}` +
+                `"></span></div></div>`,
+            )
+            .join('') || empty()
+        }` +
+        `</div>`;
       bindCards();
       $$('[data-listing-op]').forEach(
         (b) =>
@@ -129,7 +163,19 @@ export async function accountPage() {
         list
           .map(
             (a) =>
-              `<section class="panel"><h2>${esc(a.ad)}</h2><a href="ilanlar.html?${esc(filterUrl(a.filtre))}">${t('search')}</a>${check('mail_' + a.id, 'emailSummary', a.eposta)}<button class="text-btn" data-delete-search="${a.id}">${t('remove')}</button></section>`,
+              `<section class="panel"><h2>` +
+              `${esc(a.ad)}` +
+              `</h2><a href="ilanlar.html?` +
+              `${esc(filterUrl(a.filtre))}` +
+              `">` +
+              `${esc(t('search'))}` +
+              `</a>` +
+              `${check('mail_' + a.id, 'emailSummary', a.eposta)}` +
+              `<button class="text-btn" data-delete-search="` +
+              `${esc(a.id)}` +
+              `">` +
+              `${esc(t('remove'))}` +
+              `</button></section>`,
           )
           .join('') +
         box(
@@ -164,7 +210,15 @@ export async function accountPage() {
         list
           .map(
             (s) =>
-              `<section class="panel"><a href="ilanlar.html?satici=${s.id}">${esc(s.firma?.ad || s.ad)}</a><button class="text-btn" data-unfollow="${s.id}">${t('remove')}</button></section>`,
+              `<section class="panel"><a href="ilanlar.html?satici=` +
+              `${esc(s.id)}` +
+              `">` +
+              `${esc(s.firma?.ad || s.ad)}` +
+              `</a><button class="text-btn" data-unfollow="` +
+              `${esc(s.id)}` +
+              `">` +
+              `${esc(t('remove'))}` +
+              `</button></section>`,
           )
           .join('') || empty();
       $$('[data-unfollow]').forEach(
@@ -186,7 +240,15 @@ export async function accountPage() {
         list
           .map(
             (n) =>
-              `<section class="panel ${n.okundu ? '' : 'unread'}"><p>${notificationText(n)}</p><small>${new Date(n.olusturma).toLocaleString(locale())}</small>${n.veri.ilan_id ? `<a href="ilan.html?id=${n.veri.ilan_id}">${t('view')}</a>` : n.veri.konusma_id ? `<a href="mesajlar.html?k=${n.veri.konusma_id}">${t('messages')}</a>` : ''}</section>`,
+              `<section class="panel ` +
+              `${n.okundu ? '' : 'unread'}` +
+              `"><p>` +
+              `${notificationText(n)}` +
+              `</p><small>` +
+              `${esc(new Date(n.olusturma).toLocaleString(locale()))}` +
+              `</small>` +
+              `${n.veri.ilan_id ? `<a href="ilan.html?id=${esc(n.veri.ilan_id)}">${esc(t('view'))}</a>` : n.veri.konusma_id ? `<a href="mesajlar.html?k=${esc(n.veri.konusma_id)}">${esc(t('messages'))}</a>` : ''}` +
+              `</section>`,
           )
           .join('');
       $('#all-read').onclick = safeAction(async () => {
@@ -213,12 +275,21 @@ export function notificationText(n) {
     sikayet_sonucu: 'reports',
     randevu: 'appointment',
   };
-  return `${t(keys[n.tur] || 'notifications')} ${n.veri.durum ? status(n.veri.durum) : ''} ${esc(n.veri.not || n.veri.sonuc || n.veri.arama || n.veri.bitis || '')}`;
+  return `${esc(t(keys[n.tur] || 'notifications'))} ${n.veri.durum ? esc(status(n.veri.durum)) : ''} ${esc(n.veri.not || n.veri.sonuc || n.veri.arama || n.veri.bitis || '')}`;
 }
 
 export function csvDialog() {
   const d = document.createElement('dialog');
-  d.innerHTML = `<form><h2>${t('csv')}</h2><p>${t('csvHelp')}</p><input name="file" type="file" accept=".csv,text/csv" required>${button('upload')}<button type="button" class="text-btn">${t('cancel')}</button><output></output></form>`;
+  d.innerHTML =
+    `<form><h2>` +
+    `${esc(t('csv'))}` +
+    `</h2><p>` +
+    `${esc(t('csvHelp'))}` +
+    `</p><input name="file" type="file" accept=".csv,text/csv" required>` +
+    `${button('upload')}` +
+    `<button type="button" class="text-btn">` +
+    `${esc(t('cancel'))}` +
+    `</button><output></output></form>`;
   document.body.append(d);
   $('button[type=button]', d).onclick = () => d.close();
   d.onclose = () => d.remove();
@@ -262,7 +333,18 @@ export function bulkDialog(list, hide) {
   const ids = $$('[data-bulk]:checked').map((n) => n.dataset.bulk);
   if (!ids.length) return;
   const d = document.createElement('dialog');
-  d.innerHTML = `<form><h2>${t(hide ? 'bulkHide' : 'bulkPrice')}</h2>${!hide ? inp('percent', 'number', 0, 'min="-99" max="1000" required') : ''}<p>${ids.length}</p>${button('apply')}<button type="button" class="text-btn">${t('cancel')}</button></form>`;
+  d.innerHTML =
+    `<form><h2>` +
+    `${esc(t(hide ? 'bulkHide' : 'bulkPrice'))}` +
+    `</h2>` +
+    `${!hide ? inp('percent', 'number', 0, 'min="-99" max="1000" required') : ''}` +
+    `<p>` +
+    `${esc(ids.length)}` +
+    `</p>` +
+    `${button('apply')}` +
+    `<button type="button" class="text-btn">` +
+    `${esc(t('cancel'))}` +
+    `</button></form>`;
   document.body.append(d);
   $('button[type=button]', d).onclick = () => d.close();
   d.onclose = () => d.remove();

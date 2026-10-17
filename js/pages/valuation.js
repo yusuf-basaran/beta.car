@@ -1,3 +1,4 @@
+import { esc } from '../utils.js';
 import { $, bindCards, box, card, meta, money, pageHead } from '../ui.js';
 import { t } from '../i18n.js';
 import { bindVehicles, vehicleForm } from '../vehicle.js';
@@ -11,7 +12,16 @@ export async function valuationPage(modelOnly) {
   meta(t(modelOnly ? 'modelTitle' : 'valuationTitle'));
   $('#main').innerHTML =
     pageHead(modelOnly ? 'modelTitle' : 'valuationTitle') +
-    `<form id="valuation" class="panel">${vehicleForm()}<div class="fields">${label('km', inp('km', 'number', '', 'min="0"'))}${label('fuel', select('yakit', ['petrol', 'diesel', 'hybrid', 'mild', 'plugin', 'electric']))}${label('gear', select('vites', ['automatic', 'manual']))}${label('currency', select('para_birimi', ['GBP', 'EUR', 'USD', 'TL'], 'GBP', false))}</div>${button('calculate')}</form><div id="valuation-result"></div>`;
+    (`<form id="valuation" class="panel">` +
+      `${vehicleForm()}` +
+      `<div class="fields">` +
+      `${label('km', inp('km', 'number', '', 'min="0"'))}` +
+      `${label('fuel', select('yakit', ['petrol', 'diesel', 'hybrid', 'mild', 'plugin', 'electric']))}` +
+      `${label('gear', select('vites', ['automatic', 'manual']))}` +
+      `${label('currency', select('para_birimi', ['GBP', 'EUR', 'USD', 'TL'], 'GBP', false))}` +
+      `</div>` +
+      `${button('calculate')}` +
+      `</form><div id="valuation-result"></div>`);
   const form = $('#valuation'),
     values = bindVehicles(form);
   guard(form, async () => {
@@ -34,10 +44,39 @@ export async function valuationPage(modelOnly) {
       box(
         'estimate',
         m && lower
-          ? `<strong class="detail-price">${money(lower, form.para_birimi.value)} – ${money(upper, form.para_birimi.value)}</strong><dl class="spec-table"><div><dt>${t('average')}</dt><dd>${money(m.ortalama, form.para_birimi.value)}</dd></div><div><dt>${t('count')}</dt><dd>${m.adet}</dd></div></dl><div class="distribution"><h3>${t('distribution')}</h3>${(m.dagilim || []).map(([i, n]) => `<label>${money(Math.round(Number(m.en_dusuk) + ((Number(m.en_yuksek) - Number(m.en_dusuk)) * i) / 5), form.para_birimi.value)}<meter min="0" max="${m.adet}" value="${n}"></meter><span>${n}</span></label>`).join('')}</div>`
-          : `<p>${t('insufficient')}</p>`,
+          ? `<strong class="detail-price">` +
+              `${esc(money(lower, form.para_birimi.value))}` +
+              ` – ` +
+              `${esc(money(upper, form.para_birimi.value))}` +
+              `</strong><dl class="spec-table"><div><dt>` +
+              `${esc(t('average'))}` +
+              `</dt><dd>` +
+              `${esc(money(m.ortalama, form.para_birimi.value))}` +
+              `</dd></div><div><dt>` +
+              `${esc(t('count'))}` +
+              `</dt><dd>` +
+              `${esc(m.adet)}` +
+              `</dd></div></dl><div class="distribution"><h3>` +
+              `${esc(t('distribution'))}` +
+              `</h3>` +
+              `${(m.dagilim || [])
+                .map(
+                  ([i, n]) =>
+                    `<label>` +
+                    `${esc(money(Math.round(Number(m.en_dusuk) + ((Number(m.en_yuksek) - Number(m.en_dusuk)) * i) / 5), form.para_birimi.value))}` +
+                    `<meter min="0" max="` +
+                    `${esc(m.adet)}` +
+                    `" value="` +
+                    `${esc(n)}` +
+                    `"></meter><span>` +
+                    `${esc(n)}` +
+                    `</span></label>`,
+                )
+                .join('')}` +
+              `</div>`
+          : `<p>${esc(t('insufficient'))}</p>`,
       ) +
-      `<a class="btn" id="sell-estimate" href="ilan-ver.html">${t('sellMine')}</a><div class="listing-list">${rows.ilanlar.map(card).join('')}</div>`;
+      `<a class="btn" id="sell-estimate" href="ilan-ver.html">${esc(t('sellMine'))}</a><div class="listing-list">${rows.ilanlar.map(card).join('')}</div>`;
     $('#sell-estimate').onclick = () =>
       write('bc-valuation', {
         ...v,

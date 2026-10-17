@@ -17,13 +17,14 @@ export const safeAction = (fn) => async (e) => {
   }
 };
 
-export const label = (k, input) => `<label>${t(k)}${input}</label>`;
+export const label = (k, input) => `<label>${esc(t(k))}${input}</label>`;
 
 export const inp = (name, type = 'text', value = '', extra = '') =>
-  `<input name="${name}" type="${type}" value="${esc(value)}" ${extra}>`;
+  `<input name="${esc(name)}" type="${type}" value="${esc(value)}" ${extra}>`;
 
 export const opts = (list, val = '', any = true) =>
-  `${any ? `<option value="">${t('any')}</option>` : ''}${list
+  `${any ? `<option value="">${esc(t('any'))}</option>` : ''}` +
+  `${list
     .map((x) => {
       const [v, k] = Array.isArray(x) ? x : [x, x];
       return `<option value="${esc(v)}" ${String(v) === String(val) ? 'selected' : ''}>${esc(D[k] ? t(k) : k)}</option>`;
@@ -31,13 +32,13 @@ export const opts = (list, val = '', any = true) =>
     .join('')}`;
 
 export const select = (name, list, val = '', any = true) =>
-  `<select name="${name}">${opts(list, val, any)}</select>`;
+  `<select name="${esc(name)}">${opts(list, val, any)}</select>`;
 
 export const check = (name, k, checked = false) =>
-  `<label class="check"><input type="checkbox" name="${name}" ${checked ? 'checked' : ''}>${t(k)}</label>`;
+  `<label class="check"><input type="checkbox" name="${esc(name)}" ${checked ? 'checked' : ''}>${esc(t(k))}</label>`;
 
 export const button = (k, id = '', cls = 'btn') =>
-  `<button class="${cls}" ${id ? `id="${id}"` : ''}>${t(k)}</button>`;
+  `<button class="${cls}" ${id ? `id="${id}"` : ''}>${esc(t(k))}</button>`;
 
 export function guard(form, fn) {
   form.dataset.start = Date.now();
@@ -55,21 +56,31 @@ export function guard(form, fn) {
 export function reportForm(ilan, mesaj) {
   need();
   const dlg = document.createElement('dialog');
-  dlg.innerHTML = `<form><h2>${t('reportListing')}</h2>${label(
-    'reason',
-    select(
-      'sebep',
-      [
-        ['sahte', 'fake'],
-        ['kapora', 'deposit'],
-        ['fiyat', 'wrongPrice'],
-        ['satilmis', 'soldReport'],
-        ['diger', 'other'],
-      ],
-      'sahte',
-      false,
-    ),
-  )}${label('note', '<textarea name="notu" maxlength="2000"></textarea>')}<div class="actions">${button('send')}<button type="button" class="text-btn">${t('cancel')}</button></div></form>`;
+  dlg.innerHTML =
+    `<form><h2>` +
+    `${esc(t('reportListing'))}` +
+    `</h2>` +
+    `${label(
+      'reason',
+      select(
+        'sebep',
+        [
+          ['sahte', 'fake'],
+          ['kapora', 'deposit'],
+          ['fiyat', 'wrongPrice'],
+          ['satilmis', 'soldReport'],
+          ['diger', 'other'],
+        ],
+        'sahte',
+        false,
+      ),
+    )}` +
+    `${label('note', '<textarea name="notu" maxlength="2000"></textarea>')}` +
+    `<div class="actions">` +
+    `${button('send')}` +
+    `<button type="button" class="text-btn">` +
+    `${esc(t('cancel'))}` +
+    `</button></div></form>`;
   document.body.append(dlg);
   $('button[type=button]', dlg).onclick = () => dlg.close();
   dlg.onclose = () => dlg.remove();
@@ -90,7 +101,17 @@ export function reportForm(ilan, mesaj) {
 
 export function promoteDialog(ilan) {
   const d = document.createElement('dialog');
-  d.innerHTML = `<form><h2>${t('promote')}</h2>${select('tur', ['seckin', 'hizli', 'prestij', 'vurgulu'], 'seckin', false)}${button('promote')}<a href="paketler.html">${t('buyRights')}</a><button type="button" class="text-btn">${t('cancel')}</button></form>`;
+  d.innerHTML =
+    `<form><h2>` +
+    `${esc(t('promote'))}` +
+    `</h2>` +
+    `${select('tur', ['seckin', 'hizli', 'prestij', 'vurgulu'], 'seckin', false)}` +
+    `${button('promote')}` +
+    `<a href="paketler.html">` +
+    `${esc(t('buyRights'))}` +
+    `</a><button type="button" class="text-btn">` +
+    `${esc(t('cancel'))}` +
+    `</button></form>`;
   document.body.append(d);
   $('button[type=button]', d).onclick = () => d.close();
   d.onclose = () => d.remove();

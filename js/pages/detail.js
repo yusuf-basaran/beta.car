@@ -28,7 +28,7 @@ import { cityList } from '../data.js';
 
 export async function detailPage(id) {
   $('#main').innerHTML =
-    pageHead('detailTitle') + (state.db ? '' : `<p class="empty">${t('connect')}</p>`);
+    pageHead('detailTitle') + (state.db ? '' : `<p class="empty">${esc(t('connect'))}</p>`);
   if (!state.db) return;
   let q = table('ilan_kartlari');
   if (params.get('no')) q = q.eq('no', params.get('no'));
@@ -38,7 +38,7 @@ export async function detailPage(id) {
   if (!c) {
     let s = params.get('no') ? await rpc('ilan_durum', { p_no: Number(params.get('no')) }) : null;
     $('#main').innerHTML =
-      pageHead('detailTitle') + `<p class="empty">${s ? status(s.durum) : t('notFound')}</p>`;
+      pageHead('detailTitle') + `<p class="empty">${esc(s ? status(s.durum) : t('notFound'))}</p>`;
     return;
   }
   write('bc-recent', [c.id, ...read('bc-recent').filter((x) => x !== c.id)].slice(0, 10));
@@ -85,8 +85,113 @@ export async function detailPage(id) {
     ],
     diff = market && c.fiyat ? (c.fiyat / market.medyan - 1) * 100 : null;
   $('#main').innerHTML =
-    pageHead('detailTitle', `<span>${t('listingNo')} ${c.no}</span>`) +
-    `<h2 class="detail-title">${esc(c.baslik)}</h2>${c.model_id ? `<a class="text-btn" href="model.html?model=${c.model_id}">${t('modelTitle')}</a>` : ''}${c.uyari ? safety() : ''}<div class="detail-layout"><div><section class="panel gallery"><button class="gallery-main" id="photo-open">${c.fotograflar[0] ? `<img id="main-photo" src="${path(c.fotograflar[0])}" alt="${esc(c.baslik)}">` : `<span class="no-photo">${icon('car')}${t('noPhoto')}</span>`}</button><div class="thumbs">${c.fotograflar.map((src, i) => `<button data-photo="${i}" aria-label="${esc(c.baslik)} ${i + 1}"><img src="${path(src)}" alt="${esc(c.baslik)} ${i + 1}" loading="lazy"></button>`).join('')}</div>${c.video ? `<a target="_blank" rel="noopener" href="${path(c.video)}">${t('video')}</a>` : ''}</section>${box('vehicleInfo', `<dl class="spec-table">${attrs.map(([k, v]) => `<div><dt>${t(k)}</dt><dd>${esc(v || t('unknown'))}</dd></div>`).join('')}</dl>`)}${bodyBox(data, report)}${equipmentBox(es.map((e) => e.donanim_id))}${box('declaration', `<dl class="spec-table">${['firstOwner', 'ownerCount', 'service', 'records', 'documents'].map((k) => `<div><dt>${t(k)}</dt><dd>${esc(c.detay[k] === true ? t('yes') : c.detay[k] === false ? t('no') : c.detay[k] || t('unknown'))}</dd></div>`).join('')}</dl>`)}${box('description', `<p class="prose">${esc(c.aciklama)}</p>`)}${hist.length > 1 ? box('history', '<canvas id="price-chart" width="800" height="210" role="img"></canvas>') : ''}${box('mapView', mapContent([c]))}${safety()}</div><aside><section class="panel seller"><strong class="detail-price">${price(c)}</strong>${diff !== null ? `<p class="market">${t(diff < -10 ? 'below' : diff > 10 ? 'above' : 'fair')} · %${number(Math.abs(Math.round(diff)))}</p>` : ''}<h2>${esc(seller?.firma?.ad || seller?.ad || c.satici)}</h2>${seller?.firma?.dogrulandi ? `<span class="badge-inline">${t('verifiedCompany')}</span>` : ''}${seller?.yanit != null ? `<p>${t('replyTime')}: ${number(Math.max(0.1, seller.yanit / 3600).toFixed(1))} ${t('hours')}</p>` : ''}<div class="actions vertical">${seller?.telefon ? `<a class="btn" data-phone href="tel:${esc(seller.telefon.replace(/[^+0-9]/g, ''))}">${t('call')}</a><a class="btn secondary" href="https://wa.me/${seller.telefon.replace(/\D/g, '')}" target="_blank" rel="noopener">WhatsApp</a>` : ''}<button class="btn secondary" id="message-seller">${t('sendMessage')}</button><button class="text-btn" id="follow-seller">${t('follow')}</button><a href="ilanlar.html?satici=${c.kullanici_id}">${t('otherListings')}</a><button class="text-btn" id="price-watch">${t('track')}</button></div><p id="detail-stats" class="muted"></p><div class="actions"><button class="text-btn" id="share">${t('share')}</button><button class="text-btn" id="print">${t('print')}</button><a href="https://wa.me/?text=${encodeURIComponent(location.href)}" target="_blank" rel="noopener">WhatsApp</a></div><button class="text-btn" id="report-listing">${t('reportListing')}</button>${state.user?.id === c.kullanici_id ? `<div class="actions">${select('promote', ['seckin', 'hizli', 'prestij', 'vurgulu'], 'seckin', false)}<button class="btn" id="promote">${t('promote')}</button><a href="paketler.html">${t('buyRights')}</a></div>` : ''}</section>${box('calculator', `<form id="calculator" class="fields">${label('depositAmount', inp('deposit', 'number', 0, 'min="0"'))}${label('months', inp('months', 'number', 36, 'min="1" max="120" required'))}${label('interest', inp('interest', 'number', 0, 'min="0" max="100" step="0.1"'))}${button('calculate')}<output id="monthly"></output></form><small>${t('calcNote')}</small>`)}${box('askInspection', `<form id="inspection" class="fields">${label('name', inp('ad', 'text', state.me?.ad || '', 'required'))}${label('phone', inp('telefon', 'tel', state.me?.telefon || '', 'required'))}${label('city', select('sehir', cityList, c.sehir, false))}${button('send')}</form>`)}</aside></div><div id="similar"></div><dialog id="lightbox"><button id="lightbox-close" aria-label="${t('cancel')}">×</button><button id="photo-prev" aria-label="${t('prev')}">‹</button><img alt="${esc(c.baslik)}"><button id="photo-next" aria-label="${t('next')}">›</button></dialog>`;
+    pageHead('detailTitle', `<span>${esc(t('listingNo'))} ${esc(c.no)}</span>`) +
+    (`<h2 class="detail-title">` +
+      `${esc(c.baslik)}` +
+      `</h2>` +
+      `${c.model_id ? `<a class="text-btn" href="model.html?model=${esc(c.model_id)}">${esc(t('modelTitle'))}</a>` : ''}` +
+      `${c.uyari ? safety() : ''}` +
+      `<div class="detail-layout"><div><section class="panel gallery"><button class="gallery-main" id="photo-open">` +
+      `${c.fotograflar[0] ? `<img id="main-photo" src="${path(c.fotograflar[0])}" alt="${esc(c.baslik)}">` : `<span class="no-photo">${icon('car')}${esc(t('noPhoto'))}</span>`}` +
+      `</button><div class="thumbs">` +
+      `${c.fotograflar.map((src, i) => `<button data-photo="${esc(i)}" aria-label="${esc(c.baslik)} ${esc(i + 1)}"><img src="${path(src)}" alt="${esc(c.baslik)} ${esc(i + 1)}" loading="lazy"></button>`).join('')}` +
+      `</div>` +
+      `${c.video ? `<a target="_blank" rel="noopener" href="${path(c.video)}">${esc(t('video'))}</a>` : ''}` +
+      `</section>` +
+      `${box('vehicleInfo', `<dl class="spec-table">${attrs.map(([k, v]) => `<div><dt>${esc(t(k))}</dt><dd>${esc(v || t('unknown'))}</dd></div>`).join('')}</dl>`)}` +
+      `${bodyBox(data, report)}` +
+      `${equipmentBox(es.map((e) => e.donanim_id))}` +
+      `${box(
+        'declaration',
+        `<dl class="spec-table">` +
+          `${['firstOwner', 'ownerCount', 'service', 'records', 'documents'].map((k) => `<div><dt>${esc(t(k))}</dt><dd>${esc(c.detay[k] === true ? t('yes') : c.detay[k] === false ? t('no') : c.detay[k] || t('unknown'))}</dd></div>`).join('')}` +
+          `</dl>`,
+      )}` +
+      `${box('description', `<p class="prose">${esc(c.aciklama)}</p>`)}` +
+      `${hist.length > 1 ? box('history', '<canvas id="price-chart" width="800" height="210" role="img"></canvas>') : ''}` +
+      `${box('mapView', mapContent([c]))}` +
+      `${safety()}` +
+      `</div><aside><section class="panel seller"><strong class="detail-price">` +
+      `${esc(price(c))}` +
+      `</strong>` +
+      `${diff !== null ? `<p class="market">${esc(t(diff < -10 ? 'below' : diff > 10 ? 'above' : 'fair'))} · %${esc(number(Math.abs(Math.round(diff))))}</p>` : ''}` +
+      `<h2>` +
+      `${esc(seller?.firma?.ad || seller?.ad || c.satici)}` +
+      `</h2>` +
+      `${seller?.firma?.dogrulandi ? `<span class="badge-inline">${esc(t('verifiedCompany'))}</span>` : ''}` +
+      `${seller?.yanit != null ? `<p>${esc(t('replyTime'))}: ${esc(number(Math.max(0.1, seller.yanit / 3600).toFixed(1)))} ${esc(t('hours'))}</p>` : ''}` +
+      `<div class="actions vertical">` +
+      `${
+        seller?.telefon
+          ? `<a class="btn" data-phone href="tel:` +
+            `${esc(seller.telefon.replace(/[^+0-9]/g, ''))}` +
+            `">` +
+            `${esc(t('call'))}` +
+            `</a><a class="btn secondary" href="https://wa.me/` +
+            `${esc(seller.telefon.replace(/\D/g, ''))}` +
+            `" target="_blank" rel="noopener">WhatsApp</a>`
+          : ''
+      }` +
+      `<button class="btn secondary" id="message-seller">` +
+      `${esc(t('sendMessage'))}` +
+      `</button><button class="text-btn" id="follow-seller">` +
+      `${esc(t('follow'))}` +
+      `</button><a href="ilanlar.html?satici=` +
+      `${esc(c.kullanici_id)}` +
+      `">` +
+      `${esc(t('otherListings'))}` +
+      `</a><button class="text-btn" id="price-watch">` +
+      `${esc(t('track'))}` +
+      `</button></div><p id="detail-stats" class="muted"></p><div class="actions"><button class="text-btn" id="share">` +
+      `${esc(t('share'))}` +
+      `</button><button class="text-btn" id="print">` +
+      `${esc(t('print'))}` +
+      `</button><a href="https://wa.me/?text=` +
+      `${encodeURIComponent(location.href)}` +
+      `" target="_blank" rel="noopener">WhatsApp</a></div><button class="text-btn" id="report-listing">` +
+      `${esc(t('reportListing'))}` +
+      `</button>` +
+      `${
+        state.user?.id === c.kullanici_id
+          ? `<div class="actions">` +
+            `${select('promote', ['seckin', 'hizli', 'prestij', 'vurgulu'], 'seckin', false)}` +
+            `<button class="btn" id="promote">` +
+            `${esc(t('promote'))}` +
+            `</button><a href="paketler.html">` +
+            `${esc(t('buyRights'))}` +
+            `</a></div>`
+          : ''
+      }` +
+      `</section>` +
+      `${box(
+        'calculator',
+        `<form id="calculator" class="fields">` +
+          `${label('depositAmount', inp('deposit', 'number', 0, 'min="0"'))}` +
+          `${label('months', inp('months', 'number', 36, 'min="1" max="120" required'))}` +
+          `${label('interest', inp('interest', 'number', 0, 'min="0" max="100" step="0.1"'))}` +
+          `${button('calculate')}` +
+          `<output id="monthly"></output></form><small>` +
+          `${esc(t('calcNote'))}` +
+          `</small>`,
+      )}` +
+      `${box(
+        'askInspection',
+        `<form id="inspection" class="fields">` +
+          `${label('name', inp('ad', 'text', state.me?.ad || '', 'required'))}` +
+          `${label('phone', inp('telefon', 'tel', state.me?.telefon || '', 'required'))}` +
+          `${label('city', select('sehir', cityList, c.sehir, false))}` +
+          `${button('send')}` +
+          `</form>`,
+      )}` +
+      `</aside></div><div id="similar"></div><dialog id="lightbox"><button id="lightbox-close" aria-label="` +
+      `${esc(t('cancel'))}` +
+      `">×</button><button id="photo-prev" aria-label="` +
+      `${esc(t('prev'))}` +
+      `">‹</button><img alt="` +
+      `${esc(c.baslik)}` +
+      `"><button id="photo-next" aria-label="` +
+      `${esc(t('next'))}` +
+      `">›</button></dialog>`);
   bindPanels();
   let index = 0;
   const showPhoto = (n) => {

@@ -18,13 +18,48 @@ export const drawing = () =>
 
 export function home() {
   $('#main').innerHTML =
-    `<section class="hero"><div class="wrap hero-top"><div><p class="eyebrow">${t('island')}</p><h1>${t('hero')}</h1><p class="hero-intro">${t('intro')}</p><span class="signature">${t('gallery')}</span></div>${drawing()}</div><div class="wrap"><div class="search-box"><div class="search-tabs" role="tablist" aria-label="${t('search')}">${nav.map(([s], i) => `<button type="button" role="tab" aria-selected="${s === state.mainCat}" data-tab="${s}">${t(['usedShort', 'newShort', 'parts'][i])}</button>`).join('')}</div><form id="search-form"><div class="keyword-row"><label class="keyword">${icon('search')}<input name="q" type="search" placeholder="${t('keywords')}" aria-label="${t('keywordsLabel')}" autocomplete="off" aria-controls="suggestions"></label><button class="btn search-submit" type="submit">${t('search')}${icon('arrow')}</button></div><div id="suggestions" class="suggestions" aria-label="${t('results')}" hidden></div>${vehicleForm()}</form></div><div class="budget"><span>${t('budget')}</span>${[
+    `<section class="hero"><div class="wrap hero-top"><div><p class="eyebrow">` +
+    `${esc(t('island'))}` +
+    `</p><h1>` +
+    `${esc(t('hero'))}` +
+    `</h1><p class="hero-intro">` +
+    `${esc(t('intro'))}` +
+    `</p><span class="signature">` +
+    `${esc(t('gallery'))}` +
+    `</span></div>` +
+    `${drawing()}` +
+    `</div><div class="wrap"><div class="search-box"><div class="search-tabs" role="tablist" aria-label="` +
+    `${esc(t('search'))}` +
+    `">` +
+    `${nav.map(([s], i) => `<button type="button" role="tab" aria-selected="${esc(s === state.mainCat)}" data-tab="${esc(s)}">${esc(t(['usedShort', 'newShort', 'parts'][i]))}</button>`).join('')}` +
+    `</div><form id="search-form"><div class="keyword-row"><label class="keyword">` +
+    `${icon('search')}` +
+    `<input name="q" type="search" placeholder="` +
+    `${esc(t('keywords'))}` +
+    `" aria-label="` +
+    `${esc(t('keywordsLabel'))}` +
+    `" autocomplete="off" aria-controls="suggestions"></label><button class="btn search-submit" type="submit">` +
+    `${esc(t('search'))}` +
+    `${icon('arrow')}` +
+    `</button></div><div id="suggestions" class="suggestions" aria-label="` +
+    `${esc(t('results'))}` +
+    `" hidden></div>` +
+    `${vehicleForm()}` +
+    `</form></div><div class="budget"><span>` +
+    `${esc(t('budget'))}` +
+    `</span>` +
+    `${[
       ['under', 'max=10000'],
       ['middle', 'min=10000&max=25000'],
       ['over', 'min=25000'],
     ]
-      .map(([k, q]) => `<a href="ilanlar.html?${q}&para_birimi=GBP">${t(k)}${icon('arrow')}</a>`)
-      .join('')}</div></div></section><div class="stats wrap">${[
+      .map(
+        ([k, q]) =>
+          `<a href="ilanlar.html?${esc(q)}&para_birimi=GBP">${esc(t(k))}${icon('arrow')}</a>`,
+      )
+      .join('')}` +
+    `</div></div></section><div class="stats wrap">` +
+    `${[
       ['kullanilmis', 'usedCount'],
       ['sifir', 'newCount'],
       ['parca', 'partCount'],
@@ -32,11 +67,19 @@ export function home() {
     ]
       .map(
         ([key, label]) =>
-          `<div><strong>${state.counts ? number(state.counts[key]) : '—'}</strong><span>${t(label)}</span></div>`,
+          `<div><strong>${esc(state.counts ? number(state.counts[key]) : '—')}</strong><span>${esc(t(label))}</span></div>`,
       )
-      .join(
-        '',
-      )}</div><div class="wrap actions"><a href="degerleme.html">${t('valuationTitle')}</a><a href="karsilastir.html">${t('compare')}</a><a href="talepler.html">${t('wantedTitle')}</a></div><div id="feed" class="wrap feed">${!state.db ? `<p class="connection" role="status">${t('offline')}</p>` : ''}${sections.map(([s, filter], i) => section(s, filter) + (i === 1 ? banner(1) : i === 5 ? banner(2) : '')).join('')}</div>`;
+      .join('')}` +
+    `</div><div class="wrap actions"><a href="degerleme.html">` +
+    `${esc(t('valuationTitle'))}` +
+    `</a><a href="karsilastir.html">` +
+    `${esc(t('compare'))}` +
+    `</a><a href="talepler.html">` +
+    `${esc(t('wantedTitle'))}` +
+    `</a></div><div id="feed" class="wrap feed">` +
+    `${!state.db ? `<p class="connection" role="status">${esc(t('offline'))}</p>` : ''}` +
+    `${sections.map(([s, filter], i) => section(s, filter) + (i === 1 ? banner(1) : i === 5 ? banner(2) : '')).join('')}` +
+    `</div>`;
   const form = $('#search-form'),
     values = bindVehicles(form);
   $$('[data-tab]').forEach((b) => (b.onclick = () => setCategory(b.dataset.tab)));
@@ -78,7 +121,7 @@ export function home() {
       box.innerHTML = list
         .map(
           (c) =>
-            `<a href="ilan.html?id=${c.id}"><span>${esc(c.baslik)}</span><small>${t('listingNo')} ${c.no}</small></a>`,
+            `<a href="ilan.html?id=${esc(c.id)}"><span>${esc(c.baslik)}</span><small>${esc(t('listingNo'))} ${esc(c.no)}</small></a>`,
         )
         .join('');
     };
@@ -114,12 +157,48 @@ export function section(s, filter) {
   if (s === 'galleries' || s === 'dealers') {
     const list = state.firms.filter((f) => f.tur === filter);
     content = list.length
-      ? `<div class="firms">${list.map((f) => `<a class="firm-card" href="firma.html?id=${f.id}"><span class="firm-initial">${esc(f.ad.slice(0, 1))}</span><div><h3>${esc(f.ad)}</h3><p>${esc(f.sehir)}</p>${f.dogrulandi ? `<small>${t('verified')}</small>` : ''}</div>${icon('arrow')}</a>`).join('')}</div>`
-      : `<p class="empty">${t('noFirm')}</p>`;
+      ? `<div class="firms">` +
+        `${list
+          .map(
+            (f) =>
+              `<a class="firm-card" href="firma.html?id=` +
+              `${esc(f.id)}` +
+              `"><span class="firm-initial">` +
+              `${esc(f.ad.slice(0, 1))}` +
+              `</span><div><h3>` +
+              `${esc(f.ad)}` +
+              `</h3><p>` +
+              `${esc(f.sehir)}` +
+              `</p>` +
+              `${f.dogrulandi ? `<small>${esc(t('verified'))}</small>` : ''}` +
+              `</div>` +
+              `${icon('arrow')}` +
+              `</a>`,
+          )
+          .join('')}` +
+        `</div>`
+      : `<p class="empty">${esc(t('noFirm'))}</p>`;
   } else if (s === 'journal') {
     content = state.posts.length
-      ? `<div class="articles">${state.posts.map((p) => `<a href="yazilar.html?s=${encodeURIComponent(p.slug)}"><span class="eyebrow">${esc(p.kategori)}</span><h3>${esc(state.lang === 'en' ? p.baslik_en : p.baslik)}</h3><p>${esc(state.lang === 'en' ? p.ozet_en : p.ozet)}</p>${icon('arrow')}</a>`).join('')}</div>`
-      : `<p class="empty">${t('noArticle')}</p>`;
+      ? `<div class="articles">` +
+        `${state.posts
+          .map(
+            (p) =>
+              `<a href="yazilar.html?s=` +
+              `${encodeURIComponent(p.slug)}` +
+              `"><span class="eyebrow">` +
+              `${esc(p.kategori)}` +
+              `</span><h3>` +
+              `${esc(state.lang === 'en' ? p.baslik_en : p.baslik)}` +
+              `</h3><p>` +
+              `${esc(state.lang === 'en' ? p.ozet_en : p.ozet)}` +
+              `</p>` +
+              `${icon('arrow')}` +
+              `</a>`,
+          )
+          .join('')}` +
+        `</div>`
+      : `<p class="empty">${esc(t('noArticle'))}</p>`;
   } else {
     let list =
       s === 'recent'
@@ -143,9 +222,9 @@ export function section(s, filter) {
           .slice(0, s === 'recent' ? 10 : 4)
           .map(card)
           .join('')}</div>`
-      : `<p class="empty">${t(s === 'recent' ? 'noRecent' : 'empty')}</p>`;
+      : `<p class="empty">${esc(t(s === 'recent' ? 'noRecent' : 'empty'))}</p>`;
   }
-  return `<section class="home-section" id="${s}">${titleLink(s, href)}${content}</section>`;
+  return `<section class="home-section" id="${esc(s)}">${titleLink(s, href)}${content}</section>`;
 }
 
 export function banner(place) {
@@ -154,7 +233,17 @@ export function banner(place) {
   const image = b.resim
     ? `<img src="${path(b.resim)}" alt="" width="500" height="160" loading="lazy">`
     : '';
-  return `<aside class="banner">${image}<div><h2>${esc(state.lang === 'en' ? b.baslik_en : b.baslik)}</h2><p>${esc(state.lang === 'en' ? b.metin_en : b.metin)}</p>${b.baglanti ? `<a href="${path(b.baglanti)}" class="icon-btn" aria-label="${esc(state.lang === 'en' ? b.baslik_en : b.baslik)}">${icon('arrow')}</a>` : ''}</div></aside>`;
+  return (
+    `<aside class="banner">` +
+    `${image}` +
+    `<div><h2>` +
+    `${esc(state.lang === 'en' ? b.baslik_en : b.baslik)}` +
+    `</h2><p>` +
+    `${esc(state.lang === 'en' ? b.metin_en : b.metin)}` +
+    `</p>` +
+    `${b.baglanti ? `<a href="${path(b.baglanti)}" class="icon-btn" aria-label="${esc(state.lang === 'en' ? b.baslik_en : b.baslik)}">${icon('arrow')}</a>` : ''}` +
+    `</div></aside>`
+  );
 }
 
 export function setCategory(cat) {
@@ -192,7 +281,7 @@ export async function load() {
     const p = document.createElement('div');
     p.className = 'connection';
     p.setAttribute('role', 'status');
-    p.innerHTML = `${t('error')} <button class="text-btn">${t('retry')}</button>`;
+    p.innerHTML = `${esc(t('error'))} <button class="text-btn">${esc(t('retry'))}</button>`;
     p.querySelector('button').onclick = load;
     $('#feed').prepend(p);
   }

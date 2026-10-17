@@ -1,3 +1,4 @@
+import { esc } from './utils.js';
 import { t } from './i18n.js';
 import { notify } from './ui.js';
 
@@ -144,5 +145,9 @@ export function qrSvg(text) {
     }
     up = !up;
   }
-  return `<svg class="qr" viewBox="0 0 57 57" role="img" aria-label="QR"><path fill="white" d="M0 0h57v57H0z"/><path fill="black" d="${m.flatMap((row, y) => row.map((v, x) => (v ? `M${x + 4} ${y + 4}h1v1h-1z` : ''))).join('')}"/></svg>`;
+  return (
+    `<svg class="qr" viewBox="0 0 57 57" role="img" aria-label="QR"><path fill="white" d="M0 0h57v57H0z"/><path fill="black" d="` +
+    `${esc(m.flatMap((row, y) => row.map((v, x) => (v ? `M${esc(x + 4)} ${esc(y + 4)}h1v1h-1z` : ''))).join(''))}` +
+    `"/></svg>`
+  );
 }

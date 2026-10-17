@@ -22,11 +22,11 @@ export const path = (s) => {
 export const icon = (name) =>
   `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ` +
   `aria-hidden="true"><path d="` +
-  `${paths[name]}` +
+  `${esc(paths[name])}` +
   `"></path></svg>`;
 
 export const titleLink = (label, url) =>
-  `<div class="section-head"><h2>${t(label)}</h2><a href="${url}">${t('all')}${icon('arrow')}</a></div>`;
+  `<div class="section-head"><h2>${esc(t(label))}</h2><a href="${esc(url)}">${esc(t('all'))}${icon('arrow')}</a></div>`;
 
 export function notify(s) {
   const n = $('#notice');
@@ -46,7 +46,7 @@ export function chips() {
   return list
     .map(
       (c, i) =>
-        `<a href="ilanlar.html?kategori=${state.mainCat}-${state.mainCat === 'parca' ? ['binek', 'motor', 'yuk'][i] : slugs[catKeys.indexOf(c)]}">${t(c)}</a>`,
+        `<a href="ilanlar.html?kategori=${esc(state.mainCat)}-${esc(state.mainCat === 'parca' ? ['binek', 'motor', 'yuk'][i] : slugs[catKeys.indexOf(c)])}">${esc(t(c))}</a>`,
     )
     .join('');
 }
@@ -55,42 +55,42 @@ export function header() {
   $('#header').innerHTML =
     `<header class="header"><div class="header-inner"><a class="brand" href="index.html" aria-label="BETA.CAR">` +
     `<img src="logo.png" alt="BETA.CAR" width="154" height="72"><span hidden>BETA<span>.CAR</span></span></a><nav class="main-nav" aria-label="` +
-    `${t('home')}` +
+    `${esc(t('home'))}` +
     `">` +
-    `${nav.map(([s, k]) => `<a href="ilanlar.html?kategori=${s}" data-cat="${s}" class="${state.mainCat === s ? 'active' : ''}">${t(k)}</a>`).join('')}` +
+    `${nav.map(([s, k]) => `<a href="ilanlar.html?kategori=${esc(s)}" data-cat="${esc(s)}" class="${state.mainCat === s ? 'active' : ''}">${esc(t(k))}</a>`).join('')}` +
     `<a href="paketler.html">` +
-    `${t('packages')}` +
+    `${esc(t('packages'))}` +
     `</a><a href="firmalar.html">` +
-    `${t('firms')}` +
+    `${esc(t('firms'))}` +
     `</a></nav><div class="header-actions"><a class="icon-btn desktop" href="ilanlar.html" aria-label="` +
-    `${t('search')}` +
+    `${esc(t('search'))}` +
     `">` +
     `${icon('search')}` +
     `</a><button id="language" class="language" aria-label="` +
-    `${t('lang')}` +
+    `${esc(t('lang'))}` +
     `">` +
-    `${state.lang.toUpperCase()}` +
+    `${esc(state.lang.toUpperCase())}` +
     `</button><a class="icon-btn desktop" href="hesabim.html?sekme=bildirimler" aria-label="` +
-    `${t('notifications')}` +
+    `${esc(t('notifications'))}` +
     `">` +
     `${icon('bell')}` +
     `<span id="notification-count" class="count" hidden></span></a><a class="icon-btn desktop" href="mesajlar.html" aria-label="` +
-    `${t('messages')}` +
+    `${esc(t('messages'))}` +
     `">` +
     `${icon('message')}` +
     `<span id="message-count" class="count" hidden></span></a><a class="login desktop" href="` +
     `${state.user ? 'hesabim.html' : 'giris.html'}` +
     `">` +
-    `${t(state.user ? 'account' : 'login')}` +
+    `${esc(t(state.user ? 'account' : 'login'))}` +
     `</a><a class="btn sell" href="ilan-ver.html">` +
     `${icon('plus')}` +
-    `${t('sell')}` +
+    `${esc(t('sell'))}` +
     `</a></div></div><nav id="chips" class="chips" aria-label="` +
-    `${t('type')}` +
+    `${esc(t('type'))}` +
     `">` +
     `${chips()}` +
     `</nav></header><nav class="mobile-nav" aria-label="` +
-    `${t('home')}` +
+    `${esc(t('home'))}` +
     `">` +
     `${[
       ['home', 'index.html', 'home'],
@@ -101,7 +101,7 @@ export function header() {
     ]
       .map(
         ([label, href, i]) =>
-          `<a href="${href}" class="${label === 'sell' ? 'mobile-sell' : ''}">${icon(i)}<span>${t(label)}</span></a>`,
+          `<a href="${esc(href)}" class="${label === 'sell' ? 'mobile-sell' : ''}">${icon(i)}<span>${esc(t(label))}</span></a>`,
       )
       .join('')}` +
     `</nav>`;
@@ -126,16 +126,32 @@ export function header() {
 
 export function footer() {
   $('#footer').innerHTML =
-    `<footer class="footer"><div class="wrap footer-grid">${footerGroups.map(([k, links]) => `<div><h2>${t(k)}</h2>${links.map(([label, s]) => `<a href="${s === 'paketler' ? 'paketler.html' : `sayfa.html?s=${s}`}">${t(label)}</a>`).join('')}</div>`).join('')}</div><div class="wrap footer-bottom"><span>© ${new Date().getFullYear()} BETA.CAR</span><span>${Object.entries(
-      state.settings.sosyal || {},
-    )
+    `<footer class="footer"><div class="wrap footer-grid">` +
+    `${footerGroups.map(([k, links]) => `<div><h2>${esc(t(k))}</h2>${links.map(([label, s]) => `<a href="${s === 'paketler' ? 'paketler.html' : `sayfa.html?s=${esc(s)}`}">${esc(t(label))}</a>`).join('')}</div>`).join('')}` +
+    `</div><div class="wrap footer-bottom"><span>© ` +
+    `${esc(new Date().getFullYear())}` +
+    ` BETA.CAR</span><span>` +
+    `${Object.entries(state.settings.sosyal || {})
       .map(
         ([n, url]) =>
           `<a class="social-link" href="${path(url)}" target="_blank" rel="noopener">${esc(n)}</a>`,
       )
-      .join(
-        '',
-      )}${t('gallery')}</span></div></footer>${read('bc-consent', null) ? '' : `<aside class="cookie" aria-label="${t('cookies')}"><p>${t('cookieText')} <a href="sayfa.html?s=cerez-politikasi">${t('cookies')}</a></p><div><button class="btn" data-consent="essential">${t('cookieOnly')}</button></div></aside>`}`;
+      .join('')}` +
+    `${esc(t('gallery'))}` +
+    `</span></div></footer>` +
+    `${
+      read('bc-consent', null)
+        ? ''
+        : `<aside class="cookie" aria-label="` +
+          `${esc(t('cookies'))}` +
+          `"><p>` +
+          `${esc(t('cookieText'))}` +
+          ` <a href="sayfa.html?s=cerez-politikasi">` +
+          `${esc(t('cookies'))}` +
+          `</a></p><div><button class="btn" data-consent="essential">` +
+          `${esc(t('cookieOnly'))}` +
+          `</button></div></aside>`
+    }`;
   $$('[data-consent]').forEach(
     (b) =>
       (b.onclick = () => {
@@ -168,7 +184,7 @@ export function bodySummary(c) {
 export function price(c) {
   return c.fiyat === null || c.fiyat === undefined
     ? t('priceCall')
-    : `${number(c.fiyat)} ${esc(c.para_birimi)}`;
+    : `${number(c.fiyat)} ${String(c.para_birimi)}`;
 }
 
 export function card(c) {
@@ -182,7 +198,57 @@ export function card(c) {
       c.onceki_fiyat > 0 && c.fiyat != null && c.fiyat < c.onceki_fiyat
         ? Math.round((1 - c.fiyat / c.onceki_fiyat) * 100)
         : 0;
-  return `<article class="listing ${promoted === 'prestij' ? 'prestige' : promoted === 'vurgulu' ? 'highlight' : ''}"><a class="listing-image" href="${href}" aria-label="${esc(title)}">${img ? `<img src="${path(img)}" alt="${esc(title)}" width="320" height="220" loading="lazy">` : `<span class="no-photo">${icon('car')}<span>${t('noPhoto')}</span></span>`}${promoted === 'hizli' ? `<span class="badge urgent">${t('quick')}</span>` : promoted === 'prestij' ? `<span class="badge gold">${t('prestige')}</span>` : ''}</a><div class="listing-info"><div class="listing-top"><span class="eyebrow">${esc([c.marka || c.diger_marka, c.model || c.diger_model].filter(Boolean).join(' / '))}</span><button type="button" class="icon-btn favourite ${saved ? 'selected' : ''}" data-fav="${c.id}" aria-label="${t('favs')}" aria-pressed="${saved}">${icon('heart')}</button></div><h3><a href="${href}">${esc(title)}</a></h3><div class="specs">${[c.yil, D[c.vites] ? t(c.vites) : c.vites, D[c.yakit] ? t(c.yakit) : c.yakit, c.km != null ? `${number(c.km)} ${t('km')}` : null].filter(Boolean).map(esc).join('<span>·</span>')}</div><div class="listing-badges">${drop ? `<span>${t('dropped')} %${drop}</span>` : ''}<span class="condition">${bodySummary(c)}</span>${c.ekspertizli ? `<span>${t('expert')}</span>` : ''}${c.dogrulandi ? `<span>${t('verified')}</span>` : ''}${c.durum === 'satildi' ? `<span>${t('sold')}</span>` : ''}</div><div class="listing-bottom"><span class="location">${icon('pin')}${esc(c.sehir)}</span><strong class="price">${displayPrice(c)}</strong></div><div class="listing-tools"><label><input type="checkbox" data-compare="${c.id}" ${compared ? 'checked' : ''}>${t('compare')}</label>${saved ? `<span>${t('track')}</span>` : ''}</div></div></article>`;
+  return (
+    `<article class="listing ` +
+    `${promoted === 'prestij' ? 'prestige' : promoted === 'vurgulu' ? 'highlight' : ''}` +
+    `"><a class="listing-image" href="` +
+    `${href}` +
+    `" aria-label="` +
+    `${esc(title)}` +
+    `">` +
+    `${img ? `<img src="${path(img)}" alt="${esc(title)}" width="320" height="220" loading="lazy">` : `<span class="no-photo">${icon('car')}<span>${esc(t('noPhoto'))}</span></span>`}` +
+    `${promoted === 'hizli' ? `<span class="badge urgent">${esc(t('quick'))}</span>` : promoted === 'prestij' ? `<span class="badge gold">${esc(t('prestige'))}</span>` : ''}` +
+    `</a><div class="listing-info"><div class="listing-top"><span class="eyebrow">` +
+    `${esc([c.marka || c.diger_marka, c.model || c.diger_model].filter(Boolean).join(' / '))}` +
+    `</span><button type="button" class="icon-btn favourite ` +
+    `${saved ? 'selected' : ''}` +
+    `" data-fav="` +
+    `${esc(c.id)}` +
+    `" aria-label="` +
+    `${esc(t('favs'))}` +
+    `" aria-pressed="` +
+    `${esc(saved)}` +
+    `">` +
+    `${icon('heart')}` +
+    `</button></div><h3><a href="` +
+    `${href}` +
+    `">` +
+    `${esc(title)}` +
+    `</a></h3><div class="specs">` +
+    `${[c.yil, D[c.vites] ? t(c.vites) : c.vites, D[c.yakit] ? t(c.yakit) : c.yakit, c.km != null ? `${esc(number(c.km))} ${esc(t('km'))}` : null].filter(Boolean).map(esc).join('<span>·</span>')}` +
+    `</div><div class="listing-badges">` +
+    `${drop ? `<span>${esc(t('dropped'))} %${esc(drop)}</span>` : ''}` +
+    `<span class="condition">` +
+    `${esc(bodySummary(c))}` +
+    `</span>` +
+    `${c.ekspertizli ? `<span>${esc(t('expert'))}</span>` : ''}` +
+    `${c.dogrulandi ? `<span>${esc(t('verified'))}</span>` : ''}` +
+    `${c.durum === 'satildi' ? `<span>${esc(t('sold'))}</span>` : ''}` +
+    `</div><div class="listing-bottom"><span class="location">` +
+    `${icon('pin')}` +
+    `${esc(c.sehir)}` +
+    `</span><strong class="price">` +
+    `${esc(displayPrice(c))}` +
+    `</strong></div><div class="listing-tools"><label><input type="checkbox" data-compare="` +
+    `${esc(c.id)}` +
+    `" ` +
+    `${compared ? 'checked' : ''}` +
+    `>` +
+    `${esc(t('compare'))}` +
+    `</label>` +
+    `${saved ? `<span>${esc(t('track'))}</span>` : ''}` +
+    `</div></div></article>`
+  );
 }
 
 export function bindCards() {
@@ -273,9 +339,10 @@ export async function clip(s) {
 }
 
 export const safety = () =>
-  `<aside class="warning"><p>${t('safety')}</p><p>${t('ibanWarning')}</p></aside>`;
+  `<aside class="warning"><p>${esc(t('safety'))}</p><p>${esc(t('ibanWarning'))}</p></aside>`;
 
-export const money = (n, c = 'GBP') => (n == null ? t('priceContact') : `${number(n)} ${esc(c)}`);
+export const money = (n, c = 'GBP') =>
+  n == null ? t('priceContact') : `${number(n)} ${String(c)}`;
 
 export function currencyTools() {
   return label(
@@ -312,13 +379,15 @@ export function currencyBind() {
     };
 }
 
-export const pageHead = (k, extra = '') => `<div class="page-head"><h1>${t(k)}</h1>${extra}</div>`;
+export const pageHead = (k, extra = '') =>
+  `<div class="page-head"><h1>${esc(t(k))}</h1>${extra}</div>`;
 
-export const box = (title, body) => `<section class="panel"><h2>${t(title)}</h2>${body}</section>`;
+export const box = (title, body) =>
+  `<section class="panel"><h2>${esc(t(title))}</h2>${body}</section>`;
 
-export const empty = () => `<p class="empty">${t('empty')}</p>`;
+export const empty = () => `<p class="empty">${esc(t('empty'))}</p>`;
 
 export const loginPrompt = () =>
-  `<p class="empty">${t(state.db ? 'needLogin' : 'connect')} <a href="giris.html?next=${encodeURIComponent(location.pathname + location.search)}">${t('signin')}</a></p>`;
+  `<p class="empty">${esc(t(state.db ? 'needLogin' : 'connect'))} <a href="giris.html?next=${encodeURIComponent(location.pathname + location.search)}">${esc(t('signin'))}</a></p>`;
 
 export { esc } from './utils.js';

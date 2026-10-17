@@ -13,7 +13,17 @@ export async function wantedPage() {
     pageHead('wantedTitle') +
     box(
       'newWanted',
-      `<form id="wanted-form">${vehicleForm()}<div class="fields">${label('title', inp('baslik', 'text', '', 'required minlength="5" maxlength="140"'))}${label('budgetAmount', inp('butce', 'number', '', 'min="0"'))}${label('currency', select('para_birimi', ['GBP', 'EUR', 'USD', 'TL'], 'GBP', false))}${label('city', select('sehir', cityList))}</div>${label('description', '<textarea name="metin" required maxlength="3000"></textarea>')}${button('send')}</form>`,
+      `<form id="wanted-form">` +
+        `${vehicleForm()}` +
+        `<div class="fields">` +
+        `${label('title', inp('baslik', 'text', '', 'required minlength="5" maxlength="140"'))}` +
+        `${label('budgetAmount', inp('butce', 'number', '', 'min="0"'))}` +
+        `${label('currency', select('para_birimi', ['GBP', 'EUR', 'USD', 'TL'], 'GBP', false))}` +
+        `${label('city', select('sehir', cityList))}` +
+        `</div>` +
+        `${label('description', '<textarea name="metin" required maxlength="3000"></textarea>')}` +
+        `${button('send')}` +
+        `</form>`,
     ) +
     `<div id="wanted-list"></div>`;
   const f = $('#wanted-form'),
@@ -42,7 +52,17 @@ export async function wantedPage() {
     list
       .map(
         (r) =>
-          `<section class="panel"><div class="section-head"><h2>${esc(r.baslik)}</h2><strong class="price">${money(r.butce, r.para_birimi)}</strong></div><p>${esc(r.sehir)}</p><p class="prose">${esc(r.metin)}</p>${r.kullanici_id === state.user?.id ? `<button class="text-btn" data-close-wanted="${r.id}">${t('remove')}</button>` : `<button class="text-btn" data-contact-wanted="${r.kullanici_id}">${t('sendMessage')}</button>`}</section>`,
+          `<section class="panel"><div class="section-head"><h2>` +
+          `${esc(r.baslik)}` +
+          `</h2><strong class="price">` +
+          `${esc(money(r.butce, r.para_birimi))}` +
+          `</strong></div><p>` +
+          `${esc(r.sehir)}` +
+          `</p><p class="prose">` +
+          `${esc(r.metin)}` +
+          `</p>` +
+          `${r.kullanici_id === state.user?.id ? `<button class="text-btn" data-close-wanted="${esc(r.id)}">${esc(t('remove'))}</button>` : `<button class="text-btn" data-contact-wanted="${esc(r.kullanici_id)}">${esc(t('sendMessage'))}</button>`}` +
+          `</section>`,
       )
       .join('') || empty();
   $$('[data-contact-wanted]').forEach(

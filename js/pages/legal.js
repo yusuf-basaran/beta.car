@@ -11,7 +11,7 @@ export async function legalPage() {
   const slug = params.get('s') || 'hakkimizda';
   $('#main').innerHTML = pageHead('beta');
   if (!state.db) {
-    $('#main').insertAdjacentHTML('beforeend', `<p class="empty">${t('connect')}</p>`);
+    $('#main').insertAdjacentHTML('beforeend', `<p class="empty">${esc(t('connect'))}</p>`);
     return;
   }
   const p = await query(table('sayfalar').eq('slug', slug).maybeSingle());
@@ -22,13 +22,22 @@ export async function legalPage() {
   const title = state.lang === 'en' ? p.baslik_en : p.baslik;
   meta(title);
   $('#main').innerHTML =
-    `<article class="panel prose legal"><h1>${esc(title)}</h1>${paragraphs(state.lang === 'en' ? p.icerik_en : p.icerik)}</article>${['guvenli-alim', 'guvenli-satis'].includes(slug) ? safety() : ''}`;
+    `<article class="panel prose legal"><h1>` +
+    `${esc(title)}` +
+    `</h1>` +
+    `${paragraphs(state.lang === 'en' ? p.icerik_en : p.icerik)}` +
+    `</article>` +
+    `${['guvenli-alim', 'guvenli-satis'].includes(slug) ? safety() : ''}`;
   if (['reklam-ver', 'iletisim'].includes(slug)) {
     $('#main').insertAdjacentHTML(
       'beforeend',
       box(
         'contact',
-        `<form id="contact-form">${label('title', inp('konu', 'text', title, 'required maxlength="140"'))}${label('description', '<textarea name="metin" required minlength="5" maxlength="4000"></textarea>')}${button('send')}</form>`,
+        `<form id="contact-form">` +
+          `${label('title', inp('konu', 'text', title, 'required maxlength="140"'))}` +
+          `${label('description', '<textarea name="metin" required minlength="5" maxlength="4000"></textarea>')}` +
+          `${button('send')}` +
+          `</form>`,
       ),
     );
     guard($('#contact-form'), async (f) => {

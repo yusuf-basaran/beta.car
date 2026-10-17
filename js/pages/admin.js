@@ -14,7 +14,7 @@ export async function adminPage() {
     return;
   }
   if (!(await rpc('yetkim'))) {
-    $('#main').insertAdjacentHTML('beforeend', `<p>${t('adminOnly')}</p>`);
+    $('#main').insertAdjacentHTML('beforeend', `<p>${esc(t('adminOnly'))}</p>`);
     return;
   }
   const tabs = [
@@ -44,7 +44,17 @@ export async function adminPage() {
     rows = [];
   $('#main').insertAdjacentHTML(
     'beforeend',
-    `<nav class="tabs admin-tabs">${tabs.map(([v, k]) => `<button data-admin-tab="${v}">${t(k)}</button>`).join('')}</nav><div class="result-tools"><input id="admin-search" type="search" aria-label="${t('search')}" placeholder="${t('search')}"><button class="btn" id="admin-new">${t('newRow')}</button><button class="text-btn" id="admin-merge">${t('merge')}</button></div><div id="admin-content"></div>`,
+    `<nav class="tabs admin-tabs">` +
+      `${tabs.map(([v, k]) => `<button data-admin-tab="${esc(v)}">${esc(t(k))}</button>`).join('')}` +
+      `</nav><div class="result-tools"><input id="admin-search" type="search" aria-label="` +
+      `${esc(t('search'))}` +
+      `" placeholder="` +
+      `${esc(t('search'))}` +
+      `"><button class="btn" id="admin-new">` +
+      `${esc(t('newRow'))}` +
+      `</button><button class="text-btn" id="admin-merge">` +
+      `${esc(t('merge'))}` +
+      `</button></div><div id="admin-content"></div>`,
   );
   async function draw() {
     rows = await rpc('admin_veri', { p_tablo: tab });
@@ -66,14 +76,17 @@ export async function adminPage() {
     const target = $('#admin-content'),
       search = key($('#admin-search').value);
     if (tab === 'genel') {
-      target.innerHTML = `<div class="stats">${[
-        ['ilan', 'myListings'],
-        ['uye', 'users'],
-        ['mesaj', 'messages'],
-        ['talep', 'requests'],
-      ]
-        .map(([v, k]) => `<div><strong>${rows[v]}</strong><span>${t(k)}</span></div>`)
-        .join('')}</div>`;
+      target.innerHTML =
+        `<div class="stats">` +
+        `${[
+          ['ilan', 'myListings'],
+          ['uye', 'users'],
+          ['mesaj', 'messages'],
+          ['talep', 'requests'],
+        ]
+          .map(([v, k]) => `<div><strong>${esc(rows[v])}</strong><span>${esc(t(k))}</span></div>`)
+          .join('')}` +
+        `</div>`;
       return;
     }
     const list = rows.filter((r) => key(JSON.stringify(r)).includes(search));
@@ -81,7 +94,15 @@ export async function adminPage() {
       target.innerHTML = list
         .map(
           (r) =>
-            `<section class="panel"><form data-setting="${esc(r.anahtar)}"><h2>${esc(r.anahtar)}</h2><textarea name="deger" rows="3">${esc(JSON.stringify(r.deger))}</textarea>${button('save')}</form></section>`,
+            `<section class="panel"><form data-setting="` +
+            `${esc(r.anahtar)}` +
+            `"><h2>` +
+            `${esc(r.anahtar)}` +
+            `</h2><textarea name="deger" rows="3">` +
+            `${esc(JSON.stringify(r.deger))}` +
+            `</textarea>` +
+            `${button('save')}` +
+            `</form></section>`,
         )
         .join('');
       $$('[data-setting]').forEach((f) =>
@@ -101,7 +122,24 @@ export async function adminPage() {
         list
           .map(
             (r) =>
-              `<section class="panel"><h2>${esc(r.referans_kodu)} · ${esc(r.ozet.ad)}</h2><p>${esc(r.kullanici_id)} · ${status(r.durum)} · ${money(r.ozet.fiyat, r.ozet.para_birimi)}</p><p>${esc(r.kullanici_notu)}</p>${r.dekont_dosya ? `<button class="text-btn" data-admin-receipt="${esc(r.dekont_dosya)}">${t('report')}</button>` : ''}<form data-admin-request="${r.id}" class="fields">${label(
+              `<section class="panel"><h2>` +
+              `${esc(r.referans_kodu)}` +
+              ` · ` +
+              `${esc(r.ozet.ad)}` +
+              `</h2><p>` +
+              `${esc(r.kullanici_id)}` +
+              ` · ` +
+              `${esc(status(r.durum))}` +
+              ` · ` +
+              `${esc(money(r.ozet.fiyat, r.ozet.para_birimi))}` +
+              `</p><p>` +
+              `${esc(r.kullanici_notu)}` +
+              `</p>` +
+              `${r.dekont_dosya ? `<button class="text-btn" data-admin-receipt="${esc(r.dekont_dosya)}">${esc(t('report'))}</button>` : ''}` +
+              `<form data-admin-request="` +
+              `${esc(r.id)}` +
+              `" class="fields">` +
+              `${label(
                 'status',
                 select(
                   'durum',
@@ -114,7 +152,12 @@ export async function adminPage() {
                   r.durum,
                   false,
                 ),
-              )}${label('amount', inp('fiyat', 'number', r.ozet.fiyat, 'min="0" step="0.01"'))}${label('adminNote', `<textarea name="admin_notu">${esc(r.admin_notu)}</textarea>`)}${label('receiptNote', `<textarea name="makbuz_notu">${esc(r.makbuz_notu)}</textarea>`)}${button('save')}</form></section>`,
+              )}` +
+              `${label('amount', inp('fiyat', 'number', r.ozet.fiyat, 'min="0" step="0.01"'))}` +
+              `${label('adminNote', `<textarea name="admin_notu">${esc(r.admin_notu)}</textarea>`)}` +
+              `${label('receiptNote', `<textarea name="makbuz_notu">${esc(r.makbuz_notu)}</textarea>`)}` +
+              `${button('save')}` +
+              `</form></section>`,
           )
           .join('') || empty();
       $$('[data-admin-receipt]').forEach(
@@ -142,11 +185,26 @@ export async function adminPage() {
     }
     if (tab === 'ilanlar') {
       target.innerHTML =
-        `<div class="actions"><button class="text-btn" id="expired-archive">${t('archive')} · ${t('expired')}</button></div>` +
+        `<div class="actions"><button class="text-btn" id="expired-archive">${esc(t('archive'))} · ${esc(t('expired'))}</button></div>` +
         list
           .map(
             (r) =>
-              `<section class="panel"><h2><a href="ilan.html?id=${r.id}">${esc(r.baslik)}</a></h2><p>${r.no} · ${status(r.durum)} · ${esc(r.kullanici_id)}</p>${r.uyari ? `<p class="warning">${t('safety')}</p>` : ''}<form data-admin-listing="${r.id}" class="fields">${label(
+              `<section class="panel"><h2><a href="ilan.html?id=` +
+              `${esc(r.id)}` +
+              `">` +
+              `${esc(r.baslik)}` +
+              `</a></h2><p>` +
+              `${esc(r.no)}` +
+              ` · ` +
+              `${esc(status(r.durum))}` +
+              ` · ` +
+              `${esc(r.kullanici_id)}` +
+              `</p>` +
+              `${r.uyari ? `<p class="warning">${esc(t('safety'))}</p>` : ''}` +
+              `<form data-admin-listing="` +
+              `${esc(r.id)}` +
+              `" class="fields">` +
+              `${label(
                 'status',
                 select(
                   'durum',
@@ -160,7 +218,12 @@ export async function adminPage() {
                   r.durum,
                   false,
                 ),
-              )}${label('promote', select('onecikarma', ['seckin', 'hizli', 'prestij', 'vurgulu'], r.onecikarma))}${label('endDate', inp('onecikarma_bitis', 'datetime-local', r.onecikarma_bitis ? new Date(r.onecikarma_bitis).toISOString().slice(0, 16) : ''))}${check('gizli', 'hiddenListing', r.gizli)}${button('save')}</form></section>`,
+              )}` +
+              `${label('promote', select('onecikarma', ['seckin', 'hizli', 'prestij', 'vurgulu'], r.onecikarma))}` +
+              `${label('endDate', inp('onecikarma_bitis', 'datetime-local', r.onecikarma_bitis ? new Date(r.onecikarma_bitis).toISOString().slice(0, 16) : ''))}` +
+              `${check('gizli', 'hiddenListing', r.gizli)}` +
+              `${button('save')}` +
+              `</form></section>`,
           )
           .join('');
       $$('[data-admin-listing]').forEach((f) =>
@@ -195,7 +258,23 @@ export async function adminPage() {
       target.innerHTML = list
         .map(
           (r) =>
-            `<section class="panel"><h2>${esc(r.kullanici_id)}</h2><p>${status(r.durum)} · ${new Date(r.bitis).toLocaleString(locale())} · ${Math.ceil((new Date(r.bitis) - Date.now()) / 86400000)} ${t('daysLeft')}</p><form data-subscription="${r.id}" class="fields">${label('listingQuota', inp('kalan_ilan', 'number', r.kalan_ilan, 'min="0" required'))}${label('promotionQuota', inp('kalan_onecikarma', 'number', r.kalan_onecikarma, 'min="0" required'))}${label('endDate', inp('bitis', 'datetime-local', new Date(r.bitis).toISOString().slice(0, 16), 'required'))}${label(
+            `<section class="panel"><h2>` +
+            `${esc(r.kullanici_id)}` +
+            `</h2><p>` +
+            `${esc(status(r.durum))}` +
+            ` · ` +
+            `${esc(new Date(r.bitis).toLocaleString(locale()))}` +
+            ` · ` +
+            `${esc(Math.ceil((new Date(r.bitis) - Date.now()) / 86400000))}` +
+            ` ` +
+            `${esc(t('daysLeft'))}` +
+            `</p><form data-subscription="` +
+            `${esc(r.id)}` +
+            `" class="fields">` +
+            `${label('listingQuota', inp('kalan_ilan', 'number', r.kalan_ilan, 'min="0" required'))}` +
+            `${label('promotionQuota', inp('kalan_onecikarma', 'number', r.kalan_onecikarma, 'min="0" required'))}` +
+            `${label('endDate', inp('bitis', 'datetime-local', new Date(r.bitis).toISOString().slice(0, 16), 'required'))}` +
+            `${label(
               'status',
               select(
                 'durum',
@@ -207,7 +286,9 @@ export async function adminPage() {
                 r.durum,
                 false,
               ),
-            )}${button('save')}</form></section>`,
+            )}` +
+            `${button('save')}` +
+            `</form></section>`,
         )
         .join('');
       $$('[data-subscription]').forEach((f) =>
@@ -230,7 +311,49 @@ export async function adminPage() {
     const cols = Object.keys(list[0] || {}).filter(
       (k) => !['icerik', 'icerik_en', 'onceki', 'sonraki', 'detay', 'fotograflar'].includes(k),
     );
-    target.innerHTML = `<div class="table-scroll"><table><thead><tr>${cols.map((k) => `<th>${esc(D[k] ? t(k) : k)}</th>`).join('')}<th></th></tr></thead><tbody>${list.map((r, i) => `<tr>${cols.map((k) => `<td>${esc(typeof r[k] === 'object' ? JSON.stringify(r[k]) : r[k])}</td>`).join('')}<td>${tab === 'oneriler' ? `<button class="text-btn" data-proposal="${r.id}" data-value="true">${t('approve')}</button><button class="text-btn" data-proposal="${r.id}" data-value="false">${t('reject')}</button>` : tab === 'profil' ? `<button class="text-btn" data-block="${r.id}">${t('block')}</button><button class="text-btn" data-unblock="${r.id}">${t('unblock')}</button><button class="text-btn" data-verify="${r.id}">${t('approve')}</button>` : ['islem_kaydi', 'gelir_ozeti', 'iletisim'].includes(tab) ? '' : `<button class="text-btn" data-row="${i}">${t('edit')}</button>`}</td></tr>`).join('')}</tbody></table></div>`;
+    target.innerHTML =
+      `<div class="table-scroll"><table><thead><tr>` +
+      `${cols.map((k) => `<th>${esc(D[k] ? t(k) : k)}</th>`).join('')}` +
+      `<th></th></tr></thead><tbody>` +
+      `${list
+        .map(
+          (r, i) =>
+            `<tr>` +
+            `${cols.map((k) => `<td>${esc(typeof r[k] === 'object' ? JSON.stringify(r[k]) : r[k])}</td>`).join('')}` +
+            `<td>` +
+            `${
+              tab === 'oneriler'
+                ? `<button class="text-btn" data-proposal="` +
+                  `${esc(r.id)}` +
+                  `" data-value="true">` +
+                  `${esc(t('approve'))}` +
+                  `</button><button class="text-btn" data-proposal="` +
+                  `${esc(r.id)}` +
+                  `" data-value="false">` +
+                  `${esc(t('reject'))}` +
+                  `</button>`
+                : tab === 'profil'
+                  ? `<button class="text-btn" data-block="` +
+                    `${esc(r.id)}` +
+                    `">` +
+                    `${esc(t('block'))}` +
+                    `</button><button class="text-btn" data-unblock="` +
+                    `${esc(r.id)}` +
+                    `">` +
+                    `${esc(t('unblock'))}` +
+                    `</button><button class="text-btn" data-verify="` +
+                    `${esc(r.id)}` +
+                    `">` +
+                    `${esc(t('approve'))}` +
+                    `</button>`
+                  : ['islem_kaydi', 'gelir_ozeti', 'iletisim'].includes(tab)
+                    ? ''
+                    : `<button class="text-btn" data-row="${esc(i)}">${esc(t('edit'))}</button>`
+            }` +
+            `</td></tr>`,
+        )
+        .join('')}` +
+      `</tbody></table></div>`;
     $$('[data-row]').forEach((b) => (b.onclick = () => editRow(list[Number(b.dataset.row)])));
     $$('[data-proposal]').forEach(
       (b) =>
@@ -272,7 +395,15 @@ export async function adminPage() {
     delete data.guncelleme;
     const d = document.createElement('dialog');
     const initial = row ? data : adminDefaults(tab);
-    d.innerHTML = `<form><h2>${t('edit')}</h2>${label('jsonData', `<textarea name="veri" rows="18" required spellcheck="false">${esc(JSON.stringify(initial, null, 2))}</textarea>`)}${button('save')}<button type="button" class="text-btn">${t('cancel')}</button></form>`;
+    d.innerHTML =
+      `<form><h2>` +
+      `${esc(t('edit'))}` +
+      `</h2>` +
+      `${label('jsonData', `<textarea name="veri" rows="18" required spellcheck="false">${esc(JSON.stringify(initial, null, 2))}</textarea>`)}` +
+      `${button('save')}` +
+      `<button type="button" class="text-btn">` +
+      `${esc(t('cancel'))}` +
+      `</button></form>`;
     document.body.append(d);
     $('button[type=button]', d).onclick = () => d.close();
     d.onclose = () => d.remove();
@@ -300,7 +431,16 @@ export async function adminPage() {
   $('#admin-new').onclick = () => editRow(null);
   $('#admin-merge').onclick = () => {
     const d = document.createElement('dialog');
-    d.innerHTML = `<form><h2>${t('merge')}</h2>${label('oldId', inp('eski', 'number', '', 'required'))}${label('newId', inp('yeni', 'number', '', 'required'))}${button('apply')}<button type="button" class="text-btn">${t('cancel')}</button></form>`;
+    d.innerHTML =
+      `<form><h2>` +
+      `${esc(t('merge'))}` +
+      `</h2>` +
+      `${label('oldId', inp('eski', 'number', '', 'required'))}` +
+      `${label('newId', inp('yeni', 'number', '', 'required'))}` +
+      `${button('apply')}` +
+      `<button type="button" class="text-btn">` +
+      `${esc(t('cancel'))}` +
+      `</button></form>`;
     document.body.append(d);
     $('button[type=button]', d).onclick = () => d.close();
     d.onclose = () => d.remove();

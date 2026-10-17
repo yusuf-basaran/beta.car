@@ -22,19 +22,44 @@ export async function messagesPage() {
     channel;
   $('#main').insertAdjacentHTML(
     'beforeend',
-    `<div class="messages-layout"><nav id="conversations" class="panel">${conv.map((k) => `<button data-conversation="${k.id}">${k.ilan_id ? `${t('listingNo')} · ${k.ilan_id.slice(0, 8)}` : t('conversation')}<small>${new Date(k.olusturma).toLocaleDateString(locale())}</small></button>`).join('') || empty()}</nav><section class="panel" id="conversation"></section></div>`,
+    `<div class="messages-layout"><nav id="conversations" class="panel">` +
+      `${
+        conv
+          .map(
+            (k) =>
+              `<button data-conversation="` +
+              `${esc(k.id)}` +
+              `">` +
+              `${esc(k.ilan_id ? `${esc(t('listingNo'))} · ${esc(k.ilan_id.slice(0, 8))}` : t('conversation'))}` +
+              `<small>` +
+              `${esc(new Date(k.olusturma).toLocaleDateString(locale()))}` +
+              `</small></button>`,
+          )
+          .join('') || empty()
+      }` +
+      `</nav><section class="panel" id="conversation"></section></div>`,
   );
   async function draw() {
     if (channel) state.db.removeChannel(channel);
     const k = conv.find((k) => k.id === current);
     if (!k) {
-      $('#conversation').innerHTML = `<p>${t('selectConversation')}</p>`;
+      $('#conversation').innerHTML = `<p>${esc(t('selectConversation'))}</p>`;
       return;
     }
     const other = k.alici_id === state.user.id ? k.satici_id : k.alici_id,
       s = await rpc('satici', { p_id: other });
     $('#conversation').innerHTML =
-      `<div class="section-head"><h2>${esc(s?.firma?.ad || s?.ad)}</h2><button class="text-btn" id="block-user">${t('block')}</button></div>${k.ilan_id ? `<a href="ilan.html?id=${k.ilan_id}">${t('view')}</a>` : ''}<div class="message-stream" id="message-stream" aria-live="polite"></div><form id="message-form"><textarea name="metin" maxlength="4000" required aria-label="${t('messages')}"></textarea>${button('send')}</form>`;
+      `<div class="section-head"><h2>` +
+      `${esc(s?.firma?.ad || s?.ad)}` +
+      `</h2><button class="text-btn" id="block-user">` +
+      `${esc(t('block'))}` +
+      `</button></div>` +
+      `${k.ilan_id ? `<a href="ilan.html?id=${esc(k.ilan_id)}">${esc(t('view'))}</a>` : ''}` +
+      `<div class="message-stream" id="message-stream" aria-live="polite"></div><form id="message-form"><textarea name="metin" maxlength="4000" required aria-label="` +
+      `${esc(t('messages'))}` +
+      `"></textarea>` +
+      `${button('send')}` +
+      `</form>`;
     async function refresh() {
       const list = await query(table('mesajlar').eq('konusma_id', current).order('olusturma'));
       if (!$('#message-stream')) return;
@@ -42,9 +67,21 @@ export async function messagesPage() {
         list
           .map(
             (m) =>
-              `<article class="message ${m.gonderen_id === state.user.id ? 'own' : ''}"><p>${esc(m.metin)}</p>${m.uyari ? `<small class="warning">${t('safety')}</small>` : ''}<small>${new Date(m.olusturma).toLocaleString(locale())} · ${t(m.okundu ? 'readMessage' : 'unread')}</small>${m.gonderen_id !== state.user.id ? `<button class="text-btn" data-report-message="${m.id}">${t('reportListing')}</button>` : ''}</article>`,
+              `<article class="message ` +
+              `${m.gonderen_id === state.user.id ? 'own' : ''}` +
+              `"><p>` +
+              `${esc(m.metin)}` +
+              `</p>` +
+              `${m.uyari ? `<small class="warning">${esc(t('safety'))}</small>` : ''}` +
+              `<small>` +
+              `${esc(new Date(m.olusturma).toLocaleString(locale()))}` +
+              ` · ` +
+              `${esc(t(m.okundu ? 'readMessage' : 'unread'))}` +
+              `</small>` +
+              `${m.gonderen_id !== state.user.id ? `<button class="text-btn" data-report-message="${esc(m.id)}">${esc(t('reportListing'))}</button>` : ''}` +
+              `</article>`,
           )
-          .join('') || `<p class="empty">${t('emptyMessages')}</p>`;
+          .join('') || `<p class="empty">${esc(t('emptyMessages'))}</p>`;
       $$('[data-report-message]').forEach(
         (b) => (b.onclick = safeAction(() => reportForm(null, b.dataset.reportMessage))),
       );

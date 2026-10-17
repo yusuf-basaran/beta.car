@@ -14,7 +14,14 @@ export async function profilePage(target) {
   target.innerHTML =
     box(
       'profile',
-      `<form id="profile" class="fields">${label('name', inp('ad', 'text', state.me.ad, 'required'))}${label('phone', inp('telefon', 'tel', state.me.telefon || ''))}${label('city', select('sehir', cityList, state.me.sehir))}${check('eposta_ozet', 'emailSummary', state.me.eposta_ozet)}${check('telefon_goster', 'showPhone', state.me.telefon_goster)}${button('save')}</form>`,
+      `<form id="profile" class="fields">` +
+        `${label('name', inp('ad', 'text', state.me.ad, 'required'))}` +
+        `${label('phone', inp('telefon', 'tel', state.me.telefon || ''))}` +
+        `${label('city', select('sehir', cityList, state.me.sehir))}` +
+        `${check('eposta_ozet', 'emailSummary', state.me.eposta_ozet)}` +
+        `${check('telefon_goster', 'showPhone', state.me.telefon_goster)}` +
+        `${button('save')}` +
+        `</form>`,
     ) +
     box(
       'changePassword',
@@ -22,10 +29,16 @@ export async function profilePage(target) {
     ) +
     box(
       'phoneVerify',
-      `<form id="sms-phone">${label('phone', inp('phone', 'tel', state.me.telefon || '', 'required'))}${button('send')}</form><form id="sms-code">${label('code', inp('code', 'text', '', 'pattern="[0-9]{6}" required'))}${button('checkCode')}</form>`,
+      `<form id="sms-phone">` +
+        `${label('phone', inp('phone', 'tel', state.me.telefon || '', 'required'))}` +
+        `${button('send')}` +
+        `</form><form id="sms-code">` +
+        `${label('code', inp('code', 'text', '', 'pattern="[0-9]{6}" required'))}` +
+        `${button('checkCode')}` +
+        `</form>`,
     ) +
     (company ? companyEdit(company) : '') +
-    `<button class="danger" id="delete-account">${t('deleteAccount')}</button>`;
+    `<button class="danger" id="delete-account">${esc(t('deleteAccount'))}</button>`;
   guard($('#profile'), async (f) => {
     await query(
       state.db
@@ -79,7 +92,17 @@ export async function profilePage(target) {
         appointments
           .map(
             (r) =>
-              `<article class="review"><p>${esc(r.ad)} · ${esc(r.telefon)} · ${r.tarih ? new Date(r.tarih).toLocaleString(locale()) : ''}</p><p>${esc(r.notu)}</p><p>${status(r.durum)}</p></article>`,
+              `<article class="review"><p>` +
+              `${esc(r.ad)}` +
+              ` · ` +
+              `${esc(r.telefon)}` +
+              ` · ` +
+              `${esc(r.tarih ? new Date(r.tarih).toLocaleString(locale()) : '')}` +
+              `</p><p>` +
+              `${esc(r.notu)}` +
+              `</p><p>` +
+              `${esc(status(r.durum))}` +
+              `</p></article>`,
           )
           .join('') || empty(),
       ),
@@ -91,7 +114,23 @@ export function companyEdit(c) {
   const b = c.bilgiler || {};
   return box(
     'companyName',
-    `<form id="company-edit" class="fields">${label('companyName', inp('ad', 'text', c.ad, 'required'))}${label('city', select('sehir', cityList, c.sehir, false))}${label('phone', inp('telefon', 'tel', c.telefon || ''))}${label('aboutCompany', `<textarea name="hakkinda">${esc(c.hakkinda || '')}</textarea>`)}${label('address', inp('adres', 'text', b.adres))}${label('hoursOpen', `<textarea name="saatler">${esc(JSON.stringify(b.saatler || { 1: ['09:00', '18:00'], 2: ['09:00', '18:00'], 3: ['09:00', '18:00'], 4: ['09:00', '18:00'], 5: ['09:00', '18:00'], 6: ['09:00', '14:00'] }))}</textarea>`)}${label('website', inp('web', 'url', b.web))}${label('social', `<textarea name="sosyal">${esc(JSON.stringify(b.sosyal || {}))}</textarea>`)}${label('photos', `<input name="logo" type="file" accept="image/png,image/jpeg,image/webp"><input name="kapak" type="file" accept="image/png,image/jpeg,image/webp">`)}${button('save')}</form>`,
+    `<form id="company-edit" class="fields">` +
+      `${label('companyName', inp('ad', 'text', c.ad, 'required'))}` +
+      `${label('city', select('sehir', cityList, c.sehir, false))}` +
+      `${label('phone', inp('telefon', 'tel', c.telefon || ''))}` +
+      `${label('aboutCompany', `<textarea name="hakkinda">${esc(c.hakkinda || '')}</textarea>`)}` +
+      `${label('address', inp('adres', 'text', b.adres))}` +
+      `${label(
+        'hoursOpen',
+        `<textarea name="saatler">` +
+          `${esc(JSON.stringify(b.saatler || { 1: ['09:00', '18:00'], 2: ['09:00', '18:00'], 3: ['09:00', '18:00'], 4: ['09:00', '18:00'], 5: ['09:00', '18:00'], 6: ['09:00', '14:00'] }))}` +
+          `</textarea>`,
+      )}` +
+      `${label('website', inp('web', 'url', b.web))}` +
+      `${label('social', `<textarea name="sosyal">${esc(JSON.stringify(b.sosyal || {}))}</textarea>`)}` +
+      `${label('photos', `<input name="logo" type="file" accept="image/png,image/jpeg,image/webp"><input name="kapak" type="file" accept="image/png,image/jpeg,image/webp">`)}` +
+      `${button('save')}` +
+      `</form>`,
   );
 }
 

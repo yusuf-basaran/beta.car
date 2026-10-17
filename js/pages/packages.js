@@ -21,24 +21,112 @@ export async function myPackages(target) {
         .order('olusturma', { ascending: false }),
     ),
   ]);
-  target.innerHTML = `<a class="btn" href="paketler.html">${t('packages')}</a>${subs
-    .filter((s) => s.durum === 'aktif')
-    .map((s) =>
-      box(
-        'myPackages',
-        `<p>${esc(requests.find((r) => r.id === s.talep_id)?.ozet.ad || '')}</p><dl class="spec-table"><div><dt>${t('listingQuota')}</dt><dd>${s.kalan_ilan}</dd></div><div><dt>${t('promotionQuota')}</dt><dd>${s.kalan_onecikarma}</dd></div><div><dt>${t('endDate')}</dt><dd>${new Date(s.bitis).toLocaleDateString(locale())}</dd></div><div><dt>${t('daysLeft')}</dt><dd>${Math.max(0, Math.ceil((new Date(s.bitis) - Date.now()) / 86400000))}</dd></div></dl><button class="btn" data-renew-package="${s.paket_id}">${t('renew')}</button>`,
-      ),
-    )
-    .join(
-      '',
-    )}<h2 class="subheading">${t('requestHistory')}</h2>${requests.map((r) => `<section class="panel"><div class="section-head"><h2>${esc(r.ozet.ad)}</h2><span>${status(r.durum)}</span></div><p>${t('reference')}: <strong>${r.referans_kodu}</strong></p><p>${money(r.ozet.fiyat, r.ozet.para_birimi)}</p>${r.admin_notu ? `<p>${t('reason')}: ${esc(r.admin_notu)}</p>` : ''}<div id="bank-${r.id}"></div>${['odeme_bekliyor', 'reddedildi'].includes(r.durum) && r.son_odeme && new Date(r.son_odeme) > new Date() ? `<form data-receipt="${r.id}">${label('receipt', '<input type="file" name="receipt" accept="application/pdf,image/jpeg,image/png" required>')}<small>${t('receiptFile')}</small>${button('upload')}</form>` : ''}${r.dekont_dosya ? `<button class="text-btn" data-receipt-view="${esc(r.dekont_dosya)}">${t('report')}</button>` : ''}${['onaylandi', 'iptal', 'suresi_doldu'].includes(r.durum) ? `<button class="text-btn" data-renew-package="${r.paket_id}">${t('renew')}</button>` : ''}</section>`).join('')}`;
+  target.innerHTML =
+    `<a class="btn" href="paketler.html">` +
+    `${esc(t('packages'))}` +
+    `</a>` +
+    `${subs
+      .filter((s) => s.durum === 'aktif')
+      .map((s) =>
+        box(
+          'myPackages',
+          `<p>` +
+            `${esc(requests.find((r) => r.id === s.talep_id)?.ozet.ad || '')}` +
+            `</p><dl class="spec-table"><div><dt>` +
+            `${esc(t('listingQuota'))}` +
+            `</dt><dd>` +
+            `${esc(s.kalan_ilan)}` +
+            `</dd></div><div><dt>` +
+            `${esc(t('promotionQuota'))}` +
+            `</dt><dd>` +
+            `${esc(s.kalan_onecikarma)}` +
+            `</dd></div><div><dt>` +
+            `${esc(t('endDate'))}` +
+            `</dt><dd>` +
+            `${esc(new Date(s.bitis).toLocaleDateString(locale()))}` +
+            `</dd></div><div><dt>` +
+            `${esc(t('daysLeft'))}` +
+            `</dt><dd>` +
+            `${esc(Math.max(0, Math.ceil((new Date(s.bitis) - Date.now()) / 86400000)))}` +
+            `</dd></div></dl><button class="btn" data-renew-package="` +
+            `${esc(s.paket_id)}` +
+            `">` +
+            `${esc(t('renew'))}` +
+            `</button>`,
+        ),
+      )
+      .join('')}` +
+    `<h2 class="subheading">` +
+    `${esc(t('requestHistory'))}` +
+    `</h2>` +
+    `${requests
+      .map(
+        (r) =>
+          `<section class="panel"><div class="section-head"><h2>` +
+          `${esc(r.ozet.ad)}` +
+          `</h2><span>` +
+          `${esc(status(r.durum))}` +
+          `</span></div><p>` +
+          `${esc(t('reference'))}` +
+          `: <strong>` +
+          `${esc(r.referans_kodu)}` +
+          `</strong></p><p>` +
+          `${esc(money(r.ozet.fiyat, r.ozet.para_birimi))}` +
+          `</p>` +
+          `${r.admin_notu ? `<p>${esc(t('reason'))}: ${esc(r.admin_notu)}</p>` : ''}` +
+          `<div id="bank-` +
+          `${esc(r.id)}` +
+          `"></div>` +
+          `${
+            ['odeme_bekliyor', 'reddedildi'].includes(r.durum) &&
+            r.son_odeme &&
+            new Date(r.son_odeme) > new Date()
+              ? `<form data-receipt="` +
+                `${esc(r.id)}` +
+                `">` +
+                `${label('receipt', '<input type="file" name="receipt" accept="application/pdf,image/jpeg,image/png" required>')}` +
+                `<small>` +
+                `${esc(t('receiptFile'))}` +
+                `</small>` +
+                `${button('upload')}` +
+                `</form>`
+              : ''
+          }` +
+          `${r.dekont_dosya ? `<button class="text-btn" data-receipt-view="${esc(r.dekont_dosya)}">${esc(t('report'))}</button>` : ''}` +
+          `${['onaylandi', 'iptal', 'suresi_doldu'].includes(r.durum) ? `<button class="text-btn" data-renew-package="${esc(r.paket_id)}">${esc(t('renew'))}</button>` : ''}` +
+          `</section>`,
+      )
+      .join('')}`;
   for (const r of requests.filter(
     (r) => r.durum === 'odeme_bekliyor' && new Date(r.son_odeme) > new Date(),
   )) {
     const b = await rpc('banka_bilgisi', { p_talep: r.id });
     const box = $(`#bank-${r.id}`);
     if (box) {
-      box.innerHTML = `<div class="bank-details"><p>${t('bank')}: ${esc(b.banka)}</p><p>${t('holder')}: ${esc(b.hesap_sahibi)}</p><p>IBAN: <strong>${esc(b.iban)}</strong> <button class="text-btn" data-copy-iban>${t('copy')}</button></p><p>${t('amount')}: ${money(b.tutar, b.para_birimi)}</p><strong>${t('transferRef')}: ${r.referans_kodu}</strong><p>${esc(b.odeme_notu)}</p></div>`;
+      box.innerHTML =
+        `<div class="bank-details"><p>` +
+        `${esc(t('bank'))}` +
+        `: ` +
+        `${esc(b.banka)}` +
+        `</p><p>` +
+        `${esc(t('holder'))}` +
+        `: ` +
+        `${esc(b.hesap_sahibi)}` +
+        `</p><p>IBAN: <strong>` +
+        `${esc(b.iban)}` +
+        `</strong> <button class="text-btn" data-copy-iban>` +
+        `${esc(t('copy'))}` +
+        `</button></p><p>` +
+        `${esc(t('amount'))}` +
+        `: ` +
+        `${esc(money(b.tutar, b.para_birimi))}` +
+        `</p><strong>` +
+        `${esc(t('transferRef'))}` +
+        `: ` +
+        `${esc(r.referans_kodu)}` +
+        `</strong><p>` +
+        `${esc(b.odeme_notu)}` +
+        `</p></div>`;
       $('[data-copy-iban]', box).onclick = () => clip(b.iban);
     }
   }
@@ -71,16 +159,23 @@ export async function packagesPage() {
   meta(t('packages'));
   $('#main').innerHTML =
     pageHead('packages') +
-    `<p class="warning">${t('packageNote')}</p><div class="tabs"><button data-package-target="bireysel">${t('personal')}</button><button data-package-target="kurumsal">${t('business')}</button></div><div id="package-list"></div>${box(
-      'faq',
-      [
-        ['faqPay', 'faqPayA'],
-        ['faqApproval', 'faqApprovalA'],
-        ['faqEnd', 'faqEndA'],
-      ]
-        .map(([q, a]) => `<details><summary>${t(q)}</summary><p>${t(a)}</p></details>`)
-        .join(''),
-    )}`;
+    (`<p class="warning">` +
+      `${esc(t('packageNote'))}` +
+      `</p><div class="tabs"><button data-package-target="bireysel">` +
+      `${esc(t('personal'))}` +
+      `</button><button data-package-target="kurumsal">` +
+      `${esc(t('business'))}` +
+      `</button></div><div id="package-list"></div>` +
+      `${box(
+        'faq',
+        [
+          ['faqPay', 'faqPayA'],
+          ['faqApproval', 'faqApprovalA'],
+          ['faqEnd', 'faqEndA'],
+        ]
+          .map(([q, a]) => `<details><summary>${esc(t(q))}</summary><p>${esc(t(a))}</p></details>`)
+          .join(''),
+      )}`);
   let target = state.me?.tip || 'bireysel';
   const list = state.db ? await query(table('paketler').eq('aktif', true).order('sira')) : [];
   function draw() {
@@ -88,20 +183,59 @@ export async function packagesPage() {
       b.classList.toggle('active', b.dataset.packageTarget === target),
     );
     $('#package-list').innerHTML = list.length
-      ? `<div class="table-scroll"><table><thead><tr><th>${t('packages')}</th><th>${t('listingQuota')}</th><th>${t('promotionQuota')}</th><th>${t('duration')}</th><th>${t('amount')}</th><th></th></tr></thead><tbody>${list
+      ? `<div class="table-scroll"><table><thead><tr><th>` +
+        `${esc(t('packages'))}` +
+        `</th><th>` +
+        `${esc(t('listingQuota'))}` +
+        `</th><th>` +
+        `${esc(t('promotionQuota'))}` +
+        `</th><th>` +
+        `${esc(t('duration'))}` +
+        `</th><th>` +
+        `${esc(t('amount'))}` +
+        `</th><th></th></tr></thead><tbody>` +
+        `${list
           .filter((p) => p.hedef === target)
           .map(
             (p) =>
-              `<tr><th>${esc(p.ad)}<small>${esc(p.aciklama)}</small></th><td>${p.ilan_kotasi}</td><td>${p.onecikarma_hakki}</td><td>${p.sure_gun}</td><td>${money(p.fiyat, p.para_birimi)}</td><td><button class="btn" data-package="${p.id}">${t('requestPackage')}</button></td></tr>`,
+              `<tr><th>` +
+              `${esc(p.ad)}` +
+              `<small>` +
+              `${esc(p.aciklama)}` +
+              `</small></th><td>` +
+              `${esc(p.ilan_kotasi)}` +
+              `</td><td>` +
+              `${esc(p.onecikarma_hakki)}` +
+              `</td><td>` +
+              `${esc(p.sure_gun)}` +
+              `</td><td>` +
+              `${esc(money(p.fiyat, p.para_birimi))}` +
+              `</td><td><button class="btn" data-package="` +
+              `${esc(p.id)}` +
+              `">` +
+              `${esc(t('requestPackage'))}` +
+              `</button></td></tr>`,
           )
-          .join('')}</tbody></table></div>`
-      : `<p class="empty">${t(state.db ? 'empty' : 'connect')}</p>`;
+          .join('')}` +
+        `</tbody></table></div>`
+      : `<p class="empty">${esc(t(state.db ? 'empty' : 'connect'))}</p>`;
     $$('[data-package]').forEach(
       (b) =>
         (b.onclick = safeAction(() => {
           need();
           const d = document.createElement('dialog');
-          d.innerHTML = `<form><h2>${esc(list.find((p) => p.id === b.dataset.package).ad)}</h2>${label('note', '<textarea name="notu" maxlength="2000"></textarea>')}<p>${t('packageNote')}</p>${button('requestPackage')}<button type="button" class="text-btn">${t('cancel')}</button></form>`;
+          d.innerHTML =
+            `<form><h2>` +
+            `${esc(list.find((p) => p.id === b.dataset.package).ad)}` +
+            `</h2>` +
+            `${label('note', '<textarea name="notu" maxlength="2000"></textarea>')}` +
+            `<p>` +
+            `${esc(t('packageNote'))}` +
+            `</p>` +
+            `${button('requestPackage')}` +
+            `<button type="button" class="text-btn">` +
+            `${esc(t('cancel'))}` +
+            `</button></form>`;
           document.body.append(d);
           $('button[type=button]', d).onclick = () => d.close();
           d.onclose = () => d.remove();

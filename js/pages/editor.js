@@ -59,7 +59,7 @@ export async function editorPage() {
   $('#main').insertAdjacentHTML(
     'beforeend',
     `<nav class="steps">` +
-      `${steps.map((k, i) => `<span data-step-label="${i}">${i + 1}. ${t(k)}</span>`).join('')}` +
+      `${steps.map((k, i) => `<span data-step-label="${esc(i)}">${esc(i + 1)}. ${esc(t(k))}</span>`).join('')}` +
       `</nav><form id="editor"><fieldset data-step="0" class="panel">` +
       `${label(
         'category',
@@ -87,13 +87,13 @@ export async function editorPage() {
       `${label('description', `<textarea name="aciklama" maxlength="12000">${esc(c.aciklama || '')}</textarea>`)}` +
       `${label('website', inp('video', 'url', c.video))}` +
       `</fieldset><fieldset data-step="2" class="panel"><div class="section-head"><h2>` +
-      `${t('bodyBox')}` +
+      `${esc(t('bodyBox'))}` +
       `</h2><button type="button" class="text-btn" id="all-original">` +
-      `${t('allOriginal')}` +
+      `${esc(t('allOriginal'))}` +
       `</button></div><div id="body-editor">` +
       `${bodySvg(parts, true)}` +
       `</div><p id="panel-label" aria-live="polite"></p><h2 class="subheading">` +
-      `${t('equipment')}` +
+      `${esc(t('equipment'))}` +
       `</h2><div id="equipment-editor">` +
       `${equipmentEdit(gear)}` +
       `</div></fieldset><fieldset data-step="3" class="panel">` +
@@ -102,12 +102,12 @@ export async function editorPage() {
       `${label('inspectionFirm', inp('ekspertiz_firma', 'text', report?.firma))}` +
       `${label('inspectionDate', inp('ekspertiz_tarih', 'date', report?.tarih))}` +
       `</fieldset><fieldset data-step="4" class="panel"><p>` +
-      `${t('maxPhotos')}` +
+      `${esc(t('maxPhotos'))}` +
       `</p>` +
       `${check('watermark', 'watermark')}` +
       `<input type="file" id="photo-files" accept="image/jpeg,image/png,image/webp" multiple><div class="photo-sort" id="photo-sort"></div>` +
       `<button type="button" class="text-btn" id="phone-photo">` +
-      `${t('phonePhotos')}` +
+      `${esc(t('phonePhotos'))}` +
       `</button><div id="photo-qr"></div></fieldset><fieldset data-step="5" class="panel"><div class="fields">` +
       `${label('amount', inp('fiyat', 'number', c.fiyat, 'min="0" step="0.01"'))}` +
       `${label('currency', select('para_birimi', ['GBP', 'EUR', 'USD', 'TL'], c.para_birimi || 'GBP', false))}` +
@@ -118,13 +118,13 @@ export async function editorPage() {
       `${['customs', 'trade', 'finance', 'warranty', 'firstOwner', 'service', 'records', 'documents'].map((k) => check('d_' + k, k, c.detay[k] === true)).join('')}` +
       `</div></fieldset><fieldset data-step="6" id="editor-preview" class="panel"></fieldset><div class="editor-actions">` +
       `<button type="button" class="btn secondary" id="step-prev">` +
-      `${t('prev')}` +
+      `${esc(t('prev'))}` +
       `</button><button type="button" class="text-btn" id="draft-save">` +
-      `${t('saveDraft')}` +
+      `${esc(t('saveDraft'))}` +
       `</button><button type="button" class="btn" id="step-next">` +
-      `${t('next')}` +
+      `${esc(t('next'))}` +
       `</button><button type="submit" class="btn" id="publish">` +
-      `${t('publish')}` +
+      `${esc(t('publish'))}` +
       `</button></div></form>`,
   );
   const form = $('#editor'),
@@ -322,7 +322,21 @@ export async function editorPage() {
     $('#photo-sort').innerHTML = photos
       .map(
         (src, i) =>
-          `<div draggable="true" data-photo-index="${i}"><img src="${path(src)}" alt="${t('photos')} ${i + 1}"><button type="button" data-photo-delete="${i}" aria-label="${t('remove')}">×</button><span>${i + 1}</span></div>`,
+          `<div draggable="true" data-photo-index="` +
+          `${esc(i)}` +
+          `"><img src="` +
+          `${path(src)}` +
+          `" alt="` +
+          `${esc(t('photos'))}` +
+          ` ` +
+          `${esc(i + 1)}` +
+          `"><button type="button" data-photo-delete="` +
+          `${esc(i)}` +
+          `" aria-label="` +
+          `${esc(t('remove'))}` +
+          `">×</button><span>` +
+          `${esc(i + 1)}` +
+          `</span></div>`,
       )
       .join('');
     let from;
@@ -371,7 +385,7 @@ export async function editorPage() {
     const kod = await rpc('foto_oturum', { p_ilan: id }),
       url = new URL(`foto.html?kod=${kod}`, location.href).href;
     $('#photo-qr').innerHTML =
-      qrSvg(url) + `<p>${t('photoSession')}</p><a href="${esc(url)}">${esc(url)}</a>`;
+      qrSvg(url) + `<p>${esc(t('photoSession'))}</p><a href="${esc(url)}">${esc(url)}</a>`;
     state.db
       .channel(`photos:${id}`)
       .on(

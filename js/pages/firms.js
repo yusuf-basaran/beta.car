@@ -31,7 +31,12 @@ export async function firmsPage() {
         ? `<a href="tel:${esc(state.settings.iletisim_telefon.replace(/[^+0-9]/g, ''))}">${esc(state.settings.iletisim_telefon)}</a>`
         : '',
     ) +
-    `<div class="tabs">${['galeri', 'yetkili_satici', 'parca_tedarikcisi', 'ekspertiz_merkezi'].map((k) => `<button data-firm-type="${k}">${t(k)}</button>`).join('')}</div><form id="firm-filter" class="result-tools">${label('companyName', inp('q', 'search'))}${label('city', select('sehir', cityList))}</form><div id="firm-list" class="firms"></div>`;
+    (`<div class="tabs">` +
+      `${['galeri', 'yetkili_satici', 'parca_tedarikcisi', 'ekspertiz_merkezi'].map((k) => `<button data-firm-type="${esc(k)}">${esc(t(k))}</button>`).join('')}` +
+      `</div><form id="firm-filter" class="result-tools">` +
+      `${label('companyName', inp('q', 'search'))}` +
+      `${label('city', select('sehir', cityList))}` +
+      `</form><div id="firm-list" class="firms"></div>`);
   const all = state.db
     ? await query(table('firmalar').order('one_cikan', { ascending: false }).order('ad'))
     : [];
@@ -51,7 +56,19 @@ export async function firmsPage() {
       list
         .map(
           (c) =>
-            `<a class="firm-card" href="firma.html?id=${c.id}">${c.logo ? `<img class="firm-logo" src="${path(c.logo)}" alt="${esc(c.ad)}" loading="lazy">` : `<span class="firm-initial">${esc(c.ad[0])}</span>`}<div><h3>${esc(c.ad)}</h3><p>${esc(c.sehir)}</p>${c.dogrulandi ? `<small>${t('verifiedCompany')}</small>` : ''}</div>${icon('arrow')}</a>`,
+            `<a class="firm-card" href="firma.html?id=` +
+            `${esc(c.id)}` +
+            `">` +
+            `${c.logo ? `<img class="firm-logo" src="${path(c.logo)}" alt="${esc(c.ad)}" loading="lazy">` : `<span class="firm-initial">${esc(c.ad[0])}</span>`}` +
+            `<div><h3>` +
+            `${esc(c.ad)}` +
+            `</h3><p>` +
+            `${esc(c.sehir)}` +
+            `</p>` +
+            `${c.dogrulandi ? `<small>${esc(t('verifiedCompany'))}</small>` : ''}` +
+            `</div>` +
+            `${icon('arrow')}` +
+            `</a>`,
         )
         .join('') || empty();
   }
@@ -100,27 +117,86 @@ export async function firmPage() {
     open = companyOpen(b.saatler);
   const href = new URL(`firma.html?id=${c.id}`, location.href).href;
   $('#main').innerHTML =
-    `${c.kapak ? `<img class="company-cover" src="${path(c.kapak)}" alt="${esc(c.ad)}">` : ''}<div class="page-head"><h1>${esc(c.ad)}</h1>${c.dogrulandi ? `<span class="badge-inline">${t('verifiedCompany')}</span>` : ''}</div><div class="detail-layout"><div>${box(
+    `${c.kapak ? `<img class="company-cover" src="${path(c.kapak)}" alt="${esc(c.ad)}">` : ''}` +
+    `<div class="page-head"><h1>` +
+    `${esc(c.ad)}` +
+    `</h1>` +
+    `${c.dogrulandi ? `<span class="badge-inline">${esc(t('verifiedCompany'))}</span>` : ''}` +
+    `</div><div class="detail-layout"><div>` +
+    `${box(
       'aboutCompany',
-      `${c.logo ? `<img class="firm-logo" src="${path(c.logo)}" alt="${esc(c.ad)}">` : ''}<p class="prose">${esc(c.hakkinda || '')}</p><p>${esc(b.adres || c.sehir)}</p>${c.telefon ? `<a class="btn" href="tel:${esc(c.telefon.replace(/[^+0-9]/g, ''))}">${t('call')}</a> <a href="https://wa.me/${c.telefon.replace(/\D/g, '')}" target="_blank" rel="noopener">WhatsApp</a>` : ''}${b.web ? `<p><a href="${path(b.web)}" target="_blank" rel="noopener">${t('website')}</a></p>` : ''}${Object.entries(
-        b.sosyal || {},
-      )
-        .map(
-          ([n, url]) =>
-            `<a class="social-link" href="${path(url)}" rel="noopener" target="_blank">${esc(n)}</a>`,
-        )
-        .join('')}`,
-    )}${box(
+      `${c.logo ? `<img class="firm-logo" src="${path(c.logo)}" alt="${esc(c.ad)}">` : ''}` +
+        `<p class="prose">` +
+        `${esc(c.hakkinda || '')}` +
+        `</p><p>` +
+        `${esc(b.adres || c.sehir)}` +
+        `</p>` +
+        `${
+          c.telefon
+            ? `<a class="btn" href="tel:` +
+              `${esc(c.telefon.replace(/[^+0-9]/g, ''))}` +
+              `">` +
+              `${esc(t('call'))}` +
+              `</a> <a href="https://wa.me/` +
+              `${esc(c.telefon.replace(/\D/g, ''))}` +
+              `" target="_blank" rel="noopener">WhatsApp</a>`
+            : ''
+        }` +
+        `${b.web ? `<p><a href="${path(b.web)}" target="_blank" rel="noopener">${esc(t('website'))}</a></p>` : ''}` +
+        `${Object.entries(b.sosyal || {})
+          .map(
+            ([n, url]) =>
+              `<a class="social-link" href="${path(url)}" rel="noopener" target="_blank">${esc(n)}</a>`,
+          )
+          .join('')}`,
+    )}` +
+    `${box(
       'hoursOpen',
-      `${open === null ? '' : `<strong>${t(open ? 'openNow' : 'closedNow')}</strong>`}<dl class="spec-table">${Object.entries(
-        b.saatler || {},
-      )
-        .map(
-          ([d, h]) =>
-            `<div><dt>${new Intl.DateTimeFormat(locale(), { weekday: 'long' }).format(new Date(2026, 0, 4 + Number(d)))}</dt><dd>${esc(h.join(' – '))}</dd></div>`,
-        )
-        .join('')}</dl>`,
-    )}<div class="listing-list">${list.ilanlar.map(card).join('') || empty()}</div>${box('reviews', `<p>${t('rating')}: ${reviews.length ? number((reviews.reduce((s, r) => s + r.puan, 0) / reviews.length).toFixed(1)) : '—'} / 5</p>${reviews.map((r) => `<article class="review"><strong>${r.puan}/5</strong><p>${esc(r.metin)}</p></article>`).join('')}<form id="review-form">${label('rating', select('puan', [1, 2, 3, 4, 5], 5, false))}${label('description', '<textarea name="metin" required minlength="3" maxlength="2000"></textarea>')}${button('send')}</form>`)}</div><aside>${box('share', `${qrSvg(href)}<p><a href="${esc(href)}">${esc(href)}</a></p><button class="text-btn" id="share-company">${t('share')}</button>`)}${box('mapView', mapContent([{ sehir: c.sehir }]))}${c.tur === 'ekspertiz_merkezi' ? box('appointment', `<form id="appointment">${label('name', inp('ad', 'text', state.me?.ad || '', 'required'))}${label('phone', inp('telefon', 'tel', state.me?.telefon || '', 'required'))}${label('date', inp('tarih', 'datetime-local', '', 'required'))}${label('note', '<textarea name="notu"></textarea>')}${button('send')}</form>`) : ''}</aside></div>`;
+      `${open === null ? '' : `<strong>${esc(t(open ? 'openNow' : 'closedNow'))}</strong>`}` +
+        `<dl class="spec-table">` +
+        `${Object.entries(b.saatler || {})
+          .map(
+            ([d, h]) =>
+              `<div><dt>${esc(new Intl.DateTimeFormat(locale(), { weekday: 'long' }).format(new Date(2026, 0, 4 + Number(d))))}</dt><dd>${esc(h.join(' – '))}</dd></div>`,
+          )
+          .join('')}` +
+        `</dl>`,
+    )}` +
+    `<div class="listing-list">` +
+    `${list.ilanlar.map(card).join('') || empty()}` +
+    `</div>` +
+    `${box(
+      'reviews',
+      `<p>` +
+        `${esc(t('rating'))}` +
+        `: ` +
+        `${esc(reviews.length ? number((reviews.reduce((s, r) => s + r.puan, 0) / reviews.length).toFixed(1)) : '—')}` +
+        ` / 5</p>` +
+        `${reviews.map((r) => `<article class="review"><strong>${esc(r.puan)}/5</strong><p>${esc(r.metin)}</p></article>`).join('')}` +
+        `<form id="review-form">` +
+        `${label('rating', select('puan', [1, 2, 3, 4, 5], 5, false))}` +
+        `${label('description', '<textarea name="metin" required minlength="3" maxlength="2000"></textarea>')}` +
+        `${button('send')}` +
+        `</form>`,
+    )}` +
+    `</div><aside>` +
+    `${box('share', `${qrSvg(href)}<p><a href="${esc(href)}">${esc(href)}</a></p><button class="text-btn" id="share-company">${esc(t('share'))}</button>`)}` +
+    `${box('mapView', mapContent([{ sehir: c.sehir }]))}` +
+    `${
+      c.tur === 'ekspertiz_merkezi'
+        ? box(
+            'appointment',
+            `<form id="appointment">` +
+              `${label('name', inp('ad', 'text', state.me?.ad || '', 'required'))}` +
+              `${label('phone', inp('telefon', 'tel', state.me?.telefon || '', 'required'))}` +
+              `${label('date', inp('tarih', 'datetime-local', '', 'required'))}` +
+              `${label('note', '<textarea name="notu"></textarea>')}` +
+              `${button('send')}` +
+              `</form>`,
+          )
+        : ''
+    }` +
+    `</aside></div>`;
   $('#share-company').onclick = () => clip(href);
   guard($('#review-form'), async (f) => {
     need();
