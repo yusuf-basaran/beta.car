@@ -450,6 +450,16 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
         }),
         'uye-a',
       );
+      await auth.updateUser('uye-a', { disabled: true });
+      await page.reload();
+      const refreshedState = await page.evaluateHandle(
+        async () => (await import('/js/state.js')).state,
+      );
+      await page.waitForFunction((state) => !!state.db && state.cats.length > 0, refreshedState);
+      assert.equal(await refreshedState.evaluate((state) => state.user || null), null);
+      await refreshedState.dispose();
+      assert.ok(await page.locator('a[href^="giris.html"]').count());
+      await auth.updateUser('uye-a', { disabled: false });
     } finally {
       await browser?.close();
       server.kill();

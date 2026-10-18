@@ -27,8 +27,21 @@ export async function createClient(cfg) {
   }
   await auth.authStateReady();
   if (auth.currentUser) {
-    await authSdk.reload(auth.currentUser);
-    await auth.currentUser.getIdToken(true);
+    try {
+      await authSdk.reload(auth.currentUser);
+      await auth.currentUser.getIdToken(true);
+    } catch (error) {
+      if (
+        ![
+          'auth/user-disabled',
+          'auth/user-token-expired',
+          'auth/invalid-user-token',
+          'auth/user-not-found',
+        ].includes(error.code)
+      )
+        throw error;
+      await authSdk.signOut(auth);
+    }
   }
   const user = () =>
     auth.currentUser && { id: auth.currentUser.uid, email: auth.currentUser.email };
