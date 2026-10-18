@@ -1,5 +1,7 @@
 # Güvenlik incelemesi
 
+Bu belge önceki Supabase kurulumu için korunur. Firebase kurulumu [kurulum belgesinde](kurulum.md) yer alır.
+
 İnceleme kapsamı: istemci HTML çıktıları, iki temel SQL dosyası, e-posta SQL dosyası ve Vercel başlıkları. Düzeltmeler `20261017000400_0004_guvenlik.sql` dosyasındadır; temel SQL dosyaları korunmuştur.
 
 ## İstemci bulguları

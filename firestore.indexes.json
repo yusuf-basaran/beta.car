@@ -1,0 +1,19 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "mesajlar",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "katilimcilar",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "konusma_id",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

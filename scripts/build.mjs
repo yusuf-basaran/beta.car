@@ -22,20 +22,28 @@ await mkdir(output, { recursive: true });
 for (const name of [...pages, ...assets]) {
   await cp(path.join(root, name), path.join(output, name), { recursive: true });
 }
-const url = process.env.SUPABASE_URL || '';
-const anon = process.env.SUPABASE_ANON_KEY || '';
-if (url || anon) {
-  if (!url.startsWith('https://') || !anon)
-    throw Error('Supabase URL ve public/anon anahtarı birlikte tanımlanmalı');
-  let role;
-  try {
-    role = JSON.parse(Buffer.from(anon.split('.')[1] || '', 'base64url')).role;
-  } catch {}
-  if (!anon.startsWith('sb_publishable_') && role !== 'anon')
-    throw Error('Yalnız public/anon anahtarı kullanılabilir');
+const config = process.env.FIREBASE_WEB_CONFIG ? JSON.parse(process.env.FIREBASE_WEB_CONFIG) : null;
+if (config) {
+  const allowed = [
+    'apiKey',
+    'authDomain',
+    'projectId',
+    'storageBucket',
+    'messagingSenderId',
+    'appId',
+    'measurementId',
+    'databaseURL',
+  ];
+  if (
+    !config.projectId ||
+    !config.apiKey ||
+    Object.keys(config).some((k) => !allowed.includes(k)) ||
+    Object.values(config).some((v) => typeof v !== 'string' || v.length > 2000 || /[\r\n]/.test(v))
+  )
+    throw Error('Yalnız Firebase web yapılandırması kullanılabilir');
   await writeFile(
     path.join(output, 'js/config.js'),
-    `export const cfg = ${JSON.stringify({ url, anon })};\n`,
+    `export const cfg = ${JSON.stringify({ url: '', anon: '', firebase: config, api: '/api', emulators: process.env.FIREBASE_EMULATORS === 'true' ? { host: '127.0.0.1' } : null })};\n`,
   );
 }
 console.log(`${pages.length} sayfa ve istemci dosyaları .build dizinine kopyalandı.`);

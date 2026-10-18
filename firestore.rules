@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signed() { return request.auth != null && request.auth.token.email_verified == true; }
+    function enabled() {
+      return signed() && (!exists(/databases/$(database)/documents/_yetkiler/$(request.auth.uid)) || get(/databases/$(database)/documents/_yetkiler/$(request.auth.uid)).data.engelli == false);
+    }
+    match /{name}/{id} {
+      allow read: if name in ['kategoriler','markalar','modeller','donanimlar','sayfalar','firmalar','yorumlar'];
+      allow read: if name in ['paketler','bannerlar'] && resource.data.aktif == true;
+      allow read: if name == 'yazilar' && resource.data.aktif == true && resource.data._publish <= request.time;
+      allow write: if false;
+    }
+    match /ilanlar/{id} {
+      allow read: if enabled() && resource.data.kullanici_id == request.auth.uid;
+    }
+    match /mesajlar/{id} {
+      allow read: if enabled() && request.auth.uid in resource.data.katilimcilar;
+    }
+    match /konusmalar/{id} {
+      allow read: if enabled() && request.auth.uid in resource.data.katilimcilar;
+    }
+    match /bildirimler/{id} {
+      allow read: if enabled() && resource.data.kullanici_id == request.auth.uid;
+    }
+  }
+}

@@ -11,3 +11,8 @@ tests
 docs
 supabase
 *.sql
+functions
+firestore.rules
+firestore.indexes.json
+storage.rules
+firebase.json

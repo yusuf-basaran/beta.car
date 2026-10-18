@@ -6,23 +6,21 @@ import { $, footer, header, notify } from './js/ui.js';
 import { t } from './js/i18n.js';
 import { query, rpc, table } from './js/api.js';
 import { load } from './js/pages/home.js';
+import { createClient } from './js/firebase.js';
 
 async function start() {
   render();
-  if (!cfg.url || !cfg.anon) {
-    return;
-  }
   try {
-    const { createClient } =
-      await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm');
-    state.db = createClient(cfg.url, cfg.anon);
+    state.db = await createClient(cfg);
+    if (!state.db) return;
     const { data } = await state.db.auth.getUser();
     state.user = data?.user;
     let cached;
     try {
       cached = JSON.parse(sessionStorage.getItem('bc-vehicles') || 'null');
     } catch {}
-    if (cached?.url === cfg.url && Date.now() - cached.time < 86400000) state.lex = cached.data;
+    if (cached?.url === state.db.projectId && Date.now() - cached.time < 86400000)
+      state.lex = cached.data;
     else {
       const r = await state.db.rpc('arac_sozlugu');
       if (r.error) throw r.error;
@@ -30,7 +28,7 @@ async function start() {
       try {
         sessionStorage.setItem(
           'bc-vehicles',
-          JSON.stringify({ url: cfg.url, time: Date.now(), data: state.lex }),
+          JSON.stringify({ url: state.db.projectId, time: Date.now(), data: state.lex }),
         );
       } catch {}
     }
@@ -110,15 +108,13 @@ async function start() {
       await messages();
       state.db
         .channel(`unread:${state.user.id}`)
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'mesajlar' }, messages)
+        .on('change', { table: 'mesajlar' }, messages)
         .subscribe();
       state.db
         .channel(`notifications:${state.user.id}`)
         .on(
-          'postgres_changes',
+          'change',
           {
-            event: '*',
-            schema: 'public',
             table: 'bildirimler',
             filter: `kullanici_id=eq.${state.user.id}`,
           },
@@ -131,6 +127,8 @@ async function start() {
   }
 }
 state.lang = read('bc-lang', 'tr') === 'en' ? 'en' : 'tr';
-const category = new URLSearchParams(location.search).get('kategori');
+const category =
+  new URLSearchParams(location.search).get('kategori') ||
+  { '/kullanilmis': 'kullanilmis', '/sifir': 'sifir', '/parca': 'parca' }[location.pathname];
 state.mainCat = ['kullanilmis', 'sifir', 'parca'].includes(category) ? category : 'kullanilmis';
 start();

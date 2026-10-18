@@ -11,10 +11,10 @@ export async function setup(page, change = () => {}) {
   await page.route('**/js/config.js', (route) =>
     route.fulfill({
       contentType: 'text/javascript',
-      body: "export const cfg={url:'https://test.invalid',anon:'test-public'};",
+      body: "export const cfg={url:'',anon:'',firebase:{projectId:'demo-beta-car'},api:'/api'};",
     }),
   );
-  await page.route('https://cdn.jsdelivr.net/**', (route) =>
+  await page.route('**/js/firebase.js', (route) =>
     route.fulfill({
       contentType: 'text/javascript',
       body: `globalThis.fixture=${JSON.stringify(fixture)};\n${sdk}`,

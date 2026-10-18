@@ -13,15 +13,16 @@ BETA.CAR, Kuzey Kıbrıs için araç ve parça ilan platformudur. Kullanılmış
 ## Mimari
 
 ```text
-Tarayıcı: HTML + CSS + ES modülleri
-    │ Supabase istemcisi, yalnız public/anon anahtarı
+Tarayıcı: HTML + CSS + ES modülleri + Firebase Web SDK
+    │ Firebase Auth kimliği · /api · Storage · onSnapshot
     ▼
-Supabase: Auth · Postgres/RLS/RPC · Storage · Realtime · pg_cron
+Cloud Functions → Firestore Standard / Cloud Storage / bildirim kuyruğu
+Cloud Scheduler → süre, kota ve bildirim bakımı
 
-GitHub → Vercel → .build statik dosyaları
+GitHub → Firebase CLI → Firebase Hosting (.build)
 ```
 
-Kota, abonelik ve yetki denetimleri Postgres üzerinde çalışır. İstemci yönetici yetkisi veya kota belirlemez. Supabase istemcisi CDN'den sabit `2.118.0` sürümüyle yüklenir; uygulamada arayüz framework'ü bulunmaz.
+Kota, abonelik ve yetki denetimleri sunucuda Firestore transaction işlemleriyle yürütülür. İstemci rol veya kota belirlemez. Firebase Web SDK `13.0.0` sürümüne sabitlenmiştir; arayüz framework'ü bulunmaz.
 
 ## Dosya düzeni
 
@@ -31,50 +32,58 @@ js/                 Ortak yardımcılar ve sözlük
 js/pages/           Sayfa modülleri
 scripts/            Statik build, yerel sunucu ve ekran görüntüsü betikleri
 tests/              Saf fonksiyon, veritabanı ve tarayıcı testleri
-supabase/migrations/ Sıralı SQL dosyaları
+functions/          Sunucu işlemleri ve başlangıç verileri
+firestore.rules     Firestore erişim kuralları
+storage.rules       Dosya erişim kuralları
+supabase/           Korunan eski SQL kurulumu
 docs/               Kurulum, inceleme, yayın ve kabul belgeleri
 ```
 
 ## Yerel çalıştırma
 
-Node.js 20.19 veya üstü gerekir.
+Node.js 22+ ve Java 21+ gerekir.
 
 ```bash
 npm ci
-npm run dev
+npm ci --prefix functions
+npx playwright install chromium
+npm run firebase:emulators
 ```
 
-Adres: `http://127.0.0.1:4173`. HTML dosyaları HTTP üzerinden açılır. `npm run format` kod biçimini düzenler.
+Site `http://127.0.0.1:5000`, emülatör paneli `http://127.0.0.1:4000` adresindedir. Yerel `demo-beta-car` projesi canlı servise bağlanmaz. Yalnız arayüz için `npm run dev` kullanılır. `npm run format` biçimi düzenler.
 
 ## Ortam ayarları
 
-Depodaki `js/config.js` dosyasında `cfg.url` ve `cfg.anon` boş tutulur. Supabase bağlantısı için yerel veya dağıtım kopyasında projenin URL'si ve public/anon anahtarı kullanılır. Vercel için `SUPABASE_URL` ve `SUPABASE_ANON_KEY` ortam değişkenleri tanımlanır; build bunları yalnız `.build/js/config.js` içine yazar. Dolu yapılandırma depoya gönderilmez. Service role anahtarı tarayıcıya veya statik çıktıya girmez.
+Kaynak `js/config.js` bağlantı alanları boş kalır. Firebase Hosting public web yapılandırmasını kendi ayrılmış adresinden sağlar. Farklı statik sunucuda build için `FIREBASE_WEB_CONFIG` kullanılabilir; service account ve özel sunucu kimlikleri kabul edilmez. `.env*`, kimlik dosyaları, `seed.js` ve `.seed-state.json` Git dışındadır.
 
-Şema ve roller için [veritabanı belgesi](supabase/README.md), Auth/Storage/Realtime ve yayın ayarları için [kurulum](docs/kurulum.md) izlenir. Gerçek servis bağlantısı, SMTP, SMS, banka ve alan adı ayarları işletmeci tarafından yapılır.
+Kurulum, ilk yönetici, paket/banka ayarları, SMS ve bildirim e-postaları [kurulum belgesinde](docs/kurulum.md) açıklanır. Eski SQL dosyaları korunur; Firebase'de uygulanmaz. Canlı veri aktarımı ayrıca planlanır.
 
 ## Test
 
 ```bash
 npm run lint
 npm test
-npx playwright install chromium
+npm run test:firebase
 npm run test:browser
 npm run build
 ```
 
-Sistemde kurulu Chromium kullanılacaksa yürütülebilir dosya yolu `CHROMIUM_PATH` ile verilir. Yapılandırmada makineye özgü yol bulunmaz. Tarayıcı testleri Supabase istemcisini taklit eder; canlı servise bağlanmaz. Veritabanı testleri geçici PGlite üzerinde Auth/Storage/cron/Vault/HTTP sınırlarını taklit eder. CI, push ve pull request işlemlerinde aynı kontrolleri çalıştırır.
+Saf fonksiyonlar ve korunan SQL için birim/regresyon testleri bulunur. Firebase testleri Auth, Firestore, Storage ve Functions emülatörlerinde yetki, kota, paket, mesaj ve dosya kurallarını doğrular. Arayüz testleri servis yanıtlarını taklit eder. `CHROMIUM_PATH` isteğe bağlıdır; sabit sistem yolu yoktur. CI aynı kontrolleri push ve pull request'te çalıştırır.
 
 ## Dağıtım
 
-Vercel'e `yusuf-basaran/beta.car` deposu bağlanır. Framework **Other**, build komutu `npm run build`, çıktı dizini `.build` seçilir. Ayarlar `vercel.json` içindedir. Build yalnız istemci dosyalarını kopyalar; SQL, belgeler, testler ve seed çıktıda yer almaz.
+```bash
+npx firebase login --no-localhost
+npm run firebase:deploy
+```
 
-Supabase migration'ları sırayla uygulanır. Kök SQL dosyaları aynı içeriğin korunmuş kaynaklarıdır; aynı veritabanına ikinci kez uygulanmaz. Yayın öncesi [kontrol listesi](docs/yayin-kontrol-listesi.md) ve [kabul senaryoları](docs/kabul-testleri.md) tamamlanır.
+Yayın betiği hesap erişimini denetler, gerekirse proje ve web uygulaması açar, veritabanını hazırlar ve Firebase bileşenlerini yayımlar. Betik Storage alanını da hazırlar; gerekli hesap ve faturalandırma onayları Google hesabında tamamlanır. İstemci çıktısına sunucu, test, belge veya kimlik dosyası girmez. Ayrıntılar [kurulum](docs/kurulum.md), [yayın kontrol listesi](docs/yayin-kontrol-listesi.md) ve [kabul testlerinde](docs/kabul-testleri.md) yer alır.
 
 ## Güvenlik
 
-RLS ve dar kolon/RPC yetkileri erişimi sınırlar. Dekont ve ekspertiz bucket'ları özeldir; süreli bağlantıyla açılır. Banka bilgisi yalnız giriş yapmış talep sahibine, kendi talebi ödeme beklerken verilir. Site para tahsil etmez ve kapora toplamaz.
+Tüm istemci veritabanı yazmaları kapalıdır. Sunucu her istekte Auth hesabını, özel rolü, sahipliği, alan/tür/uzunluk sınırlarını ve hız sınırlarını kontrol eder. Dekont ve ekspertiz yolları özeldir; izinli görüntüleme bağlantıları 120 saniyede sona erer. IBAN yalnız sahibinin ödeme bekleyen talebinde açılır. Site tahsilat yapmaz, kapora toplamaz.
 
-CSP satır içi script ve stillere izin vermez. HSTS, frame-ancestors ve diğer güvenlik başlıkları Vercel'de uygulanır. `seed.js`, `.seed-state.json` ve `.env*` Git dışındadır. Ayrıntılar: [güvenlik incelemesi](docs/guvenlik-incelemesi.md), [bildirim kanalı](SECURITY.md), [istemci bağımlılığı seçenekleri](docs/istemci-bagimliliklari.md).
+CSP satır içi script ve stilleri engeller. HSTS, frame-ancestors ve diğer güvenlik başlıkları Firebase Hosting'de tanımlıdır. [Güvenlik incelemesi](docs/firebase-guvenlik.md), [bildirim kanalı](SECURITY.md) ve [istemci bağımlılıkları](docs/istemci-bagimliliklari.md) incelenebilir.
 
 ## Ekran görüntüleri
 

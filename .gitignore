@@ -6,3 +6,10 @@ node_modules/
 .build/
 test-results/
 playwright-report/
+.firebase/
+*-debug.log
+*-debug.log.*
+service-account*.json
+.seed-state.json.*
+*-adminsdk-*.json
+firebase-adminsdk*.json

@@ -388,14 +388,10 @@ export async function editorPage() {
       qrSvg(url) + `<p>${esc(t('photoSession'))}</p><a href="${esc(url)}">${esc(url)}</a>`;
     state.db
       .channel(`photos:${id}`)
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'ilanlar', filter: `id=eq.${id}` },
-        (p) => {
-          photos = p.new.fotograflar || photos;
-          drawPhotos();
-        },
-      )
+      .on('change', { table: 'ilanlar', filter: `id=eq.${id}` }, (p) => {
+        photos = p.new.fotograflar || photos;
+        drawPhotos();
+      })
       .subscribe();
   });
   drawPhotos();

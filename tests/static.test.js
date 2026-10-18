@@ -33,8 +33,10 @@ test('Modül yolları mevcut dosyalara bağlanır', async () => {
 
 test('İstemci ayarları boş ve güvenlik başlıkları etkindir', async () => {
   const { cfg } = await import('../js/config.js');
-  assert.deepEqual(cfg, { url: '', anon: '' });
-  const config = JSON.parse(await readFile(new URL('vercel.json', root), 'utf8'));
+  assert.equal(cfg.url, '');
+  assert.equal(cfg.anon, '');
+  assert.deepEqual(cfg.firebase, {});
+  const config = JSON.parse(await readFile(new URL('firebase.json', root), 'utf8')).hosting;
   const headers = Object.fromEntries(
     config.headers[0].headers.map(({ key, value }) => [key, value]),
   );

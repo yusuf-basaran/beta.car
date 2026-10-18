@@ -1,1 +1,1 @@
-export const cfg = { url: '', anon: '' };
+export const cfg = { url: '', anon: '', firebase: {}, api: '/api', emulators: null };

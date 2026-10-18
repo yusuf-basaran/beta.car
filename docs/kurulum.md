@@ -2,59 +2,98 @@
 
 ## Gereksinimler
 
-Node.js 20.19+, GitHub deposuna erişim, Supabase projesi ve Vercel hesabı gerekir. Yerel geliştirme için `npm ci` ve `npm run dev` çalıştırılır. Tarayıcı HTTP üzerinden `http://127.0.0.1:4173` adresini açar.
+Node.js 22+, Java 21+ ve Firebase hesabı gerekir. Statik arayüzde framework kullanılmaz. Firebase Hosting, Authentication, Firestore Standard, Cloud Storage ve Cloud Functions aynı projede çalışır. Bölge `europe-west1` olarak seçilmiştir. Functions, Scheduler ve Storage için projenin uygun faturalandırma planı gerekir; site içinde ödeme alınmaz.
 
-## Supabase
+```bash
+npm ci
+npm ci --prefix functions
+npx playwright install chromium
+npm run firebase:emulators
+```
 
-[Migration sırası](../supabase/README.md) izlenir. Kök SQL dosyalarıyla migration kopyaları aynı veritabanına birlikte uygulanmaz. İlk yönetici SQL Editor üzerinden, e-postası doğrulanmış hesaba atanır.
+Site `http://127.0.0.1:5000`, emülatör yönetimi `http://127.0.0.1:4000` adresindedir. `demo-beta-car` yerel test kimliğidir; üretim projesi değildir. İlk API isteği eksik başlangıç kayıtlarını ekler; mevcut kayıtları değiştirmez. Emülatörler kapanınca veriler kalıcı değildir. E-posta doğrulama bağlantıları Auth emülatör çıktısında görünür. `npm run dev` yalnız arayüzü 4173 portunda açar.
 
-- `pg_cron`, `pg_net` ve Vault kullanılabilir olmalıdır.
-- Data API exposed schemas listesine `private` eklenmez.
-- Auth Site URL gerçek HTTPS alan adı olur. `hesabim.html` ve `giris.html` yönlendirmeleri aynı alan adıyla tanımlanır.
-- E-posta doğrulaması açılır; anonim üyelik kapatılır. Auth SMTP ve gönderen alan adı doğrulanır.
-- Realtime publication: `bildirimler`, `mesajlar`, `konusmalar`, `ilanlar`.
-- Storage: `dekontlar` özel 5 MB, `ekspertiz` özel 10 MB, `ilanlar` açık 10 MB, `firmalar` açık 5 MB. İzinli türler migration dosyalarında belirtilir.
+## Canlı proje ve yayın
 
-`js/config.js` depoda boş kalır. Yerel bağlantı için yalnız geliştirme kopyasında URL ve public/anon anahtarı kullanılır. Vercel ortamında `SUPABASE_URL` ve `SUPABASE_ANON_KEY` tanımlandığında build bunları yalnız `.build/js/config.js` içine yazar. Service role anahtarı bu değişkenlerin yerine kullanılmaz.
+```bash
+npx firebase login --no-localhost
+npm run firebase:deploy
+```
 
-## Paket ve yönetim ayarları
+Betik oturumu kontrol eder, `.firebaserc` yoksa benzersiz kimlikle BETA.CAR projesi açar, web uygulamasını kaydeder, Firestore Standard veritabanını seçili bölgede hazırlar, build alır ve Auth/kurallar/Functions/Hosting dağıtımını çalıştırır. Belirli proje için `npm run firebase:deploy -- PROJE_KIMLIGI` kullanılır. Mevcut veritabanı yeniden açılmaz ve silinmez. Google hesabında proje açma yetkisi bulunmalıdır.
 
-Yönetici `admin.html?sekme=ayarlar` üzerinden IBAN, banka, hesap sahibi, ödeme notu, iletişim telefonu, sosyal bağlantılar, kurlar, ücretsiz ilan limiti ve süreleri belirler. Paket adları, fiyatları ve kota değerleri paket yönetiminden gelir. Fiyatı boş pakette talep ödeme beklerken tutar yönetici tarafından girilir.
+Yayın betiği Cloud Storage varsayılan bucket alanını Firebase REST API üzerinden `europe-west1` bölgesinde hazırlar. Bu adım sabit sürümlü Firebase CLI oturumunu kullanır; kimlik bilgilerini dosyaya aktarmaz. Hesap veya faturalandırma nedeniyle engellenirse Firebase Console üzerinde bildirilen gereksinim tamamlanıp aynı komut yeniden çalıştırılır. Google hesabına giriş ve faturalandırma onayları hesap sahibi tarafından tamamlanır; dosyalara parola veya ödeme bilgisi yazılmaz.
 
-Talep sahibi banka bilgisini yalnız kendi ödeme bekleyen talebinde görür. Yönetici dekontu banka kaydıyla karşılaştırıp onaylar. Onay aboneliği aynı veritabanı işleminde açar. Kullanıcı kota, abonelik veya talep onayını değiştiremez. Kaldırma ve silme hak iadesi yapmaz.
+Firebase Hosting `/__/firebase/init.json` üzerinden public web yapılandırmasını sağlar. Başka bir statik sunucu için `FIREBASE_WEB_CONFIG` ortam değişkenine yalnız web SDK alanlarını içeren JSON verilebilir. Build bunu `.build/js/config.js` dosyasına yazar. Kaynak `cfg.url`, `cfg.anon` ve `cfg.firebase` boş kalır. Service account anahtarı veya sunucu kimliği statik çıktıya girmez.
 
-Site içinde tahsilat, otomatik yenileme, kapora toplama veya fatura kesme bulunmaz. İade site dışında yürütülür; yönetici yalnız işlem notu tutar. Ödeme bilgisi genel sayfalara, ilanlara ve mesajlara yazılmaz.
+## Authentication ve ilk yönetici
 
-## Telefon doğrulama
+`firebase.json` e-posta/parola girişini açar, anonim üyeliği kapatır; `firebase deploy --only auth` bu ayarı uygular. Firebase Console > Authentication > Settings > Authorized domains içine gerçek alan adı eklenir. E-posta doğrulama ve parola sıfırlama şablonları, gönderen alan adı ve parola politikası kontrol edilir. Doğrulanmamış üye ilan veya mesaj yazamaz.
 
-SMS sağlayıcısı etkin değilken `sms_zorunlu` false tutulur ve doğrulanmış e-posta kullanılır. Sağlayıcı açıldıktan sonra profil ekranından telefon değişikliği ve kod doğrulaması denenir. Ardından ayar true yapılır. Yayın RPC'si doğrulanmış Auth telefonu ile profil telefonunun eşleşmesini denetler.
+Yayın komutu öncesinde `INITIAL_ADMIN_EMAIL` ortam değişkeni verilirse betik bunu Git dışındaki proje ortam dosyasına ekler. Elle kurulumda ilk yönetici için `functions/.env.PROJE_KIMLIGI` dosyasında `INITIAL_ADMIN_EMAIL` değeri hesap sahibinin e-postası olarak tanımlanır. Dosya Git dışındadır. Functions yayımlandıktan sonra bu adresle kayıt olunur ve e-posta doğrulanır. İlk doğrulanmış istek, `_kurulum/yonetici` kaydını ve özel `_yetkiler` rolünü bir kez yazar. Ardından bu ortam değişkeni kaldırılıp Functions tekrar yayımlanabilir. İstemci e-postayla rol atayamaz; rol kullanıcı tarafından değiştirilemeyen sunucu ayarına bağlıdır.
+
+Alternatif olarak, yetkili ortamda Application Default Credentials ile:
+
+```bash
+node scripts/firebase/set-admin.mjs PROJE_KIMLIGI YONETICI_EPOSTASI
+```
+
+Betik yalnız e-postası doğrulanmış Firebase Auth hesabını yetkilendirir. Kimlik dosyası depoya veya Hosting çıktısına eklenmez.
+
+## Veri ve erişim
+
+`functions/data.json` kategori, donanım, fiyatsız paket, ayar, başlangıç araç sözlüğü ve içerik kayıtlarını içerir. İlk API isteğinde atomik olarak yalnız eksik kayıtlar eklenir. Elle aktarım için yetkili sunucu ortamında `npm run firebase:seed -- PROJE_KIMLIGI` kullanılır. `--update` mevcut başlangıç kayıtlarının üzerine yazar; yalnız bilinçli içerik güncellemesinde kullanılır.
+
+Firestore koleksiyonları eski tablo adlarını korur. İlişkiler kimlik alanlarıyla kurulur. `_yetkiler`, `_haklar`, `_hiz`, `_kilitler`, `_eposta` gibi iç koleksiyonlar istemciye kapalıdır. Doğrudan istemci yazmaları tüm koleksiyonlarda reddedilir. Üye işlemleri `/api` üzerinden Auth doğrulaması, sahiplik, veri sınırları ve Firestore transaction denetiminden geçer. Realtime karşılığı Firestore `onSnapshot` dinleyicileridir.
+
+Araç sözlüğü sunucuda beş dakika önbellekte tutulur; yönetici marka/model değişiklikleri bu önbelleği temizler. İstemci ayrıca sessionStorage önbelleği kullanır. Arama, kaporta/donanım filtreleri ve medyan hesapları sunucuda çalışır; SQL view veya pg_cron gerekmez. Geniş aramalar aday ilanları okuyarak filtreler. Katalog büyüdükçe okuma maliyeti ve gecikme izlenmeli, indeksli sorgu veya ayrı arama indeksi planlanmalıdır.
+
+Eski Supabase SQL dosyaları ve `supabase/` dizini geçmiş kurulum için korunur; Firebase'de çalıştırılmaz. Canlı Supabase verisi otomatik taşınmaz. Mevcut canlı veri varsa dışa aktarma, UID eşlemesi ve dosya aktarımı ayrı planlanmalıdır.
+
+## Storage
+
+Tek Firebase bucket içinde dört yol kullanılır:
+
+| Yol                               | Okuma              | İzinli tür      | Sınır |
+| --------------------------------- | ------------------ | --------------- | ----- |
+| `ilanlar/{uid}/{ilan}/{dosya}`    | Açık               | JPEG, PNG, WebP | 10 MB |
+| `firmalar/{uid}/…`                | Açık               | JPEG, PNG, WebP | 5 MB  |
+| `ekspertiz/{uid}/{ilan}/{dosya}`  | Sahibi ve yönetici | PDF, JPEG, PNG  | 10 MB |
+| `dekontlar/{uid}/{talep}/{dosya}` | Sahibi ve yönetici | PDF, JPEG, PNG  | 5 MB  |
+
+Yüklemede doğrulanmış hesap, sahiplik ve ilgili ilan/talep kontrol edilir. Dekont yalnız ödeme bekleyen veya reddedilmiş, süresi dolmamış talebe eklenir. İstemci dosyanın üzerine yazamaz. İlan detayında erişime açık ekspertiz raporu ve yetkili dekont görüntülemesi için sunucu 120 saniyelik rastgele bağlantı verir. Bucket genel IAM erişimine açılmaz.
+
+## Paket, kota ve telefon
+
+Yönetici paket adını, fiyatını, kotasını ve süresini panelden belirler. IBAN, banka, hesap sahibi, ücretsiz ilan limiti, öne çıkarma ve zaman aşımı süreleri ayarlardan gelir. Banka bilgisi yalnız talep sahibinin ödeme bekleyen talebine açılır. Onay ve abonelik aynı transaction içinde gerçekleşir. Kota istemci tarafından artırılamaz; kaldırma hak iade etmez. Yenileme önceki ilan hakkını korur.
+
+SMS kapalıyken `sms_zorunlu` false kalır. Firebase Authentication telefon sağlayıcısı, izinli SMS bölgeleri ve test numaraları yapılandırıldıktan sonra telefon doğrulaması denenir; ardından ayar açılır. Yayında Auth telefonu ile profil telefonu eşleşmelidir.
+
+## Zamanlanmış işler ve e-posta
+
+Cloud Scheduler işlevleri: `bakim` 15 dakikada bir talep/abonelik/ilan sürelerini kontrol eder; `temizlik` her gün 03:20 UTC geçici kayıtları siler; `eposta` iki dakikada bir bildirim kuyruğunu işler. İlan yazma tetikleyicisi `ilanBildirim` kayıtlı arama ve fiyat takibi bildirimlerini yazar. Yerel testler bakım fonksiyonunu doğrudan çağırır; canlı Scheduler çalışması ayrıca doğrulanır.
+
+Auth e-postaları Firebase Authentication tarafından gönderilir. Uygulama bildirimleri için HTTPS JSON e-posta sağlayıcısı gerekir. Sunucu ortamında `MAIL_ENABLED=true`, `MAIL_API_URL` ve `MAIL_FROM` tanımlanır. Sağlayıcı anahtarı:
+
+```bash
+npx firebase functions:secrets:set MAIL_API_KEY --project PROJE_KIMLIGI
+npx firebase deploy --only functions --project PROJE_KIMLIGI
+```
+
+`eposta` işlevi etkin ayarda bu sırrı bağlar. Uç nokta Bearer doğrulamasıyla `from`, `to`, `subject`, `text` alanlarını ve `Idempotency-Key` başlığını kabul etmelidir. Sağlayıcı yoksa kuyruk saklanır, teslimat gerçekleşmez. E-posta tercihi kapalı üyelere bildirim e-postası gönderilmez.
 
 ## Araç sözlüğü
 
-Tek seferlik `seed.js` ve `.seed-state.json` Git dışında tutulur. Betik işletmeciye özel olarak teslim edilir ve kökte çalıştırılır. Service role anahtarı yalnız bu işlemde ortam değişkeninden okunur; anahtar terminal geçmişine yazılmaz:
+Kökteki tek seferlik `seed.js` ve `.seed-state.json` Git dışındadır. Betik Firebase Admin SDK ve Application Default Credentials kullanır; tarayıcıya kimlik bilgisi taşımaz. `GCLOUD_PROJECT` ile hedef proje seçilir. vPIC markalarını ve 1950'den çalıştırıldığı yıla kadar modelleri tarar, aynı adları birleştirir ve kaldığı yıldan sürer. Japonya/İngiltere ekleri aynı koleksiyonlara yazılır. Kaynağın kapsamadığı sınıflar yönetici tarafından denetlenir.
+
+## Kontroller
 
 ```bash
-read -r SUPABASE_URL
-read -r -s SUPABASE_SERVICE_ROLE_KEY
-export SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY
-node seed.js
-unset SUPABASE_SERVICE_ROLE_KEY
+npm run lint
+npm test
+npm run test:firebase
+npm run test:browser
+npm run build
 ```
 
-Betik vPIC üzerinden 1950'den çalıştırıldığı yıla kadar tarama yapar. Durum dosyası korunursa kaldığı yerden sürer. Ayrı proje veya yıl için `SEED_STATE` ile ayrı durum dosyası seçilir. Japonya ve İngiltere pazarı ekleri aynı tablolara yazılır. vPIC kapsamı deniz, arazi/iş makinesi ve bazı bölgesel modelleri bütünüyle kapsamaz; kayıtlar yönetici tarafından denetlenir.
-
-## Bildirim e-postaları
-
-Auth SMTP, uygulama bildirimlerini kendiliğinden göndermez. E-posta migration'ı ve Vault içindeki `beta_mail_url`, `beta_mail_key`, `beta_mail_from` kayıtları kullanılır. API HTTPS üzerinden Bearer doğrulamasıyla `from`, `to`, `subject`, `text` JSON alanlarını kabul eder. Anahtarlar dosyalara yazılmaz.
-
-Profilde e-posta özeti açıksa bildirimler özel kuyruğa eklenir. Kayıtlı arama için ayrıca o aramanın e-posta seçeneği açık olmalıdır. `beta-car-eposta` işi iki dakikada bir çalışır, en fazla beş deneme yapar ve HTTP sonucunu izler. Teslimat sağlayıcının raporunda doğrulanır.
-
-## Vercel
-
-Depo Git entegrasyonu ile bağlanır. Framework Other, root depo kökü, build `npm run build`, çıktı `.build` olur. İstemci için yalnız URL ve public/anon anahtarı ortam ayarlarına girilir. Ortam değişikliği sonrası yeni deployment gerekir.
-
-Build HTML, CSS, ES modülleri, logo, manifest, robots ve sitemap dosyalarını kopyalar. SQL, seed, belgeler, testler ve ortam dosyaları statik çıktıya girmez. `/kullanilmis`, `/sifir` ve `/parca` yolları liste sayfasına yönlenir.
-
-Gerçek alan adı `robots.txt`, `sitemap.xml`, Auth URL'leri ve sosyal paylaşım adreslerinde tutarlı kullanılır. HTTPS ve 404 davranışı kontrol edilir. Manifest ana ekrana eklemeyi destekler; servis çalışanı ve çevrimdışı önbellek kullanılmaz.
-
-Yayın öncesi [kontrol listesi](yayin-kontrol-listesi.md) ve [kabul senaryoları](kabul-testleri.md) tamamlanır.
+Tarayıcı için isteğe bağlı `CHROMIUM_PATH` kullanılabilir. [Yayın kontrol listesi](yayin-kontrol-listesi.md) ve [kabul testleri](kabul-testleri.md) canlı projede tamamlanır.

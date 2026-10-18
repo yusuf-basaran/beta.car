@@ -119,10 +119,8 @@ export async function messagesPage() {
     channel = state.db
       .channel(`messages:${current}`)
       .on(
-        'postgres_changes',
+        'change',
         {
-          event: 'INSERT',
-          schema: 'public',
           table: 'mesajlar',
           filter: `konusma_id=eq.${current}`,
         },

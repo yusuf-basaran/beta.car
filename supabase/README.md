@@ -1,5 +1,7 @@
 # Veritabanı
 
+Bu belge önceki Supabase kurulumu için korunur. Firebase kurulumu [kurulum belgesinde](../docs/kurulum.md) yer alır.
+
 Migration dosyaları tarih sırasıyla, her dosya yalnızca bir kez uygulanır. SQL Editor veya Supabase CLI kullanılabilir. Aynı veritabanına kök SQL dosyaları ile migration kopyaları birlikte uygulanmaz.
 
 | Sıra | Dosya                                   | İçerik                                                |

@@ -2,6 +2,7 @@ export function createClient() {
   const { tables: T, me: ME, lex: L, guest } = globalThis.fixture;
   const record = (name, p) => (globalThis.calls ||= []).push({ name, p });
   const client = {
+    projectId: 'demo-beta-car',
     auth: {
       getUser: async () => ({
         data: { user: guest ? null : { id: ME.id, email: 'uye@example.invalid' } },

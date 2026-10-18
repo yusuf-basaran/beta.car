@@ -199,7 +199,7 @@ export const D = {
   prev: ['Önceki', 'Previous'],
   next: ['Sonraki', 'Next'],
   needLogin: ['Bu işlem için giriş yapın.', 'Sign in to continue.'],
-  connect: ['Supabase bağlantısı bekleniyor.', 'Supabase connection is pending.'],
+  connect: ['Firebase bağlantısı yapılandırılmalı.', 'Firebase connection needs configuration.'],
   save: ['Kaydet', 'Save'],
   success: ['İşlem tamamlandı', 'Done'],
   note: ['Not', 'Note'],

@@ -3,7 +3,7 @@
 ## İşletmeci ve içerik
 
 - [ ] İşletmeci unvanı, adres, telefon, e-posta ve vergi numarası doğrulandı; tüm yer tutucular dolduruldu.
-- [ ] [Yasal metin şablonları](yasal-icerik.md) yayın öncesi hukuk incelemesinden geçti; onaylı TR/EN metinleri sayfalar tablosuna uygulandı.
+- [ ] [Yasal metin şablonları](yasal-icerik.md) yayın öncesi hukuk incelemesinden geçti; onaylı TR/EN metinleri sayfalar koleksiyonuna uygulandı.
 - [ ] Uygulanabilir KKTC mevzuatı ve diğer veri koruma yükümlülükleri değerlendirildi; sağlayıcılar, aktarım bölgeleri, saklama/silme süreleri ve başvuru yöntemi açıklandı.
 - [ ] Paket iptal/iade şartları ve onay süresi gerçek işletme uygulamasıyla uyumlu.
 - [ ] Paket fiyatı, para birimi, kotası ve süresi yönetim panelinden girildi.
@@ -14,36 +14,34 @@
 
 Teknik kurulum ve kabul kontrolleri bu belgedeki ilgili başlıklarda tamamlanır. Hukuk incelemesi ve bu kontrol listesi site arayüzünde yayımlanmaz.
 
-## Supabase
+## Firebase
 
-- [ ] Üretim ve test projeleri ayrıldı; yedekleme, geri dönüş ve veri saklama yöntemi belirlendi.
-- [ ] [Migration sırası](../supabase/README.md) uygulandı; mevcut projede önceden uygulanmış dosyalar tekrar çalıştırılmadı.
-- [ ] `pg_cron`, `pg_net` ve Vault kullanılabilir; `beta-car-bakim`, `beta-car-temizlik`, `beta-car-eposta` işleri aktif ve History kayıtları başarılı.
-- [ ] Vault'a `beta_mail_url`, `beta_mail_key`, `beta_mail_from` girildi; bildirim e-postası gerçek test alıcısına ulaştı ve sağlayıcı teslim raporunda görüldü.
-- [ ] Data API exposed schemas listesinde `private` yok; yönetici yardımcılarına doğrudan erişim reddediliyor.
-- [ ] Auth Site URL gerçek HTTPS alan adı; hesap ve şifre sıfırlama yönlendirmeleri aynı alan adında. Önizleme adresleri yalnız test projesinde izinli.
-- [ ] E-posta doğrulaması açık, anonim üyelik kapalı; parola ve Auth hız sınırları gözden geçirildi.
-- [ ] SMTP gönderen alan adı ve SPF/DKIM kayıtları doğrulandı; kayıt ve şifre sıfırlama e-postaları teslim ediliyor.
-- [ ] İlk yönetici yalnız SQL ile atandı; diğer üyenin admin RPC ve tablolarına erişimi reddedildi.
-- [ ] Storage bucket erişimi, boyut ve MIME sınırları denendi: dekontlar özel 5 MB PDF/JPEG/PNG; ekspertiz özel 10 MB PDF/JPEG/PNG; ilanlar açık 10 MB JPEG/PNG/WebP; firmalar açık 5 MB JPEG/PNG/WebP.
-- [ ] Üye başka üyenin dekontunu veya özel kayıtlarını okuyamıyor; dosya yolunu değiştirerek başkasının ekspertiz dosyasını kendi ilanına bağlayamıyor.
-- [ ] İmzalı dosya bağlantısı süresi dolunca erişim reddediliyor; Storage üzerinde rastgele ve izinsiz dosya türü yüklenemiyor.
-- [ ] `supabase_realtime` publication içinde `bildirimler`, `mesajlar`, `konusmalar`, `ilanlar` var; iki ayrı oturumda mesaj, sayaç ve fotoğraf güncellemesi doğrulandı.
-- [ ] NOT VALID CHECK kuralları için eski kayıtlar tarandı ve uygun olanlar VALIDATE CONSTRAINT ile doğrulandı.
-- [ ] Database Advisors bulguları değerlendirildi; RLS ve dar tablo/kolon/RPC yetkileri korundu.
+- [ ] Google hesabında hedef proje, proje açma yetkisi ve gerekli faturalandırma planı doğrulandı; test ve üretim ayrıldı.
+- [ ] Firestore Standard, Cloud Functions ve Storage `europe-west1` bölgesinde; yedekleme ve geri dönüş yöntemi belirlendi.
+- [ ] `npm ci`, `npm ci --prefix functions`, tüm testler ve build başarılı.
+- [ ] `.firebaserc` doğru projeyi seçiyor. `firebase deploy --only auth,firestore,storage,functions,hosting` başarılı.
+- [ ] Firestore ve Storage kuralları gerçek projeye uygulandı; yetkisiz okuma/yazma reddediliyor.
+- [ ] E-posta/parola girişi açık, anonim giriş kapalı. Auth alan adları, e-posta şablonları, doğrulama ve parola sıfırlama denendi.
+- [ ] Doğrulanmış ilk yönetici özel `_yetkiler` kaydıyla atandı. `INITIAL_ADMIN_EMAIL` ilk atama sonrasında kaldırıldı.
+- [ ] İlk API isteği kategori/donanım/paket başlangıç kayıtlarını ekledi; paket fiyatları işletmeci tarafından girildi.
+- [ ] Storage bucket genel IAM erişimine kapalı. `dekontlar`/`ekspertiz` özel; `ilanlar`/`firmalar` açık dosya yolları kurallarla ayrılıyor.
+- [ ] Dosya boyutu, MIME, sahiplik ve dekont süre sınırları denendi. Başka üyenin dekontuna erişim reddedildi; geçici rapor bağlantısı süresi dolunca kapanıyor.
+- [ ] Mesaj, bildirim ve sahip ilanı için Firestore dinleyicileri iki ayrı oturumda denendi.
+- [ ] `bakim`, `temizlik`, `eposta` Cloud Scheduler işleri ve `ilanBildirim` tetikleyicisi başarılı; hata kayıtları izlendi.
+- [ ] Bildirim e-postası için `MAIL_ENABLED`, `MAIL_API_URL`, `MAIL_FROM` ayarlandı; `MAIL_API_KEY` Secret Manager'a eklendi ve işlevle bağlandı. Gerçek test teslimatı doğrulandı.
+- [ ] SMS kapalı/açık durumu Auth sağlayıcısı ve `sms_zorunlu` ayarıyla uyumlu.
+- [ ] Arama okuma maliyeti, Firestore/Storage limitleri, bütçe uyarıları ve yedekler gözden geçirildi.
+- [ ] Eski canlı veri varsa Auth UID, koleksiyon ve dosya eşleme aktarımı ayrıca doğrulandı; eski SQL Firebase'e uygulanmadı.
 
-## Vercel ve alan adı
+## Hosting ve alan adı
 
-- [ ] GitHub deposu `yusuf-basaran/beta.car` Vercel projesine bağlandı; erişim yalnız gerekli depoyla sınırlı.
-- [ ] Framework Other, Root Directory depo kökü, build `npm run build`, Output Directory `.build`.
-- [ ] Node.js 20.19 veya üstü seçildi; kilit dosyasıyla bağımlılık kurulumu başarılı.
-- [ ] Ortama `SUPABASE_URL` ve public/anon anahtarı olan `SUPABASE_ANON_KEY` girildi. Service role veya secret anahtarı yok; değişiklik sonrası tekrar deployment yapıldı.
-- [ ] Kaynak `js/config.js` alanları boş; yalnız dağıtım çıktısı public yapılandırmayı içeriyor. SQL, seed, .env, belge ve testler sunulmuyor.
-- [ ] Önizlemede kabul testleri geçti; üretim aynı test edilmiş commit'ten yayımlandı.
-- [ ] Gerçek alan adı sahipliği ve DNS kayıtları doğrulandı; HTTPS sertifikası geçerli. HSTS includeSubDomains kullanılan alt alan adlarında da HTTPS var.
-- [ ] `/kullanilmis`, `/sifir`, `/parca` filtreli listeye açılıyor; bilinmeyen yol 404 durum koduyla 404 sayfasını sunuyor.
-- [ ] CSP, HSTS, Referrer-Policy, Permissions-Policy ve X-Content-Type-Options üretim yanıtında mevcut. Harita ve Supabase bağlantıları CSP'yi ihlal etmiyor.
-- [ ] Mobil ekranlar, klavye kullanımı, odağın görünürlüğü ve form hata mesajları kontrol edildi.
+- [ ] Hosting `.build` çıktısını sunuyor; Functions API yolları aynı alan adında çalışıyor.
+- [ ] Kaynak bağlantı alanları boş. Statik çıktıda yalnız public web config var; sunucu, SQL, seed, kimlik ve belge dosyaları yok.
+- [ ] Gerçek alan adı Firebase Hosting'e bağlandı, DNS sahipliği ve HTTPS sertifikası doğrulandı.
+- [ ] `/kullanilmis`, `/sifir`, `/parca` filtreli listeyi açıyor; bilinmeyen yol 404 durum koduyla 404 sayfasını sunuyor.
+- [ ] CSP, HSTS, Referrer-Policy, Permissions-Policy ve X-Content-Type-Options canlı yanıtta mevcut; Firebase ve harita istekleri çalışıyor.
+- [ ] Mobil ekran, klavye odağı, alan doğrulaması ve görseller kontrol edildi.
+- [ ] Üretim test edilmiş commit'ten yayımlandı; GitHub CI ve yayın erişimleri yalnız gerekli kişilerde.
 
 ## SEO ve ana ekrana ekleme
 
@@ -57,6 +55,6 @@ Teknik kurulum ve kabul kontrolleri bu belgedeki ilgili başlıklarda tamamlanı
 ## İşletim ve kabul
 
 - [ ] [İki üye ve bir yönetici kabul testleri](kabul-testleri.md) tamamlandı.
-- [ ] Hata, cron ve e-posta kuyruğu takibinden sorumlu kişi belirlendi; güvenlik e-posta adresi izleniyor.
+- [ ] Hata, zamanlama ve e-posta kuyruğu takibinden sorumlu kişi belirlendi; güvenlik e-posta adresi izleniyor.
 - [ ] Banka hesabı ve dekont eşleşmesi kontrol yöntemi, onay süresi ve site dışı iade süreci tanımlandı.
 - [ ] Lisans ve güvenlik bildirim adresi işletmeci tarafından doğrulandı.

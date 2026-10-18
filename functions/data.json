@@ -1,0 +1,893 @@
+{
+  "kategoriler": [
+    {
+      "id": 1,
+      "ust_id": null,
+      "ad": "Kullanılmış Araçlar",
+      "ad_en": "Used Vehicles",
+      "slug": "kullanilmis",
+      "arac_tipi": null,
+      "sira": 0
+    },
+    {
+      "id": 2,
+      "ust_id": 1,
+      "ad": "Binek Araçlar",
+      "ad_en": "Passenger Cars",
+      "slug": "kullanilmis-binek",
+      "arac_tipi": "otomobil",
+      "sira": 0
+    },
+    {
+      "id": 3,
+      "ust_id": 1,
+      "ad": "SUV & Çift Kabin",
+      "ad_en": "SUVs & Pickups",
+      "slug": "kullanilmis-suv",
+      "arac_tipi": "suv",
+      "sira": 1
+    },
+    {
+      "id": 4,
+      "ust_id": 1,
+      "ad": "Motor & Scooter",
+      "ad_en": "Motorcycles & Scooters",
+      "slug": "kullanilmis-motor",
+      "arac_tipi": "motosiklet",
+      "sira": 2
+    },
+    {
+      "id": 5,
+      "ust_id": 1,
+      "ad": "Aile & Van Araçları",
+      "ad_en": "Family Cars & Vans",
+      "slug": "kullanilmis-aile",
+      "arac_tipi": "minivan",
+      "sira": 3
+    },
+    {
+      "id": 6,
+      "ust_id": 1,
+      "ad": "Yük & Taşıt Araçları",
+      "ad_en": "Commercial Vehicles",
+      "slug": "kullanilmis-yuk",
+      "arac_tipi": "ticari",
+      "sira": 4
+    },
+    {
+      "id": 7,
+      "ust_id": 1,
+      "ad": "Şantiye Makineleri",
+      "ad_en": "Construction Machinery",
+      "slug": "kullanilmis-santiye",
+      "arac_tipi": "is_makinesi",
+      "sira": 5
+    },
+    {
+      "id": 8,
+      "ust_id": 1,
+      "ad": "Arazi Motorları (ATV/UTV)",
+      "ad_en": "Off-road Vehicles (ATV/UTV)",
+      "slug": "kullanilmis-atv",
+      "arac_tipi": "atv",
+      "sira": 6
+    },
+    {
+      "id": 9,
+      "ust_id": 1,
+      "ad": "Karavan & Kamp Araçları",
+      "ad_en": "Caravans & Campers",
+      "slug": "kullanilmis-karavan",
+      "arac_tipi": "karavan",
+      "sira": 7
+    },
+    {
+      "id": 10,
+      "ust_id": 1,
+      "ad": "Nostalji Araçlar",
+      "ad_en": "Classic Vehicles",
+      "slug": "kullanilmis-nostalji",
+      "arac_tipi": "otomobil",
+      "sira": 8
+    },
+    {
+      "id": 11,
+      "ust_id": 1,
+      "ad": "Tekne & Deniz Araçları",
+      "ad_en": "Boats & Marine Vehicles",
+      "slug": "kullanilmis-deniz",
+      "arac_tipi": "deniz",
+      "sira": 9
+    },
+    {
+      "id": 12,
+      "ust_id": null,
+      "ad": "Sıfır Araçlar",
+      "ad_en": "New Vehicles",
+      "slug": "sifir",
+      "arac_tipi": null,
+      "sira": 1
+    },
+    {
+      "id": 13,
+      "ust_id": 12,
+      "ad": "Binek Araçlar",
+      "ad_en": "Passenger Cars",
+      "slug": "sifir-binek",
+      "arac_tipi": "otomobil",
+      "sira": 0
+    },
+    {
+      "id": 14,
+      "ust_id": 12,
+      "ad": "Motor & Scooter",
+      "ad_en": "Motorcycles & Scooters",
+      "slug": "sifir-motor",
+      "arac_tipi": "motosiklet",
+      "sira": 1
+    },
+    {
+      "id": 15,
+      "ust_id": 12,
+      "ad": "Aile & Van Araçları",
+      "ad_en": "Family Cars & Vans",
+      "slug": "sifir-aile",
+      "arac_tipi": "minivan",
+      "sira": 2
+    },
+    {
+      "id": 16,
+      "ust_id": 12,
+      "ad": "SUV & Çift Kabin",
+      "ad_en": "SUVs & Pickups",
+      "slug": "sifir-suv",
+      "arac_tipi": "suv",
+      "sira": 3
+    },
+    {
+      "id": 17,
+      "ust_id": 12,
+      "ad": "Tekne & Deniz Araçları",
+      "ad_en": "Boats & Marine Vehicles",
+      "slug": "sifir-deniz",
+      "arac_tipi": "deniz",
+      "sira": 4
+    },
+    {
+      "id": 18,
+      "ust_id": 12,
+      "ad": "Yük & Taşıt Araçları",
+      "ad_en": "Commercial Vehicles",
+      "slug": "sifir-yuk",
+      "arac_tipi": "ticari",
+      "sira": 5
+    },
+    {
+      "id": 19,
+      "ust_id": 12,
+      "ad": "Şantiye Makineleri",
+      "ad_en": "Construction Machinery",
+      "slug": "sifir-santiye",
+      "arac_tipi": "is_makinesi",
+      "sira": 6
+    },
+    {
+      "id": 20,
+      "ust_id": null,
+      "ad": "Parça & Donanım",
+      "ad_en": "Parts & Equipment",
+      "slug": "parca",
+      "arac_tipi": null,
+      "sira": 2
+    },
+    {
+      "id": 21,
+      "ust_id": 20,
+      "ad": "Binek Araç Parçaları",
+      "ad_en": "Car Parts",
+      "slug": "parca-binek",
+      "arac_tipi": "otomobil",
+      "sira": 0
+    },
+    {
+      "id": 22,
+      "ust_id": 21,
+      "ad": "dış aksesuar",
+      "ad_en": "Exterior accessories",
+      "slug": "parca-binek-dis",
+      "arac_tipi": "otomobil",
+      "sira": 0
+    },
+    {
+      "id": 23,
+      "ust_id": 21,
+      "ad": "iç aksesuar",
+      "ad_en": "Interior accessories",
+      "slug": "parca-binek-ic",
+      "arac_tipi": "otomobil",
+      "sira": 1
+    },
+    {
+      "id": 24,
+      "ust_id": 21,
+      "ad": "mekanik",
+      "ad_en": "Mechanical",
+      "slug": "parca-binek-mekanik",
+      "arac_tipi": "otomobil",
+      "sira": 2
+    },
+    {
+      "id": 25,
+      "ust_id": 21,
+      "ad": "lastik-jant",
+      "ad_en": "Tyres & wheels",
+      "slug": "parca-binek-lastik-jant",
+      "arac_tipi": "otomobil",
+      "sira": 3
+    },
+    {
+      "id": 26,
+      "ust_id": 21,
+      "ad": "akü-yağ",
+      "ad_en": "Batteries & oil",
+      "slug": "parca-binek-aku-yag",
+      "arac_tipi": "otomobil",
+      "sira": 4
+    },
+    {
+      "id": 27,
+      "ust_id": 20,
+      "ad": "Motor Parçaları",
+      "ad_en": "Motorcycle Parts",
+      "slug": "parca-motor",
+      "arac_tipi": "motosiklet",
+      "sira": 1
+    },
+    {
+      "id": 28,
+      "ust_id": 27,
+      "ad": "dış aksesuar",
+      "ad_en": "Exterior accessories",
+      "slug": "parca-motor-dis",
+      "arac_tipi": "motosiklet",
+      "sira": 0
+    },
+    {
+      "id": 29,
+      "ust_id": 27,
+      "ad": "iç aksesuar",
+      "ad_en": "Interior accessories",
+      "slug": "parca-motor-ic",
+      "arac_tipi": "motosiklet",
+      "sira": 1
+    },
+    {
+      "id": 30,
+      "ust_id": 27,
+      "ad": "mekanik",
+      "ad_en": "Mechanical",
+      "slug": "parca-motor-mekanik",
+      "arac_tipi": "motosiklet",
+      "sira": 2
+    },
+    {
+      "id": 31,
+      "ust_id": 27,
+      "ad": "lastik-jant",
+      "ad_en": "Tyres & wheels",
+      "slug": "parca-motor-lastik-jant",
+      "arac_tipi": "motosiklet",
+      "sira": 3
+    },
+    {
+      "id": 32,
+      "ust_id": 27,
+      "ad": "akü-yağ",
+      "ad_en": "Batteries & oil",
+      "slug": "parca-motor-aku-yag",
+      "arac_tipi": "motosiklet",
+      "sira": 4
+    },
+    {
+      "id": 33,
+      "ust_id": 20,
+      "ad": "Yük Aracı Parçaları",
+      "ad_en": "Commercial Vehicle Parts",
+      "slug": "parca-yuk",
+      "arac_tipi": "ticari",
+      "sira": 2
+    },
+    {
+      "id": 34,
+      "ust_id": 33,
+      "ad": "dış aksesuar",
+      "ad_en": "Exterior accessories",
+      "slug": "parca-yuk-dis",
+      "arac_tipi": "ticari",
+      "sira": 0
+    },
+    {
+      "id": 35,
+      "ust_id": 33,
+      "ad": "iç aksesuar",
+      "ad_en": "Interior accessories",
+      "slug": "parca-yuk-ic",
+      "arac_tipi": "ticari",
+      "sira": 1
+    },
+    {
+      "id": 36,
+      "ust_id": 33,
+      "ad": "mekanik",
+      "ad_en": "Mechanical",
+      "slug": "parca-yuk-mekanik",
+      "arac_tipi": "ticari",
+      "sira": 2
+    },
+    {
+      "id": 37,
+      "ust_id": 33,
+      "ad": "lastik-jant",
+      "ad_en": "Tyres & wheels",
+      "slug": "parca-yuk-lastik-jant",
+      "arac_tipi": "ticari",
+      "sira": 3
+    },
+    {
+      "id": 38,
+      "ust_id": 33,
+      "ad": "akü-yağ",
+      "ad_en": "Batteries & oil",
+      "slug": "parca-yuk-aku-yag",
+      "arac_tipi": "ticari",
+      "sira": 4
+    }
+  ],
+  "donanimlar": [
+    {
+      "id": 1,
+      "grup": "Güvenlik",
+      "ad": "ABS",
+      "ad_en": "ABS",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan", "motosiklet", "atv"]
+    },
+    {
+      "id": 2,
+      "grup": "Güvenlik",
+      "ad": "ESP",
+      "ad_en": "ESP",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 3,
+      "grup": "Güvenlik",
+      "ad": "Hava yastığı",
+      "ad_en": "Airbags",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 4,
+      "grup": "Güvenlik",
+      "ad": "ISOFIX",
+      "ad_en": "ISOFIX",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 5,
+      "grup": "Sürüş Desteği",
+      "ad": "AEB",
+      "ad_en": "AEB",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 6,
+      "grup": "Sürüş Desteği",
+      "ad": "Şerit takip",
+      "ad_en": "Lane assist",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 7,
+      "grup": "Sürüş Desteği",
+      "ad": "Kör nokta uyarısı",
+      "ad_en": "Blind spot warning",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 8,
+      "grup": "Sürüş Desteği",
+      "ad": "Hız sabitleyici",
+      "ad_en": "Cruise control",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 9,
+      "grup": "Konfor",
+      "ad": "Klima",
+      "ad_en": "Air conditioning",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 10,
+      "grup": "Konfor",
+      "ad": "Isıtmalı koltuk",
+      "ad_en": "Heated seats",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 11,
+      "grup": "Konfor",
+      "ad": "Anahtarsız giriş",
+      "ad_en": "Keyless entry",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 12,
+      "grup": "İç Donanım",
+      "ad": "Deri döşeme",
+      "ad_en": "Leather upholstery",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 13,
+      "grup": "İç Donanım",
+      "ad": "Elektrikli koltuk",
+      "ad_en": "Power seats",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 14,
+      "grup": "Dış Donanım",
+      "ad": "LED far",
+      "ad_en": "LED headlights",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan", "motosiklet", "atv"]
+    },
+    {
+      "id": 15,
+      "grup": "Dış Donanım",
+      "ad": "Açılır tavan",
+      "ad_en": "Sunroof",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 16,
+      "grup": "Dış Donanım",
+      "ad": "Alaşım jant",
+      "ad_en": "Alloy wheels",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 17,
+      "grup": "Multimedya",
+      "ad": "Bluetooth",
+      "ad_en": "Bluetooth",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan", "motosiklet", "atv"]
+    },
+    {
+      "id": 18,
+      "grup": "Multimedya",
+      "ad": "Apple CarPlay",
+      "ad_en": "Apple CarPlay",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 19,
+      "grup": "Multimedya",
+      "ad": "Android Auto",
+      "ad_en": "Android Auto",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    },
+    {
+      "id": 20,
+      "grup": "Multimedya",
+      "ad": "Geri görüş kamerası",
+      "ad_en": "Reversing camera",
+      "arac_tipi": ["otomobil", "suv", "ticari", "minivan", "karavan"]
+    }
+  ],
+  "paketler": [
+    {
+      "id": "5bab03df-8581-4e1a-93b5-4234810c2a2a",
+      "ad": "10'lu İlan Paketi",
+      "hedef": "bireysel",
+      "ilan_kotasi": 10,
+      "onecikarma_hakki": 0,
+      "sure_gun": 30,
+      "fiyat": null,
+      "para_birimi": "GBP",
+      "aciklama": "",
+      "aktif": true,
+      "sira": 1
+    },
+    {
+      "id": "435e7b49-3ebb-475b-997c-d80bf1487e00",
+      "ad": "Galeri Aylık",
+      "hedef": "kurumsal",
+      "ilan_kotasi": 30,
+      "onecikarma_hakki": 5,
+      "sure_gun": 30,
+      "fiyat": null,
+      "para_birimi": "GBP",
+      "aciklama": "",
+      "aktif": true,
+      "sira": 2
+    },
+    {
+      "id": "2381d922-2a6d-4ad8-97b5-b29270bbbc51",
+      "ad": "Galeri Yıllık",
+      "hedef": "kurumsal",
+      "ilan_kotasi": 360,
+      "onecikarma_hakki": 60,
+      "sure_gun": 365,
+      "fiyat": null,
+      "para_birimi": "GBP",
+      "aciklama": "",
+      "aktif": true,
+      "sira": 3
+    },
+    {
+      "id": "31dc2aac-870c-47e2-8b7d-5d2abf1dad71",
+      "ad": "Öne Çıkarma Hakkı Paketi",
+      "hedef": "bireysel",
+      "ilan_kotasi": 0,
+      "onecikarma_hakki": 5,
+      "sure_gun": 30,
+      "fiyat": null,
+      "para_birimi": "GBP",
+      "aciklama": "",
+      "aktif": true,
+      "sira": 4
+    },
+    {
+      "id": "0561f494-2897-45d4-98a8-9d0a1639a2e6",
+      "ad": "Öne Çıkarma Hakkı Paketi",
+      "hedef": "kurumsal",
+      "ilan_kotasi": 0,
+      "onecikarma_hakki": 5,
+      "sure_gun": 30,
+      "fiyat": null,
+      "para_birimi": "GBP",
+      "aciklama": "",
+      "aktif": true,
+      "sira": 4
+    }
+  ],
+  "ayarlar": [
+    {
+      "anahtar": "iban",
+      "deger": ""
+    },
+    {
+      "anahtar": "hesap_sahibi",
+      "deger": ""
+    },
+    {
+      "anahtar": "banka",
+      "deger": ""
+    },
+    {
+      "anahtar": "odeme_notu",
+      "deger": "Havale açıklamasına referans kodunu yaz"
+    },
+    {
+      "anahtar": "ucretsiz_ilan_limiti",
+      "deger": 3
+    },
+    {
+      "anahtar": "onecikarma_gun",
+      "deger": 7
+    },
+    {
+      "anahtar": "talep_zaman_asimi_gun",
+      "deger": 7
+    },
+    {
+      "anahtar": "ilan_onayi",
+      "deger": false
+    },
+    {
+      "anahtar": "sms_zorunlu",
+      "deger": false
+    },
+    {
+      "anahtar": "kurlar",
+      "deger": {}
+    },
+    {
+      "anahtar": "sosyal",
+      "deger": {}
+    },
+    {
+      "anahtar": "iletisim_telefon",
+      "deger": ""
+    }
+  ],
+  "sayfalar": [
+    {
+      "slug": "hakkimizda",
+      "baslik": "Hakkımızda",
+      "baslik_en": "About Us",
+      "icerik": "BETA.CAR, Kuzey Kıbrıs için araç ve parça ilanlarının yayımlandığı bir platformdur. Luxury & Prestige Gallery, markanın sloganıdır. Bireysel satıcılar ve firmalar kendi beyanlarından sorumludur.\n\nPlatform, araç satış sözleşmesinin tarafı değildir. Araç bedeli, kapora veya ön ödeme toplamaz; emanet hizmeti sunmaz. Paket talepleri, banka transferinden sonra yapılan inceleme ve hak tanımlama kaydıyla yönetilir.\n\nSorularınızı İletişim formundan hesabınızla iletebilirsiniz.",
+      "icerik_en": "BETA.CAR is a vehicle and parts listing platform for Northern Cyprus. Luxury & Prestige Gallery is its slogan. Individual sellers and businesses are responsible for their own statements.\n\nThe platform is not a party to vehicle sales. It does not collect vehicle payments, deposits or advances, and offers no escrow service. Package requests are managed through transfer review and credit records.\n\nSend questions using the Contact form while signed in."
+    },
+    {
+      "slug": "reklam-ver",
+      "baslik": "Reklam Ver",
+      "baslik_en": "Advertise",
+      "icerik": "Banner ve firma görünürlüğü taleplerini iletişim formundan iletin. Konumu, yayın tarihini ve iletişim bilgilerinizi yazın. Uygunluk incelendikten sonra sizinle iletişim kurulur. Bu sayfada fiyat listesi veya ödeme alanı bulunmaz.",
+      "icerik_en": "Use the contact form to enquire about banners and business visibility. Include placement, dates and your contact information. We will review suitability and contact you. This page contains no price list or payment form."
+    },
+    {
+      "slug": "iletisim",
+      "baslik": "İletişim",
+      "baslik_en": "Contact",
+      "icerik": "Hesabınızla giriş yaparak aşağıdaki formdan destek talebi gönderin. İlan veya paket hakkında yazarken ilan numarasını ya da talep referansını belirtin. Şifre, kart bilgisi veya kimlik belgesi göndermeyin.\n\nBETA.CAR hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.",
+      "icerik_en": "Sign in and send a support request using the form below. Include the listing number or request reference when relevant. Do not send passwords, card details or identity documents.\n\nBETA.CAR never requests an IBAN by message; package bank details appear only under My Account > My Packages."
+    },
+    {
+      "slug": "bireysel-uye-sozlesmesi",
+      "baslik": "Bireysel Üye Sözleşmesi",
+      "baslik_en": "Individual Membership Agreement",
+      "icerik": "Üyelik, geçerli e-posta adresinin doğrulanmasıyla kullanılır. Kullanıcı hesap bilgilerinin doğruluğundan ve şifresinin korunmasından sorumludur. Başkasına ait telefon veya kimlik bilgisi kullanılamaz.\n\nYalnızca satma yetkisine sahip olduğunuz araçları ve parçaları ilan edin. Mülkiyet, fiyat, kilometre, hasar ve donanım bilgilerini doğru yazın. İlan yayımlanması, platformun aracı incelediği veya bilgileri garanti ettiği anlamına gelmez.\n\nBETA.CAR satış bedeli toplamaz ve satışa taraf olmaz. Şüpheli içerik incelenebilir, ilan gizlenebilir ve kötüye kullanım halinde hesap kısıtlanabilir. İtirazlar İletişim formundan iletilebilir.\n\nÜcretsiz aktif ilan limiti ve varsa paket hakları veritabanındaki kayda göre uygulanır. Paket koşulları ayrı metindedir. Kullanıcı hesabını Profil ekranından kapatabilir. Yasal saklama zorunluluğu olan işlem kayıtları anonimleştirme veya saklama gerekliliklerine göre ele alınır. Emredici tüketici hakları saklıdır.",
+      "icerik_en": "Membership uses a verified email address. Users are responsible for accurate account information and protecting their passwords. Do not use another person’s phone or identity.\n\nList only vehicles and parts you are entitled to sell. Provide accurate ownership, price, mileage, damage and equipment details. Publication does not mean the platform inspected the vehicle or guarantees its condition.\n\nBETA.CAR does not collect vehicle payments and is not a party to sales. Suspected abuse can lead to review, hidden listings or account restrictions. Appeals may be submitted through Contact.\n\nThe database record determines the free active listing limit and any package credits. Package terms are separate. Close your account in Profile. Records subject to legal retention are handled in line with applicable retention or anonymisation requirements. Mandatory consumer rights are preserved."
+    },
+    {
+      "slug": "kurumsal-uye-sozlesmesi",
+      "baslik": "Kurumsal Üye Sözleşmesi",
+      "baslik_en": "Business Membership Agreement",
+      "icerik": "Kurumsal hesap başvurusu yapan kişi, firmayı temsil etmeye yetkili olmalıdır. Firma adı, türü, vergi bilgisi ve iletişim kayıtları doğru olmalıdır. Doğrulanmış Firma rozeti, yalnızca platformun kayıt incelemesini gösterir; araçların durumuna, firmanın mali gücüne veya satış sonucuna garanti vermez.\n\nKurumsal ilanlar aktif paket kotasına tabidir; bireysel ücretsiz limitten yararlanmaz. Toplu yüklenen kayıtlar taslaktır ve yayın sırasında sunucu kotası uygulanır. Firma, personelinin hesap erişiminden ve ilanlarından sorumludur.\n\nSahte içerik, yanıltıcı fiyat, izinsiz görsel, kapora talebi veya kullanıcı tacizi inceleme ve kısıtlama sebebidir. İtiraz ve destek başvuruları İletişim formundan yapılır. Paket ve gizlilik koşulları bu sözleşmeyle birlikte uygulanır.",
+      "icerik_en": "The person registering a business account must be authorised to represent it. Business name, category, tax and contact records must be accurate. The Verified Business badge indicates a record review only; it does not guarantee vehicle condition, solvency or sales outcomes.\n\nBusiness listings require active package credits and do not use the individual free allowance. Bulk imports are drafts; server-side quota checks apply when publishing. Businesses are responsible for staff access and listings.\n\nFalse content, misleading prices, unauthorised images, deposit demands or harassment can lead to review and restrictions. Submit appeals and support requests through Contact. Package and privacy terms also apply."
+    },
+    {
+      "slug": "ilan-kurallari",
+      "baslik": "İlan Kuralları",
+      "baslik_en": "Listing Rules",
+      "icerik": "Başlık araç veya parçayı tanımlamalıdır. Bir ilan tek bir araç ya da açıkça tanımlanmış parça içindir. Aynı şasi veya plaka ile birden fazla açık kayıt kabul edilmez. Fotoğraflar size ait olmalı veya kullanım izniniz bulunmalıdır.\n\nFiyat, para birimi, kilometre, model yılı, direksiyon, plaka ve ithalat bilgilerini kontrol edin. Eksik ya da bilinmeyen kaporta bilgisi orijinal kabul edilmez. Kaporta ve donanım alanları satıcı beyanıdır; raporun doğruluğu ayrıca incelenmelidir.\n\nKapora, ön ödeme, IBAN veya havale talebi içeren ilanlar incelemeye alınır. Sahte ilan, yanlış fiyat ve satılmış ilanlar şikayet edilebilir. Üç ayrı üyenin bekleyen şikayeti, ilanı inceleme süresince gizler.\n\nİlanlar 30 gün yayında kalır. Yenileme aynı ilan hakkı içindedir; ücretsiz aktif limit korunur. Satıldı işareti 7 gün görünür, ardından ilan arşivlenir. Günde bir kez ücretsiz yukarı çıkarma kullanılabilir.",
+      "icerik_en": "A title must identify the vehicle or part. One listing covers one vehicle or a clearly described part. Multiple open records for the same VIN or registration are not accepted. Use only photos you own or are authorised to use.\n\nCheck price, currency, mileage, model year, steering, registration and import details. Missing bodywork information does not mean original condition. Bodywork and equipment entries are seller declarations; inspection reports must be checked independently.\n\nListings requesting deposits, advance payments, IBAN details or transfers are reviewed. False listings, wrong prices and sold vehicles may be reported. Three pending reports from different members temporarily hide a listing for review.\n\nListings run for 30 days. Renewal remains within the same listing credit, subject to the free active limit. Sold listings remain visible for 7 days, then archive. One free move-up is allowed per day."
+    },
+    {
+      "slug": "paket-ve-uyelik-kosullari",
+      "baslik": "Paket ve Üyelik Koşulları",
+      "baslik_en": "Package & Membership Terms",
+      "icerik": "Paket adı, hedef hesap türü, ilan ve öne çıkarma hakları, süre, fiyat ve para birimi paket kaydında gösterilir. Fiyat belirtilmemişse talep incelenirken tutar belirlenir. Banka bilgisi açılmadan önce talep ekranındaki tutarı kontrol edin.\n\nSite içinde tahsilat yapılmaz. Kart, otomatik ödeme, otomatik yenileme ve emanet hizmeti yoktur. Paket bedeli yalnızca talep onayından sonra Hesabım > Paketlerim ekranında görünen banka hesabına, site dışında havale/EFT ile ödenir. Açıklamaya referans kodu yazılmalıdır. Banka masrafları transferi yapan kişiye aittir.\n\nDekont yüklemek hak tanımlamaz. Banka kaydıyla kontrol sonrası onay verildiğinde haklar ve süre başlar. İnceleme için sabit bir saat taahhüdü verilmez; talep durumu hesapta izlenebilir. Red halinde gerekçe gösterilir ve açık süre içinde yeni dekont yüklenebilir. Ödeme bekleyen talep, ayarlanan süre içinde dekont gelmezse sona erer.\n\nÜcretsiz aktif limiti aşan bireysel ilan ve her kurumsal ilan, ilk yayın sırasında bir paket ilan hakkı kullanır. Ücretli hak kullanılmış ilanı yenilemek yeni hak tüketmez. Silme veya kaldırma hak iadesi yapmaz. Öne çıkarma her işlemde bir hak tüketir ve belirtilen sürede kapanır. Kullanılmayan haklar paket bitişinde kapanır.\n\nİptal veya iade talebi referans koduyla İletişim formundan yapılır. Aktifleştirilmemiş talepte banka kaydı ve işlem durumu incelenir; kullanılmış haklar ve zorunlu tüketici hakları dikkate alınır. İade üzerinde anlaşılırsa banka işlemi site dışında gerçekleştirilir; panel yalnız işlem notunu tutar. Platform bu ekrandan fatura kesmez.",
+      "icerik_en": "The package record shows its name, eligible account type, listing and promotion credits, term, price and currency. If no price is listed, the amount is set during request review. Check the amount shown before bank details are opened.\n\nThe site collects no funds. There are no card payments, automatic collections, automatic renewals or escrow services. After review, pay outside the site by transfer only to the account displayed in My Account > My Packages. Include the reference code. The sender bears bank transfer charges.\n\nUploading a receipt does not activate credits. Credits and the term begin after bank reconciliation and approval. No fixed review-hour guarantee is offered; track the request in your account. Rejections include a reason and allow a replacement receipt within the open deadline. An awaiting-transfer request expires if no receipt arrives within the configured period.\n\nIndividual listings above the free active allowance and all business listings consume one listing credit at first publication. Renewing a listing that already consumed a paid credit does not use another. Deletion or removal does not refund credits. Each promotion consumes one credit and ends after its stated duration. Unused rights close at package expiry.\n\nSubmit cancellation or refund requests through Contact with the reference code. Unactivated requests are reviewed against bank records and status; used rights and mandatory consumer rights are considered. Any agreed refund is transferred outside the site; the panel retains a note only. The platform does not issue invoices through this screen."
+    },
+    {
+      "slug": "gizlilik-politikasi",
+      "baslik": "Gizlilik Politikası",
+      "baslik_en": "Privacy Policy",
+      "icerik": "Hesap adı, e-posta, telefon, ilan bilgileri, mesajlar, bildirim tercihleri ve paket işlem kayıtları; hesabı işletmek, ilanları göstermek, destek sağlamak ve kötüye kullanımı incelemek için işlenir. Firma vergi bilgisi ve paket dekontu herkese açık değildir.\n\nİlan fotoğrafları ve ilan içeriği herkese açık olabilir. Telefon ancak satıcının tercihine göre gösterilir. Mesajlar konuşma taraflarına açıktır; yetkili yöneticiler şikayet incelemesi kapsamında erişebilir. İlanlarda kesin adres gösterilmez; harita ilçe/şehir düzeyindedir.\n\nVeriler Supabase hizmetlerinde saklanır; site Vercel üzerinde sunulur. Hizmet bölgeleri seçilen proje ayarlarına bağlıdır ve sınır ötesi aktarım söz konusu olabilir. İsteğe bağlı e-posta bildirimlerini Profil ekranından kapatabilirsiniz.\n\nHesap kapatma, veri erişimi, düzeltme ve silme başvuruları İletişim formundan alınır. Kimliğin doğrulanması gerekebilir. İşlem ve uyuşmazlık kayıtları, hukuki yükümlülük ve talebin niteliğine göre gerekli süre saklanabilir; gereksiz veriler silinir veya anonimleştirilir.",
+      "icerik_en": "Account name, email, phone, listing information, messages, notification preferences and package records are processed to operate accounts, display listings, provide support and investigate abuse. Business tax details and package receipts are not public.\n\nListing photos and content may be public. Phone numbers are shown according to the seller’s preference. Messages are visible to conversation participants; authorised administrators may access them for complaint review. Maps show district/city-level locations rather than exact listing addresses.\n\nData is stored using Supabase services and the site is hosted on Vercel. Service regions depend on the chosen project configuration and may involve international transfers. Disable optional email notifications in Profile.\n\nSubmit account closure, access, correction and erasure requests through Contact. Identity verification may be required. Transaction and dispute records may be retained where needed for legal duties or the nature of a claim; unnecessary data is deleted or anonymised."
+    },
+    {
+      "slug": "cerez-politikasi",
+      "baslik": "Çerez Politikası",
+      "baslik_en": "Cookie Policy",
+      "icerik": "BETA.CAR oturum, dil, gerekli tercih ve güvenlik kayıtları için tarayıcı depolamasını kullanır. Dil, favoriler, son bakılan ilanlar, karşılaştırma ve arama geçmişi cihazınızda tutulabilir. Giriş yapınca favoriler hesabınıza aktarılır.\n\nMarka ve model sözlüğü oturum depolamasında en fazla bir gün önbelleğe alınır. Çevrimdışı sayfa önbelleği veya servis çalışanı yoktur. Reklam takip çerezi ve isteğe bağlı analiz çerezi etkin değildir.\n\nTarayıcı ayarlarından yerel kayıtları silebilirsiniz. Bu işlem cihazdaki tercihleri ve giriş durumunu sıfırlayabilir. Harita açıldığında OpenStreetMap sunucularına görsel istekleri gider; bunun için IP adresiniz ve tarayıcı bilgisi ilgili hizmete iletilir.",
+      "icerik_en": "BETA.CAR uses browser storage for sessions, language, essential preferences and security. Language, favourites, recently viewed listings, comparison and search history may be stored on your device. Favourites are transferred to your account after sign-in.\n\nThe make/model dictionary is cached in session storage for up to one day. There is no offline page cache or service worker. Advertising tracking and optional analytics cookies are not enabled.\n\nDelete local records using your browser settings. This may reset preferences and sign-in status. Opening a map requests images from OpenStreetMap servers, which receive your IP address and browser information."
+    },
+    {
+      "slug": "kvkk-aydinlatma",
+      "baslik": "KVKK Aydınlatma Metni",
+      "baslik_en": "Personal Data Notice",
+      "icerik": "BETA.CAR kapsamında kimlik ve iletişim bilgileri, üyelik işlemleri, ilan içerikleri, mesajlar ve paket talebi kayıtları hizmetin yürütülmesi için işlenir. Başvuru sahibinin sağladığı veriler, hesap ve ilan formları, oturum kayıtları ve destek taleplerinden elde edilir.\n\nİşleme amaçları; üyelik sözleşmesinin yürütülmesi, ilanların yayımlanması, paket haklarının kayıt altına alınması, kötüye kullanımın engellenmesi, destek ve hukuki taleplerin karşılanmasıdır. İşlemenin dayanağı duruma göre sözleşmenin ifası, hukuki yükümlülük, hakkın tesisi veya ölçülü meşru menfaattir; isteğe bağlı bildirim tercihleri geri alınabilir.\n\nVeriler hizmet sağlayıcılarla teknik işletim amacıyla ve yetkili makamlarla yasal gereklilik halinde paylaşılabilir. Seçilen barındırma bölgesine göre yurt dışına aktarım değerlendirilmeli ve uygulanabilir KKTC kişisel veri kuralları ile uygulanabildiği ölçüde 6698 sayılı Kanun dikkate alınmalıdır.\n\nVeriye erişme, düzeltme, silme, işlemeye itiraz ve aktarım hakkında bilgi taleplerini İletişim formundan iletin. Başvurunun aidiyeti doğrulanarak uygulanabilir yasal süre içinde yanıtlanır.",
+      "icerik_en": "BETA.CAR processes identity and contact details, membership activity, listing content, messages and package request records to provide the service. Information is obtained through account and listing forms, session records and support requests.\n\nPurposes include performing the membership agreement, publishing listings, recording package rights, preventing abuse, support and responding to legal claims. The basis may be contractual performance, legal obligation, establishment of rights or proportionate legitimate interests. Optional notification preferences can be withdrawn.\n\nData may be shared with technical service providers and with authorities when legally required. International transfers depend on hosting-region choices and must be assessed under applicable Northern Cyprus data rules and, where applicable, Türkiye Law No. 6698.\n\nUse Contact for access, correction, erasure, objection or transfer-information requests. Requests are answered within applicable legal periods after verifying that they belong to the requester."
+    },
+    {
+      "slug": "guvenli-alim",
+      "baslik": "Güvenli Alım",
+      "baslik_en": "Buying Safely",
+      "icerik": "Siteye veya satıcıya kapora, ön ödeme, havale yapma; ödemeyi aracı yerinde görüp ekspertiz yaptırdıktan sonra yap.\n\nRuhsat, şasi numarası ve satıcının satış yetkisini karşılaştır. İthal araçlarda plaka ve gümrük durumunu bağımsız olarak doğrula. Kaporta çizimi ve donanım listesi satıcı beyanıdır. Raporu düzenleyen merkezle rapor numarası ve tarihini kontrol et.\n\nÇok düşük fiyat, acele transfer isteği veya başka hesaba ödeme talebi varsa görüşmeyi durdur ve ilanı şikayet et.\n\nBETA.CAR hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.",
+      "icerik_en": "Do not send deposits, advance payments or transfers to the site or seller; pay after seeing and inspecting the vehicle.\n\nCompare registration, VIN and the seller’s authority to sell. Independently verify registration and customs status for imports. Body diagrams and equipment lists are seller declarations. Check report details with the issuing inspection centre.\n\nStop and report the listing if the price is unusually low or someone pressures you to transfer money or pay a different account.\n\nBETA.CAR never requests an IBAN by message; package bank details appear only under My Account > My Packages."
+    },
+    {
+      "slug": "guvenli-satis",
+      "baslik": "Güvenli Satış",
+      "baslik_en": "Selling Safely",
+      "icerik": "Siteye veya satıcıya kapora, ön ödeme, havale yapma; ödemeyi aracı yerinde görüp ekspertiz yaptırdıktan sonra yap.\n\nİlan bilgilerini belgelerle karşılaştır, kişisel kimlik veya ruhsatın tamamını herkese açık fotoğraflara ekleme. Aracı güvenli bir yerde göster. Üçüncü kişilerin yönlendirdiği bağlantılara hesap veya banka şifresi girme.\n\nTransfer ekran görüntüsü tek başına ödeme kanıtı değildir. Aracın teslimi ve devir işlemi öncesinde kendi bankandan ve ilgili resmi kanallardan gerekli doğrulamaları yap.\n\nBETA.CAR hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.",
+      "icerik_en": "Do not send deposits, advance payments or transfers to the site or seller; pay after seeing and inspecting the vehicle.\n\nCheck listing details against documents and do not publish complete identity or registration documents in photos. Show the vehicle in a safe place. Never enter account or bank passwords into links sent by third parties.\n\nA transfer screenshot alone is not proof of payment. Before delivery and ownership transfer, verify through your own bank and the relevant official channels.\n\nBETA.CAR never requests an IBAN by message; package bank details appear only under My Account > My Packages."
+    },
+    {
+      "slug": "sss",
+      "baslik": "SSS",
+      "baslik_en": "FAQ",
+      "icerik": "İlan nasıl verilir? Aracını Sat bağlantısından bilgileri doldur, fotoğrafları ekle, önizlemeyi kontrol et ve yayınla. E-posta doğrulaması gerekir; SMS denetimi etkinleştirildiğinde telefon doğrulaması da istenir.\n\nÜcretsiz kaç ilan verilebilir? Bireysel hesapların aktif limiti yönetim ayarından okunur. Kurumsal hesaplar paket kotası kullanır. Paketlerin güncel hakları Paketler ekranında gösterilir.\n\nPaket ödemesi nasıl yapılır? Önce talep gönderilir. İnceleme sonrasında banka bilgisi yalnız Hesabım > Paketlerim ekranında açılır. Dekont kontrolünden sonra haklar tanımlanır.\n\nBir ilan şüpheliyse ne yapmalıyım? İlanın Şikayet et bağlantısından nedenini seçin. Para göndermeyin; görüşme kayıtlarını silmeyin.\n\nDeğerleme kesin satış fiyatı mıdır? Hayır. Yeterli sayıdaki benzer ilan fiyatından hesaplanan aralıktır; ilan fiyatı gerçekleşmiş satış fiyatı anlamına gelmez.",
+      "icerik_en": "How do I publish? Use Sell Your Vehicle, fill in the details, add photos, check the preview and publish. Email verification is required; phone verification is also required when SMS checks are enabled.\n\nHow many listings are free? The individual active limit comes from administrator settings. Business accounts use package credits. Current credits are shown on Packages.\n\nHow are packages paid? Submit a request first. After review, bank details open only in My Account > My Packages. Credits activate after the receipt is checked.\n\nWhat if a listing is suspicious? Select a reason under Report. Do not send money or delete conversation records.\n\nIs valuation a guaranteed sale price? No. It is a range based on enough comparable asking prices; asking prices are not completed sale prices."
+    }
+  ],
+  "yazilar": [
+    {
+      "id": "b85fbbdd-354f-4d9c-809f-8d375bf5f8c1",
+      "slug": "ithal-aracta-belge-kontrolu",
+      "baslik": "İthal araçta belge kontrolü",
+      "baslik_en": "Checking import paperwork",
+      "ozet": "Plaka, şasi ve ithalat kaydını aynı dosyada değerlendirin.",
+      "ozet_en": "Check registration, VIN and import records together.",
+      "icerik": "İthal bir aracı incelerken ilk olarak şasi numarasını araç üzerindeki işaretle karşılaştırın. İlandaki model adı tek başına araç kimliğini doğrulamaz. Plaka durumu ile gümrük beyanını satıcıdan yazılı olarak isteyin.\n\nJaponya veya İngiltere çıkışlı bir araçta pazar adı ile yerel model adı farklı olabilir. Teknik özellikleri model adına göre varsaymak yerine araç üzerindeki üretici bilgisi ve belgelerle kontrol edin. Grade kaydı bir referanstır; güncel ekspertizin yerine geçmez.\n\nBelgelerdeki tutarsızlık çözülmeden devir ya da ödeme kararı vermeyin. İşlemin tabi olduğu güncel şartları ilgili resmi kanaldan doğrulayın.",
+      "icerik_en": "Start by comparing the VIN in the paperwork with the marking on the vehicle. A model name in a listing does not establish identity. Ask the seller for written registration and customs information.\n\nMarket and local model names may differ for Japanese or UK imports. Verify technical details from manufacturer information and documents rather than relying on the model name. A grade record is a reference, not a substitute for a current inspection.\n\nDo not decide on payment or transfer until inconsistencies are resolved. Confirm current requirements with the relevant official channel.",
+      "kapak": null,
+      "kategori": "Araç Alımı",
+      "yayin": "2026-10-17T21:52:59.762Z",
+      "aktif": true
+    },
+    {
+      "id": "7462346c-26d5-4708-a850-532f0693ca0a",
+      "slug": "ekspertiz-raporunu-okumak",
+      "baslik": "Ekspertiz raporunu okumak",
+      "baslik_en": "Reading an inspection report",
+      "ozet": "Rapor tarihi, parça beyanı ve kontrol kapsamını birlikte okuyun.",
+      "ozet_en": "Read the date, panel declarations and inspection scope together.",
+      "icerik": "Raporu açınca yalnız sonuç satırına bakmayın. Tarih, kilometre, şasi ve firma bilgisinin incelediğiniz araçla eşleştiğini kontrol edin. Belgede hangi testlerin yapılmadığı da sonucu etkiler.\n\nBoyalı bir parça tek başına aracın tüm geçmişini anlatmaz. Değişen parça, yapısal kontrol, mekanik ölçüm ve test sürüşü birlikte değerlendirilmelidir. Kaporta çiziminde belirtilmemiş alanlar orijinal kabul edilmemelidir.\n\nRaporu düzenleyen merkezi kendi resmi iletişim kanalından arayıp belgeyi doğrulayın. Aracı görmeden kapora veya ön ödeme göndermeyin.",
+      "icerik_en": "Do not read only the final line. Check that date, mileage, VIN and inspection business match the vehicle you are viewing. Tests excluded from the report also matter.\n\nA painted panel alone does not explain the full history. Assess replaced panels together with structural checks, mechanical measurements and a test drive. Unspecified panels in a diagram must not be assumed original.\n\nVerify the document through the inspection centre’s own official contact channel. Do not send deposits or advance payments before seeing the vehicle.",
+      "kapak": null,
+      "kategori": "Ekspertiz",
+      "yayin": "2026-10-17T21:52:59.762Z",
+      "aktif": true
+    },
+    {
+      "id": "c06a5d12-d77b-4004-8a80-7c49ea814cd3",
+      "slug": "elektrikli-aracta-kullanim-hesabi",
+      "baslik": "Elektrikli araçta kullanım hesabı",
+      "baslik_en": "Planning electric vehicle use",
+      "ozet": "Günlük mesafe ve şarj erişimi, katalog menzilinden önce gelir.",
+      "ozet_en": "Daily distance and charging access matter before catalogue range.",
+      "icerik": "Günlük rotanızı, park sürenizi ve şarj erişiminizi not edin. Katalog menzili tek bir ölçüm koşulunu temsil eder; sıcaklık, hız, klima ve batarya durumu gerçek kullanımı değiştirir.\n\nİkinci el elektrikli araçta batarya raporunun tarihi, ölçüm yöntemi ve şarj geçmişi hakkında bilgi isteyin. Şarj soketinin bulunduğunuz yerdeki cihazlarla uyumunu kontrol edin. Evde kurulum düşünüyorsanız tesisatı yetkili bir uzmana inceletin.\n\nMaliyet karşılaştırmasında yalnız enerji fiyatını değil sigorta, bakım, lastik ve olası kurulum giderini de hesaplayın.",
+      "icerik_en": "Record your daily route, parking time and access to charging. Catalogue range represents defined test conditions; temperature, speed, climate control and battery condition affect real use.\n\nFor a used electric vehicle, ask about the battery report’s date, measurement method and charging history. Check connector compatibility with local charging equipment. Have a qualified professional assess the installation if you plan home charging.\n\nCompare insurance, maintenance, tyres and possible installation costs as well as the energy price.",
+      "kapak": null,
+      "kategori": "Kullanım",
+      "yayin": "2026-10-17T21:52:59.762Z",
+      "aktif": true
+    }
+  ],
+  "bannerlar": [],
+  "markalar": [
+    {
+      "id": 1,
+      "ad": "Mercedes-Benz",
+      "tip": "otomobil",
+      "anahtar": "mercedesbenz"
+    },
+    {
+      "id": 2,
+      "ad": "BMW",
+      "tip": "otomobil",
+      "anahtar": "bmw"
+    },
+    {
+      "id": 3,
+      "ad": "Toyota",
+      "tip": "otomobil",
+      "anahtar": "toyota"
+    },
+    {
+      "id": 4,
+      "ad": "Honda",
+      "tip": "otomobil",
+      "anahtar": "honda"
+    },
+    {
+      "id": 5,
+      "ad": "Volkswagen",
+      "tip": "otomobil",
+      "anahtar": "volkswagen"
+    },
+    {
+      "id": 6,
+      "ad": "Audi",
+      "tip": "otomobil",
+      "anahtar": "audi"
+    },
+    {
+      "id": 7,
+      "ad": "Land Rover",
+      "tip": "otomobil",
+      "anahtar": "landrover"
+    },
+    {
+      "id": 8,
+      "ad": "Ford",
+      "tip": "otomobil",
+      "anahtar": "ford"
+    },
+    {
+      "id": 9,
+      "ad": "Nissan",
+      "tip": "otomobil",
+      "anahtar": "nissan"
+    },
+    {
+      "id": 10,
+      "ad": "Mazda",
+      "tip": "otomobil",
+      "anahtar": "mazda"
+    },
+    {
+      "id": 11,
+      "ad": "Suzuki",
+      "tip": "otomobil",
+      "anahtar": "suzuki"
+    }
+  ],
+  "modeller": [
+    {
+      "id": 1,
+      "marka_id": 3,
+      "ad": "Passo",
+      "anahtar": "passo",
+      "bas_yil": 2004,
+      "bit_yil": 2023
+    },
+    {
+      "id": 2,
+      "marka_id": 3,
+      "ad": "Vitz",
+      "anahtar": "vitz",
+      "bas_yil": 1999,
+      "bit_yil": 2020
+    },
+    {
+      "id": 3,
+      "marka_id": 3,
+      "ad": "Aqua",
+      "anahtar": "aqua",
+      "bas_yil": 2011,
+      "bit_yil": 2026
+    },
+    {
+      "id": 4,
+      "marka_id": 9,
+      "ad": "Note",
+      "anahtar": "note",
+      "bas_yil": 2004,
+      "bit_yil": 2026
+    },
+    {
+      "id": 5,
+      "marka_id": 4,
+      "ad": "Fit",
+      "anahtar": "fit",
+      "bas_yil": 2001,
+      "bit_yil": 2026
+    },
+    {
+      "id": 6,
+      "marka_id": 11,
+      "ad": "Swift",
+      "anahtar": "swift",
+      "bas_yil": 1983,
+      "bit_yil": 2026
+    },
+    {
+      "id": 7,
+      "marka_id": 11,
+      "ad": "Alto",
+      "anahtar": "alto",
+      "bas_yil": 1979,
+      "bit_yil": 2026
+    },
+    {
+      "id": 8,
+      "marka_id": 3,
+      "ad": "Yaris",
+      "anahtar": "yaris",
+      "bas_yil": 1999,
+      "bit_yil": 2026
+    },
+    {
+      "id": 9,
+      "marka_id": 4,
+      "ad": "Jazz",
+      "anahtar": "jazz",
+      "bas_yil": 2001,
+      "bit_yil": 2026
+    },
+    {
+      "id": 10,
+      "marka_id": 9,
+      "ad": "Micra",
+      "anahtar": "micra",
+      "bas_yil": 1982,
+      "bit_yil": 2026
+    }
+  ]
+}

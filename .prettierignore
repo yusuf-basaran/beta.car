@@ -7,3 +7,8 @@ supabase.sql
 supabase-ek.sql
 supabase-eposta.sql
 package-lock.json
+
+functions/node_modules
+functions/package-lock.json
+.firebase
+*.log

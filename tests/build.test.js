@@ -23,6 +23,10 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
       'manifest.json',
       'robots.txt',
       'sitemap.xml',
+      'icon-192.png',
+      'icon-512.png',
+      'favicon.png',
+      'apple-touch-icon.png',
       'supabase.sql',
       '.env',
     ])
@@ -32,26 +36,29 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
     const build = (env) =>
       promisify(execFile)(process.execPath, ['scripts/build.mjs'], {
         cwd: root,
-        env: { ...process.env, SUPABASE_URL: '', SUPABASE_ANON_KEY: '', ...env },
+        env: { ...process.env, FIREBASE_WEB_CONFIG: '', ...env },
       });
     await build({});
     assert.equal(await readFile(path.join(root, '.build/js/config.js'), 'utf8'), source);
     const files = await readdir(path.join(root, '.build'));
     assert(!files.includes('supabase.sql') && !files.includes('.env'));
-    await build({ SUPABASE_URL: 'https://test.invalid', SUPABASE_ANON_KEY: 'sb_publishable_test' });
-    assert.match(
-      await readFile(path.join(root, '.build/js/config.js'), 'utf8'),
-      /sb_publishable_test/,
-    );
+    const config = {
+      apiKey: 'public-test',
+      projectId: 'demo-beta-car',
+      storageBucket: 'demo-beta-car.firebasestorage.app',
+    };
+    await build({ FIREBASE_WEB_CONFIG: JSON.stringify(config) });
+    assert.match(await readFile(path.join(root, '.build/js/config.js'), 'utf8'), /demo-beta-car/);
     assert.equal(await readFile(path.join(root, 'js/config.js'), 'utf8'), source);
-    const token = [
-      'test',
-      Buffer.from(JSON.stringify({ role: 'service_role' })).toString('base64url'),
-      'test',
-    ].join('.');
     await assert.rejects(
-      build({ SUPABASE_URL: 'https://test.invalid', SUPABASE_ANON_KEY: token }),
-      /Yalnız public\/anon/,
+      build({ FIREBASE_WEB_CONFIG: JSON.stringify({ ...config, private_key: 'not-public' }) }),
+      /Yalnız Firebase web/,
+    );
+    await assert.rejects(
+      build({
+        FIREBASE_WEB_CONFIG: JSON.stringify({ ...config, apiKey: { private_key: 'not-public' } }),
+      }),
+      /Yalnız Firebase web/,
     );
   } finally {
     await rm(root, { recursive: true, force: true });

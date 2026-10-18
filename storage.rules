@@ -1,0 +1,30 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function enabled() {
+      return request.auth != null && request.auth.token.email_verified == true && (!firestore.exists(/databases/(default)/documents/_yetkiler/$(request.auth.uid)) || firestore.get(/databases/(default)/documents/_yetkiler/$(request.auth.uid)).data.engelli == false);
+    }
+    function admin() { return enabled() && firestore.get(/databases/(default)/documents/_yetkiler/$(request.auth.uid)).data.admin == true; }
+    function image() { return request.resource.contentType in ['image/jpeg','image/png','image/webp']; }
+    function report() { return request.resource.contentType in ['application/pdf','image/jpeg','image/png']; }
+    match /ilanlar/{uid}/{listing}/{file} {
+      allow read: if true;
+      allow create: if enabled() && request.auth.uid == uid && request.resource.size <= 10 * 1024 * 1024 && image() && firestore.get(/databases/(default)/documents/ilanlar/$(listing)).data.kullanici_id == uid;
+      allow delete: if enabled() && request.auth.uid == uid;
+    }
+    match /firmalar/{uid}/{path=**} {
+      allow read: if true;
+      allow create: if enabled() && request.auth.uid == uid && request.resource.size <= 5 * 1024 * 1024 && image();
+      allow delete: if enabled() && request.auth.uid == uid;
+    }
+    match /ekspertiz/{uid}/{listing}/{file} {
+      allow read: if enabled() && (request.auth.uid == uid || admin());
+      allow create: if enabled() && request.auth.uid == uid && request.resource.size <= 10 * 1024 * 1024 && report() && firestore.get(/databases/(default)/documents/ilanlar/$(listing)).data.kullanici_id == uid;
+      allow delete: if enabled() && request.auth.uid == uid;
+    }
+    match /dekontlar/{uid}/{requestId}/{file} {
+      allow read: if enabled() && (request.auth.uid == uid || admin());
+      allow create: if enabled() && request.auth.uid == uid && request.resource.size <= 5 * 1024 * 1024 && report() && firestore.get(/databases/(default)/documents/paket_talepleri/$(requestId)).data.kullanici_id == uid && firestore.get(/databases/(default)/documents/paket_talepleri/$(requestId)).data.durum in ['odeme_bekliyor','reddedildi'] && firestore.get(/databases/(default)/documents/paket_talepleri/$(requestId)).data._deadline > request.time;
+    }
+  }
+}

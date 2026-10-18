@@ -1,0 +1,12 @@
+{
+  "score": 4,
+  "summary": "İstemci yazmaları kapalıdır; rol, sahiplik, veri sınırları ve özel dosya erişimi sunucuda ve emülatör testlerinde denetlenir. Canlı IAM ve kullanım maliyeti ayrıca doğrulanmalıdır.",
+  "findings": [
+    {
+      "check": "Resource Exhaustion/DoS",
+      "severity": "minor",
+      "issue": "functions/data.js içindeki geniş arama aday ilanları okuyarak filtreler; veri hacmi büyüdüğünde sunucu okuma maliyeti artar.",
+      "recommendation": "İzlenen kullanım verisine göre indeksli aday sorgularını daraltın veya arama indeksi ekleyin; bütçe ve hız sınırlarını izleyin."
+    }
+  ]
+}
