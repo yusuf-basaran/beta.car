@@ -379,10 +379,50 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
       );
 
       await page.goto('http://127.0.0.1:4180/giris.html');
-      await page.waitForFunction(async () => {
-        const { state } = await import('/js/state.js');
-        return !!state.db && state.cats.length > 0;
+      const loadedState = await page.evaluateHandle(
+        async () => (await import('/js/state.js')).state,
+      );
+      await page.waitForFunction((state) => !!state.db && state.cats.length > 0, loadedState);
+      await loadedState.dispose();
+      let interrupted = false;
+      await page.route('**/api', (route) => {
+        const request = route.request().postDataJSON();
+        if (request.name === 'profil_kaydet' && !interrupted) {
+          interrupted = true;
+          return route.fulfill({
+            status: 503,
+            contentType: 'application/json',
+            body: JSON.stringify({ error: { message: 'Bağlantı kesildi' } }),
+          });
+        }
+        return route.continue();
       });
+      const registration = await page.evaluate(async () => {
+        const { state } = await import('/js/state.js');
+        const value = {
+          email: 'yeni-uye@example.invalid',
+          password: 'Test-parola-42!',
+          options: {
+            data: { ad: 'Yeni Üye', tip: 'bireysel' },
+            emailRedirectTo: new URL('hesabim.html', location.href).href,
+          },
+        };
+        const first = await state.db.auth.signUp(value),
+          second = await state.db.auth.signUp(value);
+        const hidden = !(await state.db.auth.getUser()).data.user;
+        await state.db.auth.signOut();
+        return {
+          failed: !!first.error,
+          error: second.error?.message || null,
+          uid: second.data?.user?.id,
+          hidden,
+        };
+      });
+      assert.equal(registration.failed, true);
+      assert.equal(registration.error, null);
+      assert.equal(registration.hidden, true);
+      assert.equal((await doc('profil', registration.uid)).ad, 'Yeni Üye');
+      await page.unroute('**/api');
       await page.locator('[name="email"]').fill('uye-a@example.invalid');
       await page.locator('[name="password"]').fill('Test-parola-42!');
       await page.waitForTimeout(1000);
