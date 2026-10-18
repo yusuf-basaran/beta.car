@@ -8,4 +8,4 @@ Disallow: /foto.html
 Disallow: /*.sql
 Disallow: /seed.js
 Disallow: /KURULUM.md
-Sitemap: https://beta.car/sitemap.xml
+Sitemap: https://beta-car-a019a9b0.web.app/sitemap.xml

@@ -1,6 +1,6 @@
 # Son kontrol
 
-Kontrol tarihi: 18 Ekim 2026. Firebase altyapısı ve yeni uygulama ikonları kullanılır. Yerel lint, birim, emülatör, tarayıcı, build ve biçim kontrolleri başarılıdır. Canlı Firebase yayını hesap yetkilendirmesi gerektirir. Önceki dört commit korunur; yeni commit'ler Yusuf Basaran kimliğiyle yazılır.
+Kontrol tarihi: 18 Ekim 2026. Firebase altyapısı ve yeni uygulama ikonları kullanılır. Yerel lint, birim, emülatör, tarayıcı, build ve biçim kontrolleri başarılıdır. Firebase hesabı yetkilendirildi; canlı uygulama yayını Blaze planının etkinleştirilmesini bekliyor. Önceki dört commit korunur; yeni commit'ler Yusuf Basaran kimliğiyle yazılır.
 
 | Kontrol                  | Kapsam                                                                                                |
 | ------------------------ | ----------------------------------------------------------------------------------------------------- |
@@ -16,8 +16,8 @@ Kaynak bağlantı alanları boştur. Firebase Hosting public yapılandırmayı a
 
 ## Canlıda tamamlanacaklar
 
-- Firebase hesabı yetkilendirmesi, proje açma, gerekli faturalandırma ve ilk Storage kurulumu.
-- Auth, Firestore/Storage kuralları, Functions ve Hosting canlı dağıtımı; ilk yönetici ataması.
+- Blaze planının etkinleştirilmesi ve Storage kurulumu. Firebase projesi, Auth, Firestore, kurallar ve başlangıç kayıtları hazır.
+- Storage kuralları, Functions ve Hosting canlı dağıtımı; ilk yönetici ataması.
 - Auth e-postası, bildirim sağlayıcısı ve isteğe bağlı SMS teslim testleri.
 - Banka, paket fiyatı, kota/süreler ve işletme iletişim ayarları.
 - Yasal işletmeci alanları ve hukuk incelemesi; onaylı içeriklerin aktarımı.
@@ -25,3 +25,5 @@ Kaynak bağlantı alanları boştur. Firebase Hosting public yapılandırmayı a
 - [Kabul testlerinin](kabul-testleri.md) gerçek test projesinde uygulanması.
 
 Emülatör ve taklit servis sonuçları canlı sağlayıcı teslimatını doğrulamaz. Teknik ayrıntılar [kurulum](kurulum.md), [Firebase incelemesi](firebase-guvenlik.md) ve [yayın kontrol listesinde](yayin-kontrol-listesi.md) yer alır.
+
+Proje ve servislerin yayın kaydı [Firebase yayın belgesinde](firebase-yayin.md) yer alır.

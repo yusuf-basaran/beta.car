@@ -77,7 +77,7 @@ npx firebase login --no-localhost
 npm run firebase:deploy
 ```
 
-Yayın betiği hesap erişimini denetler, gerekirse proje ve web uygulaması açar, veritabanını hazırlar ve Firebase bileşenlerini yayımlar. Betik Storage alanını da hazırlar; gerekli hesap ve faturalandırma onayları Google hesabında tamamlanır. İstemci çıktısına sunucu, test, belge veya kimlik dosyası girmez. Ayrıntılar [kurulum](docs/kurulum.md), [yayın kontrol listesi](docs/yayin-kontrol-listesi.md) ve [kabul testlerinde](docs/kabul-testleri.md) yer alır.
+Yayın betiği hesap erişimini denetler, gerekirse proje ve web uygulaması açar, veritabanını hazırlar ve Firebase bileşenlerini yayımlar. Betik Storage alanını da hazırlar; gerekli hesap ve faturalandırma onayları Google hesabında tamamlanır. İstemci çıktısına sunucu, test, belge veya kimlik dosyası girmez. Proje ve servislerin durumu [Firebase yayın kaydında](docs/firebase-yayin.md) yer alır. Ayrıntılar [kurulum](docs/kurulum.md), [yayın kontrol listesi](docs/yayin-kontrol-listesi.md) ve [kabul testlerinde](docs/kabul-testleri.md) yer alır.
 
 ## Güvenlik
 

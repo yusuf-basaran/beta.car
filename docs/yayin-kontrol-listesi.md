@@ -45,7 +45,7 @@ Teknik kurulum ve kabul kontrolleri bu belgedeki ilgili başlıklarda tamamlanı
 
 ## SEO ve ana ekrana ekleme
 
-- [ ] `robots.txt` ve `sitemap.xml` içindeki `https://beta.car` gerçek alan adıyla değiştirildi. `beta.car` kullanılacaksa sahiplik doğrulandı.
+- [ ] `robots.txt` ve `sitemap.xml` kullanılan Firebase Hosting veya özel alan adıyla eşleşiyor; özel alan adı için sahiplik doğrulandı.
 - [ ] Sayfa title, description ve sosyal paylaşım görselleri kontrol edildi. İlan JSON-LD verisi güncel başlık ve fiyatla uyumlu.
 - [ ] Hesap, mesaj, giriş, ilan düzenleme, telefon fotoğraf oturumu ve admin sayfaları noindex; özel paket talebi sayfası hesaba bağlı.
 - [ ] Sitemap yalnız açık sayfaları içeriyor; ilan/model sayfalarının dinamik sitemap ihtiyacı kayıt sayısına göre değerlendirildi.

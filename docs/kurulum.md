@@ -11,7 +11,7 @@ npx playwright install chromium
 npm run firebase:emulators
 ```
 
-Site `http://127.0.0.1:5000`, emülatör yönetimi `http://127.0.0.1:4000` adresindedir. `demo-beta-car` yerel test kimliğidir; üretim projesi değildir. İlk API isteği eksik başlangıç kayıtlarını ekler; mevcut kayıtları değiştirmez. Emülatörler kapanınca veriler kalıcı değildir. E-posta doğrulama bağlantıları Auth emülatör çıktısında görünür. `npm run dev` yalnız arayüzü 4173 portunda açar.
+Site `http://127.0.0.1:5000`, emülatör yönetimi `http://127.0.0.1:4000` adresindedir. `demo-beta-car` yerel test kimliğidir; üretim projesi değildir. Emülatörde ilk API isteği eksik başlangıç kayıtlarını ekler; mevcut kayıtları değiştirmez. Emülatörler kapanınca veriler kalıcı değildir. E-posta doğrulama bağlantıları Auth emülatör çıktısında görünür. `npm run dev` yalnız arayüzü 4173 portunda açar.
 
 ## Canlı proje ve yayın
 
@@ -20,7 +20,7 @@ npx firebase login --no-localhost
 npm run firebase:deploy
 ```
 
-Betik oturumu kontrol eder, `.firebaserc` yoksa benzersiz kimlikle BETA.CAR projesi açar, web uygulamasını kaydeder, Firestore Standard veritabanını seçili bölgede hazırlar, build alır ve Auth/kurallar/Functions/Hosting dağıtımını çalıştırır. Belirli proje için `npm run firebase:deploy -- PROJE_KIMLIGI` kullanılır. Mevcut veritabanı yeniden açılmaz ve silinmez. Google hesabında proje açma yetkisi bulunmalıdır.
+Betik oturumu kontrol eder, `.firebaserc` yoksa benzersiz kimlikle BETA.CAR projesi açar ve web uygulamasını kaydeder. Auth, Firestore Standard, kurallar, indeksler, silme koruması ve başlangıç verilerini uygular. Public web yapılandırmasıyla build alır; Blaze denetiminden sonra Storage, Functions ve Hosting dağıtımını çalıştırır. Belirli proje için `npm run firebase:deploy -- PROJE_KIMLIGI` kullanılır. Mevcut veritabanı yeniden açılmaz ve silinmez. Google hesabında proje açma yetkisi bulunmalıdır.
 
 Yayın betiği Cloud Storage varsayılan bucket alanını Firebase REST API üzerinden `europe-west1` bölgesinde hazırlar. Bu adım sabit sürümlü Firebase CLI oturumunu kullanır; kimlik bilgilerini dosyaya aktarmaz. Hesap veya faturalandırma nedeniyle engellenirse Firebase Console üzerinde bildirilen gereksinim tamamlanıp aynı komut yeniden çalıştırılır. Google hesabına giriş ve faturalandırma onayları hesap sahibi tarafından tamamlanır; dosyalara parola veya ödeme bilgisi yazılmaz.
 
@@ -42,7 +42,7 @@ Betik yalnız e-postası doğrulanmış Firebase Auth hesabını yetkilendirir. 
 
 ## Veri ve erişim
 
-`functions/data.json` kategori, donanım, fiyatsız paket, ayar, başlangıç araç sözlüğü ve içerik kayıtlarını içerir. İlk API isteğinde atomik olarak yalnız eksik kayıtlar eklenir. Elle aktarım için yetkili sunucu ortamında `npm run firebase:seed -- PROJE_KIMLIGI` kullanılır. `--update` mevcut başlangıç kayıtlarının üzerine yazar; yalnız bilinçli içerik güncellemesinde kullanılır.
+`functions/data.json` kategori, donanım, fiyatsız paket, ayar, başlangıç araç sözlüğü ve içerik kayıtlarını içerir. Canlı yayın betiği bu kayıtları Google hesabının CLI oturumuyla atomik olarak uygular; emülatör ve ilk API isteği için aynı başlangıç verileri sunucuda da bulunur. İşlem işareti varsa tekrar ekleme yapılmaz. `scripts/firebase/initial.mjs` özel anahtar dosyası gerektirmez. Elle aktarım için yetkili sunucu ortamında `npm run firebase:seed -- PROJE_KIMLIGI` kullanılır. `--update` mevcut başlangıç kayıtlarının üzerine yazar; yalnız bilinçli içerik güncellemesinde kullanılır.
 
 Firestore koleksiyonları eski tablo adlarını korur. İlişkiler kimlik alanlarıyla kurulur. `_yetkiler`, `_haklar`, `_hiz`, `_kilitler`, `_eposta` gibi iç koleksiyonlar istemciye kapalıdır. Doğrudan istemci yazmaları tüm koleksiyonlarda reddedilir. Üye işlemleri `/api` üzerinden Auth doğrulaması, sahiplik, veri sınırları ve Firestore transaction denetiminden geçer. Realtime karşılığı Firestore `onSnapshot` dinleyicileridir.
 
