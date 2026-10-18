@@ -74,7 +74,13 @@ export async function createClient(cfg) {
         }),
       signUp: ({ email, password, options }) =>
         result(async () => {
-          await authSdk.createUserWithEmailAndPassword(auth, email, password);
+          try {
+            await authSdk.createUserWithEmailAndPassword(auth, email, password);
+          } catch (error) {
+            if (error.code !== 'auth/email-already-in-use') throw error;
+            await authSdk.signInWithEmailAndPassword(auth, email, password);
+            if (auth.currentUser.emailVerified) throw error;
+          }
           const r = await call({ name: 'profil_kaydet', data: options.data });
           if (r.error) throw r.error;
           await authSdk.sendEmailVerification(auth.currentUser, { url: options.emailRedirectTo });

@@ -364,6 +364,12 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
       const page = await browser.newPage({ ignoreHTTPSErrors: !!process.env.CHROMIUM_PROXY });
       const errors = [];
       page.on('pageerror', (e) => errors.push(e.message));
+      page.on('console', (m) => {
+        if (m.type() === 'error') console.log('Tarayıcı:', m.text());
+      });
+      page.on('requestfailed', (r) =>
+        console.log('İstek:', new URL(r.url()).pathname, r.failure()?.errorText),
+      );
       await page.route(
         /^https:\/\/(identitytoolkit|securetoken|firestore|firebasestorage)\.googleapis\.com\//,
         (route) => {
@@ -381,7 +387,14 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
       await page.locator('[name="password"]').fill('Test-parola-42!');
       await page.waitForTimeout(1000);
       await page.locator('#auth-form .btn').click();
-      await page.waitForURL('**/hesabim.html', { timeout: 30000 });
+      try {
+        await page.waitForURL('**/hesabim.html', { timeout: 30000 });
+      } catch (error) {
+        console.log('Giriş ekranı:', await page.locator('#main').innerText());
+        console.log('Uyarı:', await page.locator('#notice').allTextContents());
+        console.log('Hatalar:', errors);
+        throw error;
+      }
       await page.waitForFunction(() =>
         document.querySelector('#main')?.textContent.includes('İlanlarım'),
       );

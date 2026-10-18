@@ -109,7 +109,7 @@ export async function loginPage() {
         notify(t('confirmEmail'));
       } else if (mode === 'reset') {
         r = await state.db.auth.resetPasswordForEmail(data.get('email'), {
-          redirectTo: new URL('giris.html?mode=password', location.href).href,
+          redirectTo: new URL('giris.html', location.href).href,
         });
         if (r.error) throw r.error;
         notify(t('resetSent'));
