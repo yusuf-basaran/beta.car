@@ -6,6 +6,7 @@ const { Client } = require('firebase-tools/lib/apiv2.js');
 const project = process.argv[2];
 if (!/^[a-z][a-z0-9-]{4,29}$/.test(project || '')) throw Error('Proje kimliği geçersiz');
 await requireAuth({ project, nonInteractive: true });
+await ensure(project, 'firestore.googleapis.com', 'firestore', false);
 await ensure(project, 'firebasestorage.googleapis.com', 'storage', false);
 const client = new Client({
   urlPrefix: 'https://firebasestorage.googleapis.com',

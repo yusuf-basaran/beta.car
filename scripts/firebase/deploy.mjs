@@ -42,6 +42,11 @@ await writeFile(
 const apps = run(['apps:list', 'WEB', '--project', project], true);
 if (!apps.length)
   run(['apps:create', 'WEB', 'BETA.CAR', '--project', project, '--non-interactive']);
+const storage = spawnSync(process.execPath, ['scripts/firebase/storage.mjs', project], {
+  stdio: 'inherit',
+});
+if (storage.status !== 0)
+  throw Error('Storage kurulumu tamamlanamadı; proje yetkisini ve faturalandırmayı kontrol edin');
 const dbs = run(['firestore:databases:list', '--project', project], true);
 const databases = Array.isArray(dbs) ? dbs : dbs.databases || [];
 if (!databases.some((d) => d.name.endsWith('/(default)')))
@@ -57,11 +62,6 @@ if (!databases.some((d) => d.name.endsWith('/(default)')))
     '--delete-protection',
     'ENABLED',
   ]);
-const storage = spawnSync(process.execPath, ['scripts/firebase/storage.mjs', project], {
-  stdio: 'inherit',
-});
-if (storage.status !== 0)
-  throw Error('Storage kurulumu tamamlanamadı; proje yetkisini ve faturalandırmayı kontrol edin');
 const webApps = apps.length ? apps : run(['apps:list', 'WEB', '--project', project], true);
 const config = run(
   ['apps:sdkconfig', 'WEB', webApps[0].appId, '--project', project],
