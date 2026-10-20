@@ -8,6 +8,7 @@ const output = path.join(root, '.build');
 const assets = [
   'style.css',
   'app.js',
+  'sw.js',
   'logo.png',
   'logo-header.webp',
   'favicon.png',
@@ -58,7 +59,8 @@ const modules = [
 const hash = createHash('sha256');
 const source = await Promise.all(modules.map((name) => readFile(path.join(output, name), 'utf8')));
 for (let i = 0; i < modules.length; i++) hash.update(modules[i]).update(source[i]);
-hash.update(await readFile(path.join(output, 'style.css')));
+for (const name of ['style.css', 'sw.js', 'cevrimdisi.html', 'logo-header.webp', 'favicon.png'])
+  hash.update(await readFile(path.join(output, name)));
 const version = hash.digest('hex').slice(0, 12);
 await Promise.all(
   modules.map((name, i) =>
@@ -74,8 +76,18 @@ await Promise.all(
 for (const name of pages) {
   const file = path.join(output, name);
   const html = await readFile(file, 'utf8');
-  await writeFile(file, html.replace(/(src="app\.js|href="style\.css)"/g, `$1?v=${version}"`));
+  await writeFile(
+    file,
+    html.replace(/(src="\/?(?:app\.js|js\/offline\.js)|href="\/?style\.css)"/g, `$1?v=${version}"`),
+  );
 }
+const worker = await readFile(path.join(output, 'sw.js'), 'utf8');
+await writeFile(
+  path.join(output, 'sw.js'),
+  worker
+    .replace('bc-offline-v1', `bc-offline-${version}`)
+    .replace(/'(\/(?:js\/[^']+\.js|style\.css))'/g, (_, url) => `'${url}?v=${version}'`),
+);
 const templates = path.join(root, 'functions/site');
 await mkdir(templates, { recursive: true });
 for (const name of pages) await cp(path.join(output, name), path.join(templates, name));

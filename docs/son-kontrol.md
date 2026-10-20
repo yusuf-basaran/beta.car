@@ -7,8 +7,8 @@ Kontrol tarihi: 20 Ekim 2026. Firebase altyapısı ve yeni uygulama ikonları ku
 | `npm run lint`           | İstemci, sunucu, betik ve test kodları                                                                                         |
 | `npm test`               | 16 saf fonksiyon, SEO, build ve korunan SQL regresyon testi                                                                    |
 | `npm run test:firebase`  | 14 test başarılı; Auth, Firestore, Storage, Functions, Hosting, SEO, gerçek SDK girişi ve sunucu kuralları                     |
-| `npm run test:browser`   | 18 arayüz senaryosu; servis yanıtları taklit edilir; geciken bağlantı, hata/yeniden deneme ve gereksiz istekler kontrol edilir |
-| `npm run build`          | 19 HTML sayfası, ES modülleri, stil, logo ve ikonlar                                                                           |
+| `npm run test:browser`   | 21 arayüz senaryosu; servis yanıtları taklit edilir; geciken bağlantı, hata/yeniden deneme ve gereksiz istekler kontrol edilir |
+| `npm run build`          | 20 HTML sayfası, ES modülleri, stil, logo ve ikonlar                                                                           |
 | `npx prettier --check .` | Biçim kontrolü                                                                                                                 |
 | `git diff --check`       | Boşluk ve birleştirme kontrolü                                                                                                 |
 | Canlı tarayıcı           | Gerçek Firebase verileri, ikonlar, TR/EN, filtre/sıralama, paketler, form doğrulama, 404 ve mobil                              |
@@ -40,3 +40,9 @@ Sayfa modülleri ihtiyaç halinde yüklenir. Firestore dinleme ve Storage yükle
 Canlı mobil ölçümde ana sayfanın veri yüklemesi 5,3 saniyeden 2,7 saniyeye indi. İlk açılışta aynı kaynaktan indirilen içerik yaklaşık 1,18 MB yerine 89 KB oldu; dış Firebase SDK dosyaları bu boyut toplamına dahil değildir. Ayrı tarayıcı kontrolünde LCP 1,37 saniye, CLS 0 ölçüldü. Bu değerler ölçüm ortamına aittir; cihaz ve bağlantıya göre değişir. Geciktirilen Firebase SDK testi geçici bağlantı uyarısı göstermedi.
 
 Skeleton yer tutucular ilk açılışta, ana sayfa bölümlerinde, ilan sonuçları ve detay yüklenirken görünür. Filtre veya sıralama değişikliğinde yeniden devreye girer; veri ya da hata yanıtıyla kaldırılır. Ekran okuyucuya tek yüklenme bildirimi verilir; dekoratif şekiller gizlenir. Hareket azaltma tercihi etkinse animasyon çalışmaz. Üst üste gelen filtre isteklerinde son seçimin sonucu korunur.
+
+## Çevrimdışı görünüm
+
+`cevrimdisi.html`, bağlantı kurulamadığında service worker üzerinden sunulur. Site bir kez çevrimiçi açılıp bu ekranın dosyaları yüklendikten sonra kullanılabilir. Yalnızca çevrimdışı HTML, stil, logo, ikon ve dil/arayüz modülleri saklanır. İlan sayfaları, API yanıtları, Firebase yapılandırması, oturum bilgileri, mesajlar, paket talepleri ve dosyalar Cache Storage'a yazılmaz. Normal gezinme ağdan yapılır; sunucu 404 veya 500 yanıtları çevrimdışı ekranıyla değiştirilmez.
+
+Açık sayfada bağlantı kesilince form alanları korunur ve bağlantı bandı gösterilir. Çevrimdışı ekranın yeniden deneme düğmesi önbelleksiz ağ kontrolü yapar, ardından aynı sitedeki önceki adrese döner. Dış adrese yönlendirme kabul edilmez. TR/EN seçimi, mobil taşma, gerçek tarayıcı çevrimdışı modu ve özel veri önbelleği kontrol edilir. Yeni yayında yalnız bu ekrana ait eski önbellek sürümleri temizlenir.

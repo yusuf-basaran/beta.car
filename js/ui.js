@@ -111,7 +111,7 @@ export function header() {
           `<a href="${esc(href)}" class="${label === 'sell' ? 'mobile-sell' : ''}">${icon(i)}<span>${esc(t(label))}</span></a>`,
       )
       .join('')}` +
-    `</nav>`;
+    `</nav><div id="connection-status" class="connection-status" role="status" ${navigator.onLine ? 'hidden' : ''}>${esc(t('offlineNotice'))}<a href="/cevrimdisi.html?next=${encodeURIComponent(location.pathname + location.search)}">${esc(t('offlineView'))}</a></div>`;
   $('.brand img').addEventListener('error', (e) => {
     e.target.hidden = true;
     $('.brand > span').hidden = false;

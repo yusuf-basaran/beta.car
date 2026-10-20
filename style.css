@@ -2297,3 +2297,51 @@ meter {
     animation: none;
   }
 }
+
+.connection-status {
+  padding: var(--s3) var(--s4);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.connection-status a {
+  margin-inline-start: var(--s3);
+  color: var(--cyan);
+  text-decoration: underline;
+}
+.offline-page {
+  padding: 0;
+}
+.offline-shell {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: var(--s5);
+}
+.offline-panel {
+  min-width: 0;
+  width: 100%;
+  max-width: 560px;
+  padding: var(--s6);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.offline-symbol {
+  display: block;
+  width: var(--s8);
+  height: var(--s8);
+  margin-block: var(--s5);
+  color: var(--muted);
+}
+.offline-panel p {
+  color: var(--muted);
+}
+.offline-status {
+  min-height: var(--s5);
+}
+
+.offline-panel h1 {
+  font-size: clamp(26px, 6vw, 36px);
+  overflow-wrap: anywhere;
+}

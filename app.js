@@ -161,3 +161,15 @@ const category =
   { '/kullanilmis': 'kullanilmis', '/sifir': 'sifir', '/parca': 'parca' }[location.pathname];
 state.mainCat = ['kullanilmis', 'sifir', 'parca'].includes(category) ? category : 'kullanilmis';
 start();
+
+for (const event of ['online', 'offline'])
+  window.addEventListener(event, () => {
+    const banner = $('#connection-status');
+    if (banner) banner.hidden = navigator.onLine;
+  });
+if ('serviceWorker' in navigator && isSecureContext) {
+  const register = () =>
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).catch(() => {});
+  if (document.readyState === 'complete') register();
+  else window.addEventListener('load', register, { once: true });
+}

@@ -18,6 +18,8 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
     await cp(new URL('../firebase.json', import.meta.url), path.join(root, 'firebase.json'));
     for (const name of [
       'index.html',
+      'cevrimdisi.html',
+      'sw.js',
       'style.css',
       'app.js',
       'logo.png',
@@ -34,6 +36,7 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
       '.env',
     ])
       await writeFile(path.join(root, name), '');
+    await cp(new URL('../sw.js', import.meta.url), path.join(root, 'sw.js'));
     await writeFile(path.join(root, 'app.js'), "import './js/config.js';");
     await writeFile(path.join(root, 'index.html'), '<script type="module" src="app.js"></script>');
     const source = "export const cfg = { url: '', anon: '' };";
@@ -51,6 +54,10 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
     assert(!(await readdir(path.join(root, '.build'))).includes('index.html'));
     const template = await readFile(path.join(root, 'functions/site/index.html'), 'utf8');
     const version = template.match(/app\.js\?v=([a-f0-9]{12})/)[1];
+    const worker = await readFile(path.join(root, '.build/sw.js'), 'utf8');
+    assert.ok(worker.includes('bc-offline-' + version));
+    assert.ok(worker.includes('/style.css?v=' + version));
+    assert.ok(worker.includes('/js/offline.js?v=' + version));
     assert.match(
       await readFile(path.join(root, '.build/app.js'), 'utf8'),
       new RegExp('config\\.js\\?v=' + version),

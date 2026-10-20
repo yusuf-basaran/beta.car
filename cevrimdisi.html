@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0d0f12" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Çevrimdışısınız | BETA.CAR</title>
+    <meta
+      name="description"
+      content="Bağlantınızı kontrol edin ve BETA.CAR sayfanızı yeniden açın."
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <script type="module" src="/js/offline.js"></script>
+  </head>
+  <body class="offline-page">
+    <main id="main" class="offline-shell">
+      <section class="offline-panel" aria-labelledby="offline-title">
+        <a class="brand" href="/" aria-label="BETA.CAR"
+          ><img src="/logo-header.webp" alt="BETA.CAR" width="154" height="72"
+        /></a>
+        <svg
+          class="offline-symbol"
+          viewBox="0 0 64 64"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M8 22a40 40 0 0 1 38-6M57 24l-4-3M17 32a25 25 0 0 1 21-5M45 30l3 2M25 41a11 11 0 0 1 7-2M10 8l44 48"
+          />
+          <circle cx="32" cy="49" r="2" />
+        </svg>
+        <h1 id="offline-title" data-i="offlineTitle">Çevrimdışısınız</h1>
+        <p data-i="offlineDescription">
+          İnternet bağlantınızı kontrol edin. Bağlantı geldiğinde kaldığınız sayfaya dönebilirsiniz.
+        </p>
+        <div class="actions">
+          <button id="offline-retry" class="btn" data-i="retry">Tekrar dene</button
+          ><a id="offline-home" class="btn secondary" href="/" data-i="home">Ana Sayfa</a>
+        </div>
+        <p id="offline-status" class="offline-status" role="status" aria-live="polite"></p>
+        <button id="offline-language" class="language" aria-label="Dil">TR</button>
+      </section>
+    </main>
+    <noscript>Bağlantı geldiğinde tarayıcınızdan sayfayı yenileyin.</noscript>
+  </body>
+</html>
