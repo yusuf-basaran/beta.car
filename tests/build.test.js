@@ -15,6 +15,7 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
       new URL('../scripts/build.mjs', import.meta.url),
       path.join(root, 'scripts/build.mjs'),
     );
+    await cp(new URL('../firebase.json', import.meta.url), path.join(root, 'firebase.json'));
     for (const name of [
       'index.html',
       'style.css',
@@ -27,14 +28,15 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
       'icon-512.png',
       'favicon.png',
       'apple-touch-icon.png',
+      'og-image.png',
       'supabase.sql',
       '.env',
     ])
       await writeFile(path.join(root, name), '');
     const source = "export const cfg = { url: '', anon: '' };";
     await writeFile(path.join(root, 'js/config.js'), source);
-    const build = (env) =>
-      promisify(execFile)(process.execPath, ['scripts/build.mjs'], {
+    const build = (env, args = []) =>
+      promisify(execFile)(process.execPath, ['scripts/build.mjs', ...args], {
         cwd: root,
         env: { ...process.env, FIREBASE_WEB_CONFIG: '', ...env },
       });
@@ -42,6 +44,9 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
     assert.equal(await readFile(path.join(root, '.build/js/config.js'), 'utf8'), source);
     const files = await readdir(path.join(root, '.build'));
     assert(!files.includes('supabase.sql') && !files.includes('.env'));
+    await build({}, ['--firebase']);
+    assert(!(await readdir(path.join(root, '.build'))).includes('index.html'));
+    assert.equal(await readFile(path.join(root, 'functions/site/index.html'), 'utf8'), '');
     const config = {
       apiKey: 'public-test',
       projectId: 'demo-beta-car',

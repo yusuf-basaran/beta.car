@@ -10,6 +10,7 @@ import { bootstrap, firstAdmin } from './bootstrap.js';
 import { createService } from './service.js';
 import { Store, check, rate, hash } from './core.js';
 import { maintenance, cleanup, listingEvent, emailQueue } from './jobs.js';
+import { createSeo } from './seo.js';
 
 initializeApp();
 setGlobalOptions({
@@ -21,6 +22,31 @@ setGlobalOptions({
 const db = getFirestore(),
   auth = getAuth(),
   service = createService({ db, auth, bucket: getStorage().bucket() });
+const publicPage = createSeo(db, service);
+export const seo = onRequest(async (req, res) => {
+  res.set('X-Content-Type-Options', 'nosniff');
+  try {
+    if (!['GET', 'HEAD'].includes(req.method)) {
+      res.set('Allow', 'GET, HEAD').status(405).end();
+      return;
+    }
+    await bootstrap(db);
+    const page = await publicPage(req.originalUrl);
+    res.set('Cache-Control', page.cache || 'public, max-age=0, s-maxage=300');
+    if (page.noindex) res.set('X-Robots-Tag', 'noindex, follow');
+    res
+      .status(page.status)
+      .type(page.type || 'html')
+      .send(page.body);
+  } catch (error) {
+    console.error('Sayfa sunulamadı', error.code || error.message);
+    res
+      .set('Cache-Control', 'no-store')
+      .set('X-Robots-Tag', 'noindex')
+      .status(503)
+      .send('BETA.CAR');
+  }
+});
 export const api = onRequest(async (req, res) => {
   res.set('Cache-Control', 'no-store');
   res.set('X-Content-Type-Options', 'nosniff');

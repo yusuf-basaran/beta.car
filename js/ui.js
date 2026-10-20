@@ -112,6 +112,10 @@ export function header() {
   $('#language').onclick = () => {
     state.lang = state.lang === 'tr' ? 'en' : 'tr';
     write('bc-lang', state.lang);
+    const url = new URL(location.href);
+    if (state.lang === 'en') url.searchParams.set('lang', 'en');
+    else url.searchParams.delete('lang');
+    history.replaceState(null, '', url);
     render();
   };
   $$('[data-cat]').forEach(
@@ -301,29 +305,65 @@ export function fail(e) {
   notify(e?.message || t('error'));
 }
 
-export function meta(title, desc) {
+export function meta(title, desc, photo) {
   document.title = `${title} | BETA.CAR`;
+  desc ||= $('meta[name=description]')?.content || title;
   for (const s of ['meta[name=description]', 'meta[property="og:description"]'])
-    $(s)?.setAttribute('content', desc || title);
+    $(s)?.setAttribute('content', desc);
   $('meta[property="og:title"]')?.setAttribute('content', document.title);
+  if (photo) {
+    try {
+      const image = new URL(photo, location.href);
+      if (['http:', 'https:'].includes(image.protocol))
+        $('meta[property="og:image"]')?.setAttribute('content', image.href);
+    } catch {}
+  }
+  syncMeta();
+}
+
+export function syncMeta() {
   let c = $('link[rel=canonical]');
   if (!c) {
     c = document.createElement('link');
     c.rel = 'canonical';
     document.head.append(c);
   }
-  c.href = location.href.split('#')[0];
+  const canonical = new URL(c.href || location.href);
+  canonical.hash = '';
+  canonical.searchParams.delete('lang');
+  if (state.lang === 'en') canonical.searchParams.set('lang', 'en');
+  c.href = canonical.href;
   for (const [name, value] of [
     ['og:url', c.href],
-    ['og:image', new URL('logo.png', location.href).href],
+    ['og:locale', state.lang === 'en' ? 'en_GB' : 'tr_TR'],
+    ['twitter:title', document.title],
+    ['twitter:description', $('meta[name=description]')?.content || document.title],
+    [
+      'twitter:image',
+      $('meta[property="og:image"]')?.content || new URL('og-image.png', location.href).href,
+    ],
   ]) {
-    let n = $(`meta[property="${name}"]`);
+    const attr = name.startsWith('og:') ? 'property' : 'name';
+    let n = $(`meta[${attr}="${name}"]`);
     if (!n) {
       n = document.createElement('meta');
-      n.setAttribute('property', name);
+      n.setAttribute(attr, name);
       document.head.append(n);
     }
     n.content = value;
+  }
+  for (const lang of ['tr', 'en', 'x-default']) {
+    let n = $(`link[rel=alternate][hreflang="${lang}"]`);
+    if (!n) {
+      n = document.createElement('link');
+      n.rel = 'alternate';
+      n.hreflang = lang;
+      document.head.append(n);
+    }
+    const target = new URL(canonical);
+    target.searchParams.delete('lang');
+    if (lang === 'en') target.searchParams.set('lang', 'en');
+    n.href = target.href;
   }
 }
 

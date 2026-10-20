@@ -13,3 +13,4 @@ service-account*.json
 .seed-state.json.*
 *-adminsdk-*.json
 firebase-adminsdk*.json
+functions/site/

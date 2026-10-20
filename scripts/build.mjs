@@ -1,4 +1,4 @@
-import { cp, mkdir, readdir, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -15,12 +15,21 @@ const assets = [
   'manifest.json',
   'robots.txt',
   'sitemap.xml',
+  'og-image.png',
   'js',
 ];
 const pages = (await readdir(root)).filter((name) => name.endsWith('.html'));
 await mkdir(output, { recursive: true });
 for (const name of [...pages, ...assets]) {
   await cp(path.join(root, name), path.join(output, name), { recursive: true });
+}
+const templates = path.join(root, 'functions/site');
+await mkdir(templates, { recursive: true });
+for (const name of pages) await cp(path.join(root, name), path.join(templates, name));
+if (process.argv.includes('--firebase')) {
+  const hosting = JSON.parse(await readFile(path.join(root, 'firebase.json'), 'utf8')).hosting;
+  for (const name of hosting.ignore.filter((name) => /^[a-z-]+\.(html|xml)$/.test(name)))
+    await rm(path.join(output, name), { force: true });
 }
 const config = process.env.FIREBASE_WEB_CONFIG ? JSON.parse(process.env.FIREBASE_WEB_CONFIG) : null;
 if (config) {
@@ -46,4 +55,4 @@ if (config) {
     `export const cfg = ${JSON.stringify({ url: '', anon: '', firebase: config, api: '/api', emulators: process.env.FIREBASE_EMULATORS === 'true' ? { host: '127.0.0.1' } : null })};\n`,
   );
 }
-console.log(`${pages.length} sayfa ve istemci dosyaları .build dizinine kopyalandı.`);
+console.log(`${pages.length} sayfa ve istemci dosyaları yayına hazırlandı.`);

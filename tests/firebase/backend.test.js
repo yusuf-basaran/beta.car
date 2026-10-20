@@ -101,6 +101,7 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
     async () => {
       const home = await fetch('http://127.0.0.1:5000/');
       assert.equal(home.status, 200);
+      assert.match(await home.text(), /id="seo-schema"/);
       assert.match(home.headers.get('content-security-policy'), /frame-ancestors 'none'/);
       assert.equal(home.headers.get('x-content-type-options'), 'nosniff');
       assert.equal((await fetch('http://127.0.0.1:5000/icon-192.png')).status, 200);
@@ -182,6 +183,36 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
     await rpc('uye-a', 'kota', { p_ilan: listing, p_islem: 'yukari' });
     await reject(() => rpc('uye-a', 'kota', { p_ilan: listing, p_islem: 'yukari' }), /Günde/);
   });
+  await t.test(
+    'SEO yönlendirmesi ilan, yazı, sitemap ve özel sayfa durumlarını sunar',
+    async () => {
+      const base = 'http://127.0.0.1:5000';
+      const listingPage = await fetch(base + '/ilan.html?id=' + listing);
+      assert.equal(listingPage.status, 200);
+      assert.equal(listingPage.headers.get('cache-control'), 'no-store');
+      const html = await listingPage.text();
+      assert.match(html, /id="vehicle-schema"/);
+      assert.match(html, /Şehir içi bakım kayıtlı araç/);
+      assert.match(html, /rel="canonical"/);
+      const draft = (await query('uye-a', 'ilanlar')).find((r) => r.durum === 'taslak');
+      const hidden = await fetch(base + '/ilan.html?id=' + draft.id);
+      assert.equal(hidden.status, 404);
+      assert.equal(hidden.headers.get('cache-control'), 'no-store');
+      assert.match(hidden.headers.get('x-robots-tag'), /noindex/);
+      const post = (await query(null, 'yazilar'))[0];
+      const article = await fetch(
+        base + '/yazilar.html?s=' + encodeURIComponent(post.slug) + '&lang=en',
+      );
+      assert.match(await article.text(), /"@type":"Article"/);
+      const sitemap = await fetch(base + '/sitemap.xml');
+      assert.equal(sitemap.status, 200);
+      const xml = await sitemap.text();
+      assert.match(xml, new RegExp(listing));
+      assert.doesNotMatch(xml, new RegExp(draft.id));
+      assert.match((await fetch(base + '/hesabim.html')).headers.get('x-robots-tag'), /noindex/);
+      assert.equal((await fetch(base + '/index.html', { redirect: 'manual' })).status, 301);
+    },
+  );
   await t.test('Eşzamanlı paket taleplerinden yalnız biri açılır; IBAN gizli kalır', async () => {
     pack = (await query(null, 'paketler')).find(
       (r) => r.hedef === 'bireysel' && r.ilan_kotasi > 0,

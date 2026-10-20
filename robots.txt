@@ -1,11 +1,3 @@
 User-agent: *
-Disallow: /admin.html
-Disallow: /hesabim.html
-Disallow: /mesajlar.html
-Disallow: /giris.html
-Disallow: /ilan-ver.html
-Disallow: /foto.html
-Disallow: /*.sql
-Disallow: /seed.js
-Disallow: /KURULUM.md
+Allow: /
 Sitemap: https://beta-car-a019a9b0.web.app/sitemap.xml

@@ -88,7 +88,9 @@ export function mapContent(list) {
 }
 
 export async function listPage(id) {
-  meta(t('listTitle'));
+  meta(
+    t({ kullanilmis: 'used', sifir: 'new', parca: 'parts' }[params.get('kategori')] || 'listTitle'),
+  );
   const order = [
     ['yeni', 'latest'],
     ['fiyat_artan', 'priceAsc'],

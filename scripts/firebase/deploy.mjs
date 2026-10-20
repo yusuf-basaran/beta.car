@@ -90,7 +90,7 @@ if (process.env.INITIAL_ADMIN_EMAIL) {
     );
 }
 if (
-  spawnSync(process.execPath, ['scripts/build.mjs'], {
+  spawnSync(process.execPath, ['scripts/build.mjs', '--firebase'], {
     stdio: 'inherit',
     env: { ...process.env, FIREBASE_WEB_CONFIG: JSON.stringify(config) },
   }).status !== 0

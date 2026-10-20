@@ -45,6 +45,7 @@ export async function detailPage(id) {
   meta(
     c.baslik,
     `${c.marka || c.diger_marka || ''} ${c.model || c.diger_model || ''}, ${c.yil || ''}, ${money(c.fiyat, c.para_birimi)}, ${c.sehir || ''}`,
+    c.fotograflar?.[0],
   );
   const [ps, es, report, seller, hist, market] = await Promise.all([
     query(table('ilan_parca').eq('ilan_id', c.id)),
@@ -348,7 +349,7 @@ export async function detailPage(id) {
             '@type': 'Offer',
             price: c.fiyat,
             priceCurrency: c.para_birimi === 'TL' ? 'TRY' : c.para_birimi,
-            url: location.href,
+            url: $('link[rel=canonical]')?.href || location.href,
           }
         : undefined,
   });

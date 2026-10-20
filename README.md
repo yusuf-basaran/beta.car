@@ -20,6 +20,7 @@ Tarayıcı: HTML + CSS + ES modülleri + Firebase Web SDK
     ▼
 Cloud Functions → Firestore Standard / Cloud Storage / bildirim kuyruğu
 Cloud Scheduler → süre, kota ve bildirim bakımı
+Firebase Hosting → seo işlevi → açık sayfa HTML'i ve sitemap
 
 GitHub → Firebase CLI → Firebase Hosting (.build)
 ```
@@ -86,6 +87,10 @@ Yayın betiği hesap erişimini denetler, gerekirse proje ve web uygulaması aç
 Tüm istemci veritabanı yazmaları kapalıdır. Sunucu her istekte Auth hesabını, özel rolü, sahipliği, alan/tür/uzunluk sınırlarını ve hız sınırlarını kontrol eder. Dekont ve ekspertiz yolları özeldir; izinli görüntüleme bağlantıları 120 saniyede sona erer. IBAN yalnız sahibinin ödeme bekleyen talebinde açılır. Site tahsilat yapmaz, kapora toplamaz.
 
 CSP satır içi script ve stilleri engeller. HSTS, frame-ancestors ve diğer güvenlik başlıkları Firebase Hosting'de tanımlıdır. [Güvenlik incelemesi](docs/firebase-guvenlik.md), [bildirim kanalı](SECURITY.md) ve [istemci bağımlılıkları](docs/istemci-bagimliliklari.md) incelenebilir.
+
+## SEO
+
+Açık sayfalar sunucudan taranabilir HTML, canonical, TR/EN dil bağlantıları ve paylaşım etiketleri alır. Dinamik sitemap yayındaki kayıtları içerir; özel sayfalar indeks dışındadır. Yapılandırılmış veri, canlı kontrol sonuçları ve Search Console adımları [SEO belgesinde](docs/seo.md) yer alır.
 
 ## Ekran görüntüleri
 

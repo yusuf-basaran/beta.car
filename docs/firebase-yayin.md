@@ -13,7 +13,7 @@ Yayın tarihi: 20 Ekim 2026. Proje: `beta-car-a019a9b0` · Bölge: `europe-west1
 | Web yapılandırması ve ikonlar      | Yayında; kaynak bağlantı alanları boş                                            |
 | Faturalandırma                     | Açık hesap projeye bağlı; Blaze etkin                                            |
 | Storage                            | `EUROPE-WEST1` varsayılan bucket ve kurallar yayında; genel IAM erişimi kapalı   |
-| Functions                          | `api`, `bakim`, `temizlik`, `eposta`, `ilanBildirim` etkin                       |
+| Functions                          | `api`, `bakim`, `temizlik`, `eposta`, `ilanBildirim`, `seo` etkin                |
 | Cloud Scheduler                    | Bakım 15 dakikada bir, temizlik 03:20 UTC, e-posta iki dakikada bir              |
 | Hosting                            | 19 sayfa, API yönlendirmesi ve güvenlik başlıkları yayında                       |
 
@@ -34,5 +34,7 @@ Canlı tarayıcı kontrolünde 38 kategori, 20 donanım, 11 marka, 10 model ve �
 Üç Scheduler işinin canlı çalıştırma sonucu başarılıdır. E-posta işlevi, sağlayıcı ayarlanmadığı sürece teslimat yapmaz. Storage hizmet hesabının Firestore kural erişimi `roles/firebaserules.firestoreServiceAgent` rolüyle sağlanır; yayın betiği eksik rolü tamamlar.
 
 `robots.txt` ve `sitemap.xml` Hosting adresiyle eşleşir. Özel alan adı seçilirse Auth alan adları, robots ve sitemap birlikte güncellenir.
+
+Açık sayfalar ve sitemap `seo` işlevinden sunulur. 54 TR/EN sitemap adresi, canonical, JSON-LD ve indeks dışı sayfalar canlıda kontrol edilmiştir. Search Console oturumu ek yetki gerektirir; mülk doğrulaması ve sitemap gönderimi tamamlanmamıştır. Ayrıntılar [SEO belgesindedir](seo.md).
 
 İşletim için ilk yönetici, banka/paket ayarları ve onaylı yasal içerikler tamamlanır. Auth e-postaları Firebase Authentication kullanır; uygulama bildirim e-postası sağlayıcısı ve SMS henüz ayarlı değildir. Gerçek e-posta teslim testi ve tam araç kataloğu aktarımı ayrıca yapılır. Ayrıntılar [yayın kontrol listesinde](yayin-kontrol-listesi.md) yer alır.

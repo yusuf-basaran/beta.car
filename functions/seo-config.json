@@ -1,0 +1,77 @@
+{
+  "origin": "https://beta-car-a019a9b0.web.app",
+  "pages": {
+    "/": [
+      "KKTC Araç İlanları | BETA.CAR",
+      "North Cyprus Vehicle Listings | BETA.CAR",
+      "KKTC'de kullanılmış araç, sıfır araç ve parça ilanları. Girne, Lefkoşa, Gazimağusa, İskele, Güzelyurt ve Lefke ilanlarını inceleyin.",
+      "Browse used vehicles, new vehicles and parts in North Cyprus. Listings in Kyrenia, Nicosia, Famagusta, İskele, Güzelyurt and Lefke."
+    ],
+    "/ilanlar.html": [
+      "Araç İlanları",
+      "Vehicle Listings",
+      "KKTC araç ilanlarını marka, model, yıl, fiyat ve şehre göre arayın. Kaporta, donanım ve ithalat bilgilerini karşılaştırın.",
+      "Search North Cyprus vehicle listings by make, model, year, price and town. Compare body condition, equipment and import details."
+    ],
+    "/kullanilmis": [
+      "Kullanılmış Araçlar",
+      "Used Vehicles",
+      "KKTC kullanılmış araç ilanları. Binek, SUV, motor, ticari araç ve diğer taşıtları marka, model ve bütçeye göre inceleyin.",
+      "Used vehicles in North Cyprus. Browse cars, SUVs, motorcycles, commercial vehicles and other vehicles by make, model and budget."
+    ],
+    "/sifir": [
+      "Sıfır Araçlar",
+      "New Vehicles",
+      "KKTC sıfır araç ilanları. Binek, SUV, motor, ticari ve deniz araçlarının fiyatlarını ve satıcı bilgilerini inceleyin.",
+      "New vehicles in North Cyprus. Browse prices and seller details for cars, SUVs, motorcycles, commercial vehicles and boats."
+    ],
+    "/parca": [
+      "Parça & Donanım",
+      "Parts & Equipment",
+      "Binek araç, motor ve yük aracı parçaları. KKTC'deki aksesuar, mekanik, lastik, jant, akü ve yağ ilanlarını inceleyin.",
+      "Car, motorcycle and commercial vehicle parts in North Cyprus. Browse accessories, mechanical parts, tyres, wheels, batteries and oils."
+    ],
+    "/degerleme.html": [
+      "Araç Değerleme",
+      "Vehicle Valuation",
+      "Marka, model, yıl ve kilometre bilgilerine göre BETA.CAR ilanlarından tahmini fiyat aralığını hesaplayın.",
+      "Estimate a vehicle price range from BETA.CAR listings using make, model, year and mileage."
+    ],
+    "/model.html": [
+      "Model Fiyatları",
+      "Model Prices",
+      "KKTC'de model bazında araç fiyatlarını, ilan sayısını ve fiyat dağılımını inceleyin. Değerler güncel BETA.CAR ilanlarına dayanır.",
+      "View model prices, listing counts and price distribution in North Cyprus, based on current BETA.CAR listings."
+    ],
+    "/paketler.html": [
+      "Paketler",
+      "Packages",
+      "Bireysel ve kurumsal ilan paketlerinin kota, öne çıkarma hakkı ve sürelerini karşılaştırın. Paket ödemeleri site dışında yapılır.",
+      "Compare individual and business listing quotas, promotion rights and durations. Package payments take place outside the website."
+    ],
+    "/firmalar.html": [
+      "Firmalar",
+      "Businesses",
+      "KKTC galerileri, yetkili satıcıları, parça tedarikçileri ve ekspertiz merkezlerini şehir ve firma adına göre inceleyin.",
+      "Browse North Cyprus dealerships, authorised sellers, parts suppliers and inspection centres by town and business name."
+    ],
+    "/yazilar.html": [
+      "Garaj Yazıları",
+      "Garage Journal",
+      "KKTC'de araç alımı, ekspertiz, ithalat belgeleri ve araç kullanımı üzerine BETA.CAR yazılarını okuyun.",
+      "Read BETA.CAR articles on buying vehicles, inspections, import documents and vehicle ownership in North Cyprus."
+    ],
+    "/talepler.html": [
+      "Aranan Araç Talepleri",
+      "Wanted Vehicles",
+      "KKTC'de alıcıların marka, model, bütçe ve şehir tercihleriyle paylaştığı araç taleplerini inceleyin.",
+      "Browse vehicle requests from North Cyprus buyers with their preferred make, model, budget and town."
+    ],
+    "/karsilastir.html": [
+      "Araç Karşılaştırma",
+      "Vehicle Comparison",
+      "Üç araca kadar fiyat, kaporta, donanım ve teknik bilgileri yan yana karşılaştırın.",
+      "Compare prices, body condition, equipment and specifications for up to three vehicles."
+    ]
+  }
+}

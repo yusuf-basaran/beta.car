@@ -1,13 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://beta-car-a019a9b0.web.app/</loc></url>
-<url><loc>https://beta-car-a019a9b0.web.app/ilanlar.html</loc></url>
-<url><loc>https://beta-car-a019a9b0.web.app/degerleme.html</loc></url>
-<url><loc>https://beta-car-a019a9b0.web.app/paketler.html</loc></url>
-<url><loc>https://beta-car-a019a9b0.web.app/firmalar.html</loc></url>
-<url><loc>https://beta-car-a019a9b0.web.app/yazilar.html</loc></url>
-<url><loc>https://beta-car-a019a9b0.web.app/talepler.html</loc></url>
-<url><loc>https://beta-car-a019a9b0.web.app/kullanilmis</loc></url>
-<url><loc>https://beta-car-a019a9b0.web.app/sifir</loc></url>
-<url><loc>https://beta-car-a019a9b0.web.app/parca</loc></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<url>
+<loc>https://beta-car-a019a9b0.web.app/</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/ilanlar.html</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/ilanlar.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/ilanlar.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/ilanlar.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/ilanlar.html?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/ilanlar.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/ilanlar.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/ilanlar.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/kullanilmis</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/kullanilmis"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/kullanilmis?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/kullanilmis"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/kullanilmis?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/kullanilmis"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/kullanilmis?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/kullanilmis"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/sifir</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/sifir"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/sifir?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/sifir"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/sifir?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/sifir"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/sifir?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/sifir"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/parca</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/parca"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/parca?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/parca"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/parca?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/parca"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/parca?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/parca"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/degerleme.html</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/degerleme.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/degerleme.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/degerleme.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/degerleme.html?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/degerleme.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/degerleme.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/degerleme.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/model.html</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/model.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/model.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/model.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/model.html?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/model.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/model.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/model.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/paketler.html</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/paketler.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/paketler.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/paketler.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/paketler.html?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/paketler.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/paketler.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/paketler.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/firmalar.html</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/firmalar.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/firmalar.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/firmalar.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/firmalar.html?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/firmalar.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/firmalar.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/firmalar.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/yazilar.html</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/yazilar.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/yazilar.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/yazilar.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/yazilar.html?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/yazilar.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/yazilar.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/yazilar.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/talepler.html</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/talepler.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/talepler.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/talepler.html"/>
+</url>
+<url>
+<loc>https://beta-car-a019a9b0.web.app/talepler.html?lang=en</loc>
+<xhtml:link rel="alternate" hreflang="tr" href="https://beta-car-a019a9b0.web.app/talepler.html"/>
+<xhtml:link rel="alternate" hreflang="en" href="https://beta-car-a019a9b0.web.app/talepler.html?lang=en"/>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://beta-car-a019a9b0.web.app/talepler.html"/>
+</url>
 </urlset>

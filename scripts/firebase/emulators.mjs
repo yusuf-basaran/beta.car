@@ -10,7 +10,10 @@ const env = {
     appId: 'demo-beta-car-web',
   }),
 };
-const build = spawnSync(process.execPath, ['scripts/build.mjs'], { env, stdio: 'inherit' });
+const build = spawnSync(process.execPath, ['scripts/build.mjs', '--firebase'], {
+  env,
+  stdio: 'inherit',
+});
 if (build.status !== 0) process.exit(build.status || 1);
 const result = spawnSync(
   process.execPath,

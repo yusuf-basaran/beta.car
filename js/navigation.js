@@ -1,6 +1,6 @@
 import { esc } from './utils.js';
 import { state } from './state.js';
-import { $, $$, fail, footer, header, icon } from './ui.js';
+import { $, $$, fail, footer, header, icon, syncMeta } from './ui.js';
 import { t } from './i18n.js';
 import { home } from './pages/home.js';
 import { listPage } from './pages/list.js';
@@ -21,6 +21,7 @@ import { adminPage } from './pages/admin.js';
 
 export function render() {
   document.documentElement.lang = state.lang;
+  syncMeta();
   header();
   footer();
   $$('[data-i]').forEach((n) => (n.textContent = t(n.dataset.i)));

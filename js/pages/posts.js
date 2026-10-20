@@ -22,7 +22,7 @@ export async function postsPage() {
     }
     const title = state.lang === 'en' ? p.baslik_en : p.baslik,
       content = state.lang === 'en' ? p.icerik_en : p.icerik;
-    meta(title, state.lang === 'en' ? p.ozet_en : p.ozet);
+    meta(title, state.lang === 'en' ? p.ozet_en : p.ozet, p.kapak);
     $('#main').insertAdjacentHTML(
       'beforeend',
       `<article class="panel prose article"><h1>` +

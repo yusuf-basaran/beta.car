@@ -24,7 +24,24 @@
   },
   "hosting": {
     "public": ".build",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "index.html",
+      "ilanlar.html",
+      "ilan.html",
+      "model.html",
+      "degerleme.html",
+      "karsilastir.html",
+      "talepler.html",
+      "paketler.html",
+      "firmalar.html",
+      "firma.html",
+      "yazilar.html",
+      "sayfa.html",
+      "sitemap.xml"
+    ],
     "cleanUrls": false,
     "rewrites": [
       {
@@ -35,16 +52,18 @@
         }
       },
       {
-        "source": "/kullanilmis",
-        "destination": "/ilanlar.html"
+        "source": "/",
+        "function": {
+          "functionId": "seo",
+          "region": "europe-west1"
+        }
       },
       {
-        "source": "/sifir",
-        "destination": "/ilanlar.html"
-      },
-      {
-        "source": "/parca",
-        "destination": "/ilanlar.html"
+        "source": "/{index.html,ilanlar.html,ilan.html,model.html,degerleme.html,karsilastir.html,talepler.html,paketler.html,firmalar.html,firma.html,yazilar.html,sayfa.html,sitemap.xml,kullanilmis,sifir,parca}",
+        "function": {
+          "functionId": "seo",
+          "region": "europe-west1"
+        }
       }
     ],
     "headers": [
@@ -72,6 +91,40 @@
             "value": "max-age=31536000; includeSubDomains"
           }
         ]
+      },
+      {
+        "source": "/{admin,hesabim,mesajlar,giris,ilan-ver,foto}.html",
+        "headers": [
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex, nofollow"
+          }
+        ]
+      },
+      {
+        "source": "/api{,/**}",
+        "headers": [
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex, nofollow"
+          }
+        ]
+      },
+      {
+        "source": "/404.html",
+        "headers": [
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex, follow"
+          }
+        ]
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/index.html",
+        "destination": "/",
+        "type": 301
       }
     ]
   },

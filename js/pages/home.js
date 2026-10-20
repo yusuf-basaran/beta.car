@@ -1,4 +1,4 @@
-import { $, $$, bindCards, card, chips, header, icon, path, titleLink } from '../ui.js';
+import { $, $$, bindCards, card, chips, header, icon, path, titleLink, meta } from '../ui.js';
 import { number, t } from '../i18n.js';
 import { nav, sections } from '../data.js';
 import { state } from '../state.js';
@@ -41,6 +41,7 @@ export const drawing = () =>
   </svg>`;
 
 export function home() {
+  meta(t('seoHomeTitle'), t('seoHomeDescription'));
   $('#main').innerHTML =
     `<section class="hero"><div class="wrap hero-top"><div><p class="eyebrow">` +
     `${esc(t('island'))}` +

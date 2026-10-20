@@ -78,8 +78,16 @@ test('Dil değişimi sözlük ve sayfa dilini günceller', async ({ page }) => {
   await page.locator('#language').click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('.hero h1')).toHaveText('The right vehicle. Clear details.');
+  await expect(page).toHaveURL(/lang=en/);
+  await expect(page).toHaveTitle('North Cyprus Vehicle Listings | BETA.CAR');
+  await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href', /\?lang=en$/);
+  await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute(
+    'content',
+    'North Cyprus Vehicle Listings | BETA.CAR',
+  );
   await page.locator('#language').click();
   await expect(page.locator('.hero h1')).toHaveText('Doğru araç. Net bilgi.');
+  await expect(page).not.toHaveURL(/lang=en/);
 });
 
 test('404 sayfası ana sayfaya dönüş sunar', async ({ page }) => {

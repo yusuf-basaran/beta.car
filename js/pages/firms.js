@@ -108,7 +108,7 @@ export async function firmPage() {
     $('#main').insertAdjacentHTML('beforeend', empty());
     return;
   }
-  meta(c.ad, c.hakkinda);
+  meta(c.ad, c.hakkinda, c.kapak || c.logo);
   const b = c.bilgiler || {},
     [list, reviews] = await Promise.all([
       rpc('ilan_ara', { p: { satici: c.kullanici_id } }),

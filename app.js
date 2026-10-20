@@ -126,7 +126,10 @@ async function start() {
     notify(t('error'));
   }
 }
-state.lang = read('bc-lang', 'tr') === 'en' ? 'en' : 'tr';
+state.lang =
+  (new URLSearchParams(location.search).get('lang') || read('bc-lang', 'tr')) === 'en'
+    ? 'en'
+    : 'tr';
 const category =
   new URLSearchParams(location.search).get('kategori') ||
   { '/kullanilmis': 'kullanilmis', '/sifir': 'sifir', '/parca': 'parca' }[location.pathname];

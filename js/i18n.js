@@ -2,6 +2,11 @@ import { state } from './state.js';
 import { bodyLabels, bodyStates, groupEn, groups, stateKeys } from './data.js';
 
 export const D = {
+  seoHomeTitle: ['KKTC Araç İlanları', 'North Cyprus Vehicle Listings'],
+  seoHomeDescription: [
+    "KKTC'de kullanılmış araç, sıfır araç ve parça ilanları. Girne, Lefkoşa, Gazimağusa, İskele, Güzelyurt ve Lefke ilanlarını inceleyin.",
+    'Browse used vehicles, new vehicles and parts in North Cyprus. Listings in Kyrenia, Nicosia, Famagusta, İskele, Güzelyurt and Lefke.',
+  ],
   skip: ['İçeriğe geç', 'Skip to content'],
   used: ['Kullanılmış Araçlar', 'Used Vehicles'],
   new: ['Sıfır Araçlar', 'New Vehicles'],
