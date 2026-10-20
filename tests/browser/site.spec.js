@@ -145,6 +145,19 @@ test('Karşılaştırma kaydedilen aracı gösterir', async ({ page }) => {
   await expect(page.locator('main table')).toContainText('Kaporta ve Ekspertiz');
 });
 
+test('Araç talebi formu doğrudan açılınca marka ve model seçeneklerini yükler', async ({
+  page,
+}) => {
+  await setup(page, (f) => {
+    f.guest = true;
+  });
+  await page.goto('/talepler.html');
+  await expect(page.locator('#wanted-form')).toBeVisible();
+  await expect(page.locator('datalist[id^=makes] option')).toHaveCount(2);
+  await page.locator('#wanted-form [name=marka]').fill(data.lex.markalar[0][1]);
+  await expect(page.locator('datalist[id^=models] option')).toHaveCount(2);
+});
+
 test('Giriş ve kayıt formları geçersiz alanları göndermez', async ({ page }) => {
   await setup(page, (f) => {
     f.guest = true;

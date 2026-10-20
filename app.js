@@ -31,7 +31,7 @@ async function start() {
       return;
     }
     const references = async () => {
-      const vehicles = ['home', 'list', 'editor', 'valuation', 'model'].includes(page);
+      const vehicles = ['home', 'list', 'editor', 'valuation', 'model', 'wanted'].includes(page);
       let cached;
       if (vehicles) {
         try {
