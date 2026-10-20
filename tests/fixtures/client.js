@@ -151,7 +151,14 @@ export async function createClient() {
         konusma_ac: T.konusmalar[0].id,
         kota: { id: T.ilanlar[0].id, durum: 'yayinda' },
       };
-      return Promise.resolve({ data: out[name] ?? true, error: null });
+      const response = globalThis.fixture.rpcFailures?.includes(name)
+        ? { data: null, error: Error('Bağlantı kesildi') }
+        : { data: out[name] ?? true, error: null };
+      return globalThis.fixture.rpcDelay?.[name]
+        ? new Promise((resolve) =>
+            setTimeout(() => resolve(response), globalThis.fixture.rpcDelay[name]),
+          )
+        : Promise.resolve(response);
     },
     storage: {
       from() {

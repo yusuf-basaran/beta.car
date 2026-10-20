@@ -14,6 +14,7 @@ import {
   path,
   price,
   safety,
+  skeleton,
   titleLink,
 } from '../ui.js';
 import { state } from '../state.js';
@@ -28,7 +29,8 @@ import { cityList } from '../data.js';
 
 export async function detailPage(id) {
   $('#main').innerHTML =
-    pageHead('detailTitle') + (state.db ? '' : `<p class="empty">${esc(t('connect'))}</p>`);
+    pageHead('detailTitle') +
+    (state.db ? skeleton(2) : `<p class="empty">${esc(t('connect'))}</p>`);
   if (!state.db) return;
   let q = table('ilan_kartlari');
   if (params.get('no')) q = q.eq('no', params.get('no'));

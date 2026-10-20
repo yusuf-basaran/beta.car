@@ -13,6 +13,7 @@ import {
   meta,
   notify,
   pageHead,
+  skeleton,
 } from '../ui.js';
 import { button, check, inp, label, safeAction, select } from '../forms.js';
 import { params } from '../context.js';
@@ -166,7 +167,8 @@ export async function listPage(id) {
     values = bindVehicles(form);
   let view = 'listView',
     page = Number(params.get('sayfa') || 1),
-    timer;
+    timer,
+    request = 0;
   for (const [k, v] of params) {
     const el = form.elements.namedItem(k);
     if (el && k !== 'marka' && k !== 'model' && k !== 'donanim') {
@@ -199,8 +201,22 @@ export async function listPage(id) {
       $('#results').innerHTML = `<p class="empty">${esc(t('connect'))}</p>`;
       return;
     }
-    const r = await rpc('ilan_ara', { p });
-    if (id !== state.routeId) return;
+    const current = ++request,
+      results = $('#results');
+    results.setAttribute('aria-busy', 'true');
+    results.innerHTML = skeleton(3);
+    $('#pagination').innerHTML = '';
+    let r;
+    try {
+      r = await rpc('ilan_ara', { p });
+    } catch (error) {
+      if (id !== state.routeId || current !== request) return;
+      results.innerHTML = `<p class="empty" role="alert">${esc(t('error'))}</p>`;
+      throw error;
+    } finally {
+      if (id === state.routeId && current === request) results.setAttribute('aria-busy', 'false');
+    }
+    if (id !== state.routeId || current !== request) return;
     state.listed = r.ilanlar;
     if (params.has('son'))
       state.listed = state.listed.filter((c) => read('bc-recent').includes(c.id));
@@ -232,6 +248,7 @@ export async function listPage(id) {
     );
   }
   function draw() {
+    if ($('#results').getAttribute('aria-busy') === 'true') return;
     $('#results').className = view === 'gridView' ? 'listing-grid' : 'listing-list';
     $('#results').innerHTML =
       view === 'mapView' ? mapContent(state.listed) : state.listed.map(card).join('') || empty();

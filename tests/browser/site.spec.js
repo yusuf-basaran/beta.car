@@ -46,6 +46,7 @@ for (const guest of [false, true]) {
     });
     await page.goto('/ilan-ver.html');
     await expect(page.locator('main')).toHaveAttribute('aria-busy', 'true');
+    await expect(page.locator('[data-startup] .skeleton')).toBeVisible();
     await expect(page.getByRole('status').filter({ hasText: 'Yükleniyor' })).toBeVisible();
     await expect(page.locator('main a[href^="giris.html"]')).toHaveCount(0);
     if (guest) await expect(page.locator('main')).toContainText('Bu işlem için giriş yapın.');
@@ -95,6 +96,83 @@ test('Ana sayfa gereksiz modülleri yüklemez ve sözlüğü yeniden indirmez', 
     await page.evaluate(() => globalThis.calls.find((c) => c.name === 'baslangic').p.p_sozluk),
   ).toBe(false);
   await expect(page.locator('datalist[id^=makes] option')).toHaveCount(2);
+});
+
+test('Mobil skeleton erişilebilir yüklenme metni sunar ve veri gelince kaldırılır', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await setup(page, (f) => {
+    f.delay = 2200;
+    f.guest = true;
+  });
+  await page.goto('/');
+  await expect(page.locator('#feed .skeleton')).toHaveCount(8);
+  await expect(page.locator('#feed .skeleton').first()).toHaveAttribute('aria-hidden', 'true');
+  expect(
+    await page
+      .locator('.skeleton-shape')
+      .first()
+      .evaluate((n) => getComputedStyle(n).animationName),
+  ).toBe('none');
+  expect(await page.locator('.skeleton a, .skeleton button, .skeleton input').count()).toBe(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+  await page.locator('#language').click();
+  await expect(page.locator('#feed [role=status]')).toHaveText('Loading…');
+  await expect(page.locator('.listing').first()).toBeVisible();
+  await expect(page.locator('.skeleton')).toHaveCount(0);
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false');
+});
+
+test('Filtre ve sıralama beklerken skeleton gösterilir; en yeni sonuç korunur', async ({
+  page,
+}) => {
+  await setup(page);
+  await page.goto('/ilanlar.html');
+  await expect(page.locator('#results .listing')).toBeVisible();
+  await page.evaluate(async () => {
+    const { state } = await import('/js/state.js');
+    const rpc = state.db.rpc;
+    state.db.rpc = async (name, p) => {
+      const response = await rpc(name, p);
+      if (name === 'ilan_ara') {
+        await new Promise((r) => setTimeout(r, p.p.sira === 'fiyat_artan' ? 1200 : 100));
+        response.data.ilanlar = response.data.ilanlar.map((c) => ({ ...c, baslik: p.p.sira }));
+      }
+      return response;
+    };
+  });
+  await page.locator('[name=sira]').selectOption('fiyat_artan');
+  await expect(page.locator('#results .skeleton')).toBeVisible();
+  await expect(page.locator('#results')).toHaveAttribute('aria-busy', 'true');
+  await page.locator('[name=sira]').selectOption('fiyat_azalan');
+  await expect(page.locator('#results')).toContainText('fiyat_azalan');
+  await page.waitForTimeout(1250);
+  await expect(page.locator('#results')).toContainText('fiyat_azalan');
+  await expect(page.locator('#results .skeleton')).toHaveCount(0);
+  await expect(page.locator('#results')).toHaveAttribute('aria-busy', 'false');
+});
+
+test('Sonuç veya detay isteği başarısız olunca skeleton takılı kalmaz', async ({ page }) => {
+  await setup(page, (f) => {
+    f.rpcFailures = ['ilan_ara'];
+    f.rpcDelay = { ilan_ara: 800 };
+  });
+  await page.goto('/ilanlar.html');
+  await expect(page.locator('#results .skeleton')).toBeVisible();
+  await expect(page.locator('#results [role=alert]')).toContainText('Veriler alınamadı.');
+  await expect(page.locator('#results .skeleton')).toHaveCount(0);
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false');
+  await setup(page, (f) => {
+    f.rpcFailures = ['satici'];
+    f.rpcDelay = { satici: 800 };
+  });
+  await page.goto('/ilan.html?id=' + id);
+  await expect(page.locator('main .skeleton')).toBeVisible();
+  await expect(page.locator('main [role=alert]')).toContainText('Veriler alınamadı.');
+  await expect(page.locator('main .skeleton')).toHaveCount(0);
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false');
 });
 
 test('Ana sayfa ilanı ve bağlı araç listelerini yükler', async ({ page }) => {

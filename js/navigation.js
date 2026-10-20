@@ -1,6 +1,6 @@
 import { esc } from './utils.js';
 import { state } from './state.js';
-import { $, $$, fail, footer, header, icon, syncMeta } from './ui.js';
+import { $, $$, fail, footer, header, icon, skeleton, syncMeta } from './ui.js';
 import { t } from './i18n.js';
 import { home } from './pages/home.js';
 
@@ -14,8 +14,12 @@ export function render() {
   main.setAttribute('aria-busy', String(state.phase === 'loading'));
   if (state.phase === 'loading') {
     if (document.body.dataset.page === 'home') home();
-    else if (!main.textContent.trim() || main.querySelector('[data-startup]'))
-      main.innerHTML = `<p class="wrap empty" data-startup role="status">${esc(t('loading'))}</p>`;
+    else {
+      const loading = `<div class="wrap page" data-startup>${skeleton(2)}</div>`;
+      if (main.querySelector('[data-startup]'))
+        main.querySelector('[data-startup]').outerHTML = loading;
+      else main.insertAdjacentHTML('beforeend', loading);
+    }
     return;
   }
   if (state.phase === 'error' || state.phase === 'unconfigured') {
@@ -64,6 +68,16 @@ export async function route() {
   };
   const entry = map[page];
   if (!entry) return;
-  const module = await import(`./pages/${entry[0]}.js`);
-  if (id === state.routeId) await module[entry[1]](entry.length > 2 ? entry[2] : id);
+  const main = $('#main');
+  main.setAttribute('aria-busy', 'true');
+  try {
+    const module = await import(`./pages/${entry[0]}.js`);
+    if (id === state.routeId) await module[entry[1]](entry.length > 2 ? entry[2] : id);
+  } catch (error) {
+    if (id === state.routeId && main.querySelector('.skeleton'))
+      main.innerHTML = `<p class="empty" role="alert">${esc(t('error'))}</p>`;
+    throw error;
+  } finally {
+    if (id === state.routeId) main.setAttribute('aria-busy', 'false');
+  }
 }

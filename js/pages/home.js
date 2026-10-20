@@ -1,4 +1,16 @@
-import { $, $$, bindCards, card, chips, header, icon, path, titleLink, meta } from '../ui.js';
+import {
+  $,
+  $$,
+  bindCards,
+  card,
+  chips,
+  header,
+  icon,
+  path,
+  titleLink,
+  meta,
+  skeleton,
+} from '../ui.js';
 import { number, t } from '../i18n.js';
 import { nav, sections } from '../data.js';
 import { state } from '../state.js';
@@ -102,7 +114,7 @@ export function home() {
     `</a><a href="talepler.html">` +
     `${esc(t('wantedTitle'))}` +
     `</a></div><div id="feed" class="wrap feed">` +
-    `${state.phase === 'loading' ? `<p class="connection" role="status">${esc(t('loading'))}</p>` : !state.db ? `<p class="connection" role="status">${esc(t('offline'))}</p>` : ''}` +
+    `${state.phase === 'loading' ? `<span class="sr-only" role="status">${esc(t('loading'))}</span>` : !state.db ? `<p class="connection" role="status">${esc(t('offline'))}</p>` : ''}` +
     `${sections.map(([s, filter], i) => section(s, filter) + (i === 1 ? banner(1) : i === 5 ? banner(2) : '')).join('')}` +
     `</div>`;
   const form = $('#search-form'),
@@ -187,7 +199,7 @@ export function section(s, filter) {
         ? 'yazilar.html'
         : `ilanlar.html?${s === 'parts' ? 'kategori=parca' : filter ? `onecikarma=${filter}` : s === 'recent' ? 'son=1' : ''}`;
   let content;
-  if (state.phase === 'loading') content = `<p class="empty">${esc(t('loading'))}</p>`;
+  if (state.phase === 'loading') content = skeleton(1, false);
   else if (s === 'galleries' || s === 'dealers') {
     const list = state.firms.filter((f) => f.tur === filter);
     content = list.length

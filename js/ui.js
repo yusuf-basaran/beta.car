@@ -28,6 +28,13 @@ export const icon = (name) =>
 export const titleLink = (label, url) =>
   `<div class="section-head"><h2>${esc(t(label))}</h2><a href="${esc(url)}">${esc(t('all'))}${icon('arrow')}</a></div>`;
 
+export function skeleton(count = 1, announce = true) {
+  return `<div class="skeleton" ${announce ? 'role="status"' : 'aria-hidden="true"'}>
+    ${announce ? `<span class="sr-only">${esc(t('loading'))}</span>` : ''}
+    ${Array.from({ length: count }, () => `<div class="skeleton-card" aria-hidden="true"><span class="skeleton-shape"></span><div class="skeleton-body">${'<span class="skeleton-shape skeleton-bar"></span>'.repeat(4)}</div></div>`).join('')}
+  </div>`;
+}
+
 export function notify(s) {
   const n = $('#notice');
   n.textContent = s;
