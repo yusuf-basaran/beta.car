@@ -1,6 +1,33 @@
 import { test, expect } from '@playwright/test';
 import { data, id, setup } from '../fixtures/setup.js';
 
+test('Betik gecikince başlık alanı sayfayı kaydırmaz', async ({ page }) => {
+  await setup(page);
+  for (const width of [390, 800, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    let release;
+    const ready = new Promise((resolve) => {
+      release = resolve;
+    });
+    await page.route('**/app.js', async (route) => {
+      await ready;
+      await route.continue();
+    });
+    const navigation = page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => {
+      const header = document.getElementById('header');
+      return header && parseFloat(getComputedStyle(header).height) > 0;
+    });
+    const before = await page.locator('main').boundingBox();
+    release();
+    await navigation;
+    await expect(page.locator('.hero h1')).toBeVisible();
+    const after = await page.locator('main').boundingBox();
+    expect(Math.abs(before.y - after.y)).toBeLessThan(1);
+    await page.unroute('**/app.js');
+  }
+});
+
 test('Ana sayfa ilanı ve bağlı araç listelerini yükler', async ({ page }) => {
   await setup(page);
   const errors = [];

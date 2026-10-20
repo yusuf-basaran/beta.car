@@ -27,6 +27,8 @@ Sonuç beş dakika önbellekte tutulur. Büyük sonuçlar 40.000 URL'lik parçal
 
 Canlı sitemap'teki 54 bağlantının tamamı 200 yanıtı verdi. Canonical, dil eşleri, JSON-LD, title/description, paylaşım etiketleri ve kaynak HTML kontrol edildi. Özel sayfa başlıkları, 301, 404, mobil genişlik ve gerçek SDK ile çalışan arayüz doğrulandı; tarayıcı veya CSP hatası görülmedi.
 
+Betik yüklenirken başlık alanı önceden ayrılır. Geciken betikle yapılan 390, 800 ve 1440 piksel tarayıcı testinde ana içeriğin üst konumu korundu.
+
 Birim testleri zararlı metin kaçışı, JSON-LD, canonical, sitemap kapsamı/parçalama, TR/EN, özel kayıt ve durum kodlarını sınar. Firebase emülatörü gerçek ilan ve yazıyla Hosting yönlendirmesini kontrol eder.
 
 ## Search Console

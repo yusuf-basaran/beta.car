@@ -18,6 +18,7 @@
   --s7: 48px;
   --s8: 64px;
   --width: 1200px;
+  --header-height: 150px;
   --carbon:
     repeating-linear-gradient(45deg, transparent 0 3px, #ffffff03 3px 4px),
     repeating-linear-gradient(-45deg, transparent 0 3px, #00000040 3px 4px);
@@ -183,6 +184,11 @@ main {
   position: sticky;
   top: 0;
   z-index: 30;
+}
+@media (scripting: enabled) {
+  #header:empty {
+    height: var(--header-height);
+  }
 }
 .header {
   background: var(--carbon), var(--bg);
@@ -870,6 +876,9 @@ h2 {
   }
 }
 @media (max-width: 1000px) {
+  :root {
+    --header-height: 198px;
+  }
   .main-nav {
     overflow-x: auto;
     margin: 0;
@@ -912,6 +921,7 @@ h2 {
 }
 @media (max-width: 640px) {
   :root {
+    --header-height: 165.5px;
     --s7: 32px;
     --s8: 48px;
   }
