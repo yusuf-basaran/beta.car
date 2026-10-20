@@ -157,7 +157,7 @@ export async function listPage(id) {
       `${button('clear', 'clear-filter', 'text-btn')}` +
       `</div></form><div class="results"><div class="result-tools"><strong id="result-count" aria-live="polite">—</strong>` +
       `${select('sira', order, params.get('sira') || 'yeni', false)}` +
-      `${esc(currencyTools())}` +
+      `${currencyTools()}` +
       `<div class="view-switch">` +
       `${['listView', 'gridView', 'mapView'].map((k) => `<button data-view="${esc(k)}" aria-pressed="${esc(k === 'listView')}">${esc(t(k))}</button>`).join('')}` +
       `</div><button class="text-btn" id="save-search">` +

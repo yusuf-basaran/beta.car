@@ -196,6 +196,8 @@ test('Şehir filtresi, sıralama ve harita görünümü', async ({ page }) => {
   );
   await page.goto('/ilanlar.html');
   await expect(page.locator('#results .listing')).toHaveCount(2);
+  await expect(page.locator('[name=display_currency]')).toBeVisible();
+  await expect(page.locator('.result-tools')).not.toContainText('<label>');
   await page.locator('[name=sira]').selectOption('fiyat_artan');
   await expect(page.locator('#results .listing').first()).toContainText('10.000');
   await page.locator('[name=sehir]').selectOption('Girne');
