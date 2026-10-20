@@ -2,6 +2,8 @@
 
 BETA.CAR, Kuzey Kıbrıs için araç ve parça ilan platformudur. Kullanılmış araç, sıfır araç ve parça ilanlarını bireysel ve kurumsal satıcılarla bir araya getirir. Marka sloganı: **Luxury & Prestige Gallery**.
 
+[Siteyi aç](https://beta-car-a019a9b0.web.app) · [Yayın kaydı](docs/firebase-yayin.md)
+
 ## Özellikler
 
 - İlan arama, ayrıntılı filtreler, ilçe düzeyinde harita, kaporta ve donanım bilgileri

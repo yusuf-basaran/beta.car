@@ -1,4 +1,11 @@
-import { client, ensure, checkBillingEnabled } from './client.mjs';
+import {
+  client,
+  ensure,
+  checkBillingEnabled,
+  getProjectNumber,
+  serviceAccountHasRoles,
+  addServiceAccountToRoles,
+} from './client.mjs';
 const project = process.argv[2],
   api = await client(project, 'https://firebasestorage.googleapis.com', 'v1alpha');
 if (!(await checkBillingEnabled(project)))
@@ -15,4 +22,9 @@ try {
     storageClass: 'STANDARD',
   });
 }
+const number = await getProjectNumber({ project }),
+  account = `service-${number}@gcp-sa-firebasestorage.iam.gserviceaccount.com`,
+  roles = ['roles/firebaserules.firestoreServiceAgent'];
+if (!(await serviceAccountHasRoles(project, account, roles, true)))
+  await addServiceAccountToRoles(project, account, roles, true);
 console.log('Storage alanı hazır.');

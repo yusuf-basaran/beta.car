@@ -6,6 +6,8 @@ Cloud Functions Admin SDK güvenlik kurallarını atladığından sunucu her iş
 
 Firestore istemci yazmaları tamamen kapalıdır. Dinleyiciler yalnız üyenin konuşma, mesaj, bildirim ve kendi ilanını okuyabilir. Finansal kayıtlar, telefon tercihleri ve banka ayarları sunucu süzgecinden geçer. Talep sahibine makbuz notu verilmez. Halka açık ilan yanıtından şasi ve plaka numarası çıkarılır.
 
+Storage kuralları Firestore sahiplik ve talep kayıtlarını okur. Yayın betiği Storage hizmet hesabında `roles/firebaserules.firestoreServiceAgent` rolünü denetler ve eksikse ekler; bucket genel IAM erişimine açılmaz. Firebase CLI etkileşimsiz modda bu çapraz hizmet yetkisini denetlemediğinden yalnız kuralların yayımlanması yeterli değildir.
+
 ## Denetlenen sınırlar
 
 | Alan      | Sunucu ve kural denetimi                                                                          |

@@ -1,8 +1,8 @@
 # Firebase yayın kaydı
 
-Proje: `beta-car-a019a9b0` · Bölge: `europe-west1` · Firestore Standard.
+Yayın tarihi: 20 Ekim 2026. Proje: `beta-car-a019a9b0` · Bölge: `europe-west1` · Firestore Standard.
 
-[Firebase Console](https://console.firebase.google.com/project/beta-car-a019a9b0/overview)
+[Site](https://beta-car-a019a9b0.web.app) · [Firebase Console](https://console.firebase.google.com/project/beta-car-a019a9b0/overview)
 
 | Bileşen                            | Durum                                                                            |
 | ---------------------------------- | -------------------------------------------------------------------------------- |
@@ -10,14 +10,16 @@ Proje: `beta-car-a019a9b0` · Bölge: `europe-west1` · Firestore Standard.
 | E-posta/parola girişi              | Etkin; anonim üyelik kapalı                                                      |
 | Firestore                          | Veritabanı, kurallar ve indeksler yayında; silme koruması açık                   |
 | Başlangıç verileri                 | Kategori, donanım, fiyatsız paket, ayar, araç sözlüğü ve içerik kayıtları mevcut |
-| Web yapılandırması ve ikonlar      | Yayın çıktısında hazır; kaynak bağlantı alanları boş                             |
-| Storage                            | Blaze planının etkinleştirilmesini bekliyor                                      |
-| Functions ve Cloud Scheduler       | Blaze planının etkinleştirilmesini bekliyor                                      |
-| Hosting                            | Tam uygulama yayını henüz yapılmadı                                              |
+| Web yapılandırması ve ikonlar      | Yayında; kaynak bağlantı alanları boş                                            |
+| Faturalandırma                     | Açık hesap projeye bağlı; Blaze etkin                                            |
+| Storage                            | `EUROPE-WEST1` varsayılan bucket ve kurallar yayında; genel IAM erişimi kapalı   |
+| Functions                          | `api`, `bakim`, `temizlik`, `eposta`, `ilanBildirim` etkin                       |
+| Cloud Scheduler                    | Bakım 15 dakikada bir, temizlik 03:20 UTC, e-posta iki dakikada bir              |
+| Hosting                            | 19 sayfa, API yönlendirmesi ve güvenlik başlıkları yayında                       |
 
-Firebase CLI, `artifactregistry.googleapis.com` hizmetini açmak ve sunucu işlevlerini yayımlamak için Blaze planını zorunlu tutar. Projede faturalandırma kapalıdır. Plan [Firebase Console üzerinden](https://console.firebase.google.com/project/beta-car-a019a9b0/usage/details) etkinleştirilir. Blaze kullanım bazlı ücretlendirilir; ücretsiz kotalar bulunur. Google faturalandırma bilgileri depoya veya siteye yazılmaz.
+Blaze kullanım bazlı ücretlendirilir; ücretsiz kotalar bulunur. Google faturalandırma bilgileri depoda veya sitede tutulmaz. Artifact Registry işlev imajlarında otomatik silme kapalıdır; saklama politikası ayrıca yönetilir.
 
-Plan etkinleştirildikten sonra:
+Yeniden yayın:
 
 ```bash
 npm ci
@@ -25,8 +27,12 @@ npm ci --prefix functions
 npm run firebase:deploy
 ```
 
-Betik mevcut projeyi seçer; Auth, Firestore ve başlangıç kayıtlarını güvenle kontrol eder. Sunucu ve Storage dağıtımından sonra Hosting'i yayımlar. Başlangıç verilerindeki işlem işareti, tekrar çalıştırmada yönetici değişikliklerinin üzerine yazılmasını engeller. Yerel `INITIAL_ADMIN_EMAIL` ayarı Git dışındaki proje ortam dosyasında tutulur; ilgili hesap e-postasını doğrulayınca ilk yönetici yetkisi bir kez atanır.
+Betik mevcut projeyi seçer; Auth, Firestore ve başlangıç kayıtlarını kontrol eder. Sunucu ve Storage dağıtımından sonra Hosting'i yayımlar. Başlangıç verilerindeki işlem işareti, tekrar çalıştırmada yönetici değişikliklerinin üzerine yazılmasını engeller. Yerel `INITIAL_ADMIN_EMAIL` ayarı Git dışındaki proje ortam dosyasında tutulur; ilgili hesap sitede kayıt olup e-postasını doğrulayınca ilk yönetici yetkisi bir kez atanır. İlk yönetici hesabının kaydı ve doğrulaması hesap sahibi tarafından tamamlanır.
 
-Hedef Hosting adresi `https://beta-car-a019a9b0.web.app` şeklindedir. Tam yayın tamamlanmadan bu adres çalışan ilan sitesi olarak kullanılmaz. Özel alan adı seçilirse Auth alan adları, robots ve sitemap birlikte güncellenir.
+Canlı tarayıcı kontrolünde 38 kategori, 20 donanım, 11 marka, 10 model ve üç yazı okundu. İkonlar, TR/EN geçişi, filtre/sıralama, paket tablosu, giriş/kayıt alan doğrulaması, 404 ve mobil genişlik kontrolü başarılıdır. Tarayıcı, CSP veya API sunucu hatası görülmedi. Banka RPC'si girişsiz isteği reddetti; özel talepler veri döndürmedi. Firestore banka/rol kayıtları ve Storage dosya listeleme isteği girişsiz erişime kapalıdır. Canlı kullanıcı ilanı, firma veya banka bilgisi eklenmedi.
 
-[Yayın kontrol listesi](yayin-kontrol-listesi.md), banka/paket ayarları, e-posta sağlayıcısı, isteğe bağlı SMS ve onaylı yasal içerikler canlı kullanım öncesinde tamamlanır.
+Üç Scheduler işinin canlı çalıştırma sonucu başarılıdır. E-posta işlevi, sağlayıcı ayarlanmadığı sürece teslimat yapmaz. Storage hizmet hesabının Firestore kural erişimi `roles/firebaserules.firestoreServiceAgent` rolüyle sağlanır; yayın betiği eksik rolü tamamlar.
+
+`robots.txt` ve `sitemap.xml` Hosting adresiyle eşleşir. Özel alan adı seçilirse Auth alan adları, robots ve sitemap birlikte güncellenir.
+
+İşletim için ilk yönetici, banka/paket ayarları ve onaylı yasal içerikler tamamlanır. Auth e-postaları Firebase Authentication kullanır; uygulama bildirim e-postası sağlayıcısı ve SMS henüz ayarlı değildir. Gerçek e-posta teslim testi ve tam araç kataloğu aktarımı ayrıca yapılır. Ayrıntılar [yayın kontrol listesinde](yayin-kontrol-listesi.md) yer alır.

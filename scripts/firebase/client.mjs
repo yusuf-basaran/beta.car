@@ -5,6 +5,11 @@ const { requireAuth } = require('firebase-tools/lib/requireAuth.js');
 const { Client } = require('firebase-tools/lib/apiv2.js');
 export const { ensure } = require('firebase-tools/lib/ensureApiEnabled.js');
 export const { checkBillingEnabled } = require('firebase-tools/lib/gcp/cloudbilling.js');
+export const { getProjectNumber } = require('firebase-tools/lib/getProjectNumber.js');
+export const {
+  serviceAccountHasRoles,
+  addServiceAccountToRoles,
+} = require('firebase-tools/lib/gcp/resourceManager.js');
 export async function client(project, origin, version = 'v1') {
   if (!/^[a-z][a-z0-9-]{4,29}$/.test(project || '')) throw Error('Proje kimliği geçersiz');
   const options = { project, nonInteractive: true };
