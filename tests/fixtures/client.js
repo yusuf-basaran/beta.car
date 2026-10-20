@@ -1,4 +1,6 @@
-export function createClient() {
+export async function createClient() {
+  if (globalThis.fixture.delay) await new Promise((r) => setTimeout(r, globalThis.fixture.delay));
+  if (globalThis.fixture.failure) throw Error('Bağlantı kesildi');
   const { tables: T, me: ME, lex: L, guest } = globalThis.fixture;
   const record = (name, p) => (globalThis.calls ||= []).push({ name, p });
   const client = {
@@ -96,6 +98,19 @@ export function createClient() {
       if (p.p?.sira === 'fiyat_artan') listings.sort((a, b) => a.fiyat - b.fiyat);
       if (p.p?.sira === 'fiyat_azalan') listings.sort((a, b) => b.fiyat - a.fiyat);
       const out = {
+        baslangic: {
+          cats: T.kategoriler,
+          eqs: p.p_donanim ? T.donanimlar : [],
+          lex: p.p_sozluk ? L : null,
+          settings: { kurlar: { GBP: 1, EUR: 1.2 } },
+        },
+        ana_sayfa: {
+          cars: T.ilan_kartlari,
+          firms: T.firmalar.filter((f) => f.one_cikan),
+          posts: T.yazilar.filter((f) => f.aktif).slice(0, 3),
+          banners: T.bannerlar || [],
+          counts: { kullanilmis: listings.length, sifir: 0, parca: 0, firma: 1 },
+        },
         arac_sozlugu: L,
         genel_ayarlar: { kurlar: { GBP: 1, EUR: 1.2 } },
         profilim: ME,

@@ -75,6 +75,22 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
     tokens[uid] = result.idToken;
   }
   await put('_yetkiler', 'yonetici', { kullanici_id: 'yonetici', admin: true, engelli: false });
+  await t.test('Başlangıç verisi ve ana sayfa yalnız açık alanları birleştirir', async () => {
+    await put('ayarlar', 'iban', { anahtar: 'iban', deger: 'PRIVATE-BANK-ACCOUNT' });
+    const data = await rpc(null, 'baslangic', { p_sozluk: true, p_donanim: true });
+    assert.ok(data.cats.length && data.eqs.length && data.lex.markalar.length);
+    assert.deepEqual(Object.keys(data.settings).sort(), ['iletisim_telefon', 'kurlar', 'sosyal']);
+    assert.doesNotMatch(JSON.stringify(data), /PRIVATE-BANK-ACCOUNT/);
+    const brief = await rpc(null, 'baslangic', { p_sozluk: false, p_donanim: false });
+    assert.equal(brief.lex, null);
+    assert.deepEqual(brief.eqs, []);
+    const home = await rpc(null, 'ana_sayfa', { p_son: [] });
+    assert.ok(Array.isArray(home.cars) && Array.isArray(home.posts));
+    assert.ok(home.posts.every((p) => p.aktif && Date.parse(p.yayin) <= Date.now()));
+    assert.doesNotMatch(JSON.stringify(home), /PRIVATE-BANK-ACCOUNT/);
+    await reject(rpc(null, 'baslangic', { p_sozluk: true, p_donanim: true, iban: true }));
+    await reject(rpc(null, 'ana_sayfa', { p_son: Array(11).fill('x') }));
+  });
   let listing, request, pack, conversation;
   const base = {
     baslik: 'Şehir içi bakım kayıtlı araç',
@@ -413,8 +429,16 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
       const loadedState = await page.evaluateHandle(
         async () => (await import('/js/state.js')).state,
       );
-      await page.waitForFunction((state) => !!state.db && state.cats.length > 0, loadedState);
+      await page.waitForFunction((state) => state.phase === 'ready', loadedState);
       await loadedState.dispose();
+      assert.equal(
+        await page.evaluate(() =>
+          performance
+            .getEntriesByType('resource')
+            .some((r) => /firebase-(firestore|storage)\.js/.test(r.name)),
+        ),
+        false,
+      );
       let interrupted = false;
       await page.route('**/api', (route) => {
         const request = route.request().postDataJSON();
@@ -481,12 +505,42 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
         }),
         'uye-a',
       );
+      const file = await page.evaluate(async () => {
+        const { state } = await import('/js/state.js');
+        const result = await state.db.storage
+          .from('firmalar')
+          .upload('uye-a/sdk-native.png', new Blob(['gorsel'], { type: 'image/png' }));
+        if (result.error) throw result.error;
+        return result.data.path;
+      });
+      assert.equal(file, 'uye-a/sdk-native.png');
+      assert.equal((await bucket.file('firmalar/' + file).exists())[0], true);
+      await page.evaluate(async () => {
+        const { state } = await import('/js/state.js');
+        globalThis.nativeEvents = 0;
+        state.db
+          .channel('native-test')
+          .on('change', { table: 'bildirimler', filter: 'kullanici_id=eq.uye-a' }, () => {
+            globalThis.nativeEvents++;
+          })
+          .subscribe();
+      });
+      for (let i = 0; i < 30 && !(await page.evaluate(() => globalThis.nativeEvents)); i++) {
+        await put('bildirimler', 'sdk-native', {
+          kullanici_id: 'uye-a',
+          okundu: false,
+          tur: 'test',
+          veri: { sira: i },
+        });
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      assert.ok(await page.evaluate(() => globalThis.nativeEvents > 0));
       await auth.updateUser('uye-a', { disabled: true });
       await page.reload();
       const refreshedState = await page.evaluateHandle(
         async () => (await import('/js/state.js')).state,
       );
-      await page.waitForFunction((state) => !!state.db && state.cats.length > 0, refreshedState);
+      await page.waitForFunction((state) => state.phase === 'ready', refreshedState);
       assert.equal(await refreshedState.evaluate((state) => state.user || null), null);
       await refreshedState.dispose();
       assert.ok(await page.locator('a[href^="giris.html"]').count());

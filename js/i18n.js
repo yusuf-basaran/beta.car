@@ -66,6 +66,7 @@ export const D = {
   noArticle: ['Yeni yazılar burada yayımlanır.', 'New articles will appear here.'],
   offline: ['İlan bağlantısı henüz açılmadı.', 'The listing connection is not configured yet.'],
   error: ['Veriler alınamadı. Tekrar deneyin.', 'Unable to load data. Please try again.'],
+  loading: ['Yükleniyor…', 'Loading…'],
   retry: ['Tekrar dene', 'Retry'],
   priceCall: ['Fiyat İçin Arayınız', 'Call for Price'],
   original: ['Tamamı orijinal', 'All panels original'],

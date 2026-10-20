@@ -102,7 +102,7 @@ export function home() {
     `</a><a href="talepler.html">` +
     `${esc(t('wantedTitle'))}` +
     `</a></div><div id="feed" class="wrap feed">` +
-    `${!state.db ? `<p class="connection" role="status">${esc(t('offline'))}</p>` : ''}` +
+    `${state.phase === 'loading' ? `<p class="connection" role="status">${esc(t('loading'))}</p>` : !state.db ? `<p class="connection" role="status">${esc(t('offline'))}</p>` : ''}` +
     `${sections.map(([s, filter], i) => section(s, filter) + (i === 1 ? banner(1) : i === 5 ? banner(2) : '')).join('')}` +
     `</div>`;
   const form = $('#search-form'),
@@ -169,6 +169,14 @@ export function home() {
     if (e.key === 'Escape') $('#suggestions').hidden = true;
   };
   bindCards();
+  if (state.homeError) {
+    const p = document.createElement('div');
+    p.className = 'connection';
+    p.setAttribute('role', 'status');
+    p.innerHTML = `${esc(t('error'))} <button class="text-btn">${esc(t('retry'))}</button>`;
+    p.querySelector('button').onclick = () => load();
+    $('#feed').prepend(p);
+  }
 }
 
 export function section(s, filter) {
@@ -179,7 +187,8 @@ export function section(s, filter) {
         ? 'yazilar.html'
         : `ilanlar.html?${s === 'parts' ? 'kategori=parca' : filter ? `onecikarma=${filter}` : s === 'recent' ? 'son=1' : ''}`;
   let content;
-  if (s === 'galleries' || s === 'dealers') {
+  if (state.phase === 'loading') content = `<p class="empty">${esc(t('loading'))}</p>`;
+  else if (s === 'galleries' || s === 'dealers') {
     const list = state.firms.filter((f) => f.tur === filter);
     content = list.length
       ? `<div class="firms">` +
@@ -278,36 +287,18 @@ export function setCategory(cat) {
   $$('[data-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === cat)));
 }
 
-export async function load() {
+export async function load(draw = true) {
   if (!state.db) return;
-  const res = await Promise.allSettled([
-    state.db.rpc('ana_akim', {
+  try {
+    const data = await rpc('ana_sayfa', {
       p_son: read('bc-recent')
         .filter((id) => /^[0-9a-f-]{36}$/i.test(id))
         .slice(0, 10),
-    }),
-    state.db.from('kategoriler').select('*').order('sira'),
-    state.db.from('firmalar').select('*').eq('one_cikan', true).limit(12),
-    state.db
-      .from('yazilar')
-      .select('slug,baslik,baslik_en,ozet,ozet_en,kategori')
-      .eq('aktif', true)
-      .order('yayin', { ascending: false })
-      .limit(3),
-    state.db.from('bannerlar').select('*').eq('aktif', true),
-    state.db.rpc('sayaclar'),
-  ]);
-  const values = res.map((r) => (r.status === 'fulfilled' && !r.value.error ? r.value.data : null));
-  [state.cars, state.cats, state.firms, state.posts, state.banners, state.counts] = values.map(
-    (r, i) => r ?? (i === 5 ? undefined : []),
-  );
-  home();
-  if (res.some((r) => r.status === 'rejected' || r.value.error)) {
-    const p = document.createElement('div');
-    p.className = 'connection';
-    p.setAttribute('role', 'status');
-    p.innerHTML = `${esc(t('error'))} <button class="text-btn">${esc(t('retry'))}</button>`;
-    p.querySelector('button').onclick = load;
-    $('#feed').prepend(p);
+    });
+    Object.assign(state, data);
+    state.homeError = false;
+  } catch {
+    state.homeError = true;
   }
+  if (draw) home();
 }

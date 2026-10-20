@@ -8,23 +8,30 @@ export async function createClient(cfg) {
   }
   if (!config?.projectId) return null;
   const base = 'https://www.gstatic.com/firebasejs/13.0.0/';
-  const [appSdk, authSdk, fs, storageSdk] = await Promise.all([
+  const [appSdk, authSdk] = await Promise.all([
     import(base + 'firebase-app.js'),
     import(base + 'firebase-auth.js'),
-    import(base + 'firebase-firestore.js'),
-    import(base + 'firebase-storage.js'),
   ]);
   const app = appSdk.initializeApp(config);
   const auth = authSdk.getAuth(app);
-  const db = fs.getFirestore(app);
-  const storage = storageSdk.getStorage(app);
   if (cfg.emulators) {
     authSdk.connectAuthEmulator(auth, `http://${cfg.emulators.host}:9099`, {
       disableWarnings: true,
     });
-    fs.connectFirestoreEmulator(db, cfg.emulators.host, 8085);
-    storageSdk.connectStorageEmulator(storage, cfg.emulators.host, 9199);
   }
+  let firestoreReady, storageReady;
+  const firestore = () =>
+    (firestoreReady ||= import(base + 'firebase-firestore.js').then((sdk) => {
+      const db = sdk.getFirestore(app);
+      if (cfg.emulators) sdk.connectFirestoreEmulator(db, cfg.emulators.host, 8085);
+      return { sdk, db };
+    }));
+  const fileStorage = () =>
+    (storageReady ||= import(base + 'firebase-storage.js').then((sdk) => {
+      const storage = sdk.getStorage(app);
+      if (cfg.emulators) sdk.connectStorageEmulator(storage, cfg.emulators.host, 9199);
+      return { sdk, storage };
+    }));
   await auth.authStateReady();
   if (auth.currentUser) {
     try {
@@ -206,7 +213,8 @@ export async function createClient(cfg) {
         return {
           upload: (name, file) =>
             result(async () => {
-              await storageSdk.uploadBytes(storageSdk.ref(storage, `${bucket}/${name}`), file, {
+              const { sdk, storage } = await fileStorage();
+              await sdk.uploadBytes(sdk.ref(storage, `${bucket}/${name}`), file, {
                 contentType: file.type,
               });
               return { path: name };
@@ -226,43 +234,50 @@ export async function createClient(cfg) {
     channel() {
       const subscriptions = [],
         stops = [];
+      let closed = false;
       const channel = {
         on(event, options, fn) {
           subscriptions.push({ options, fn });
           return channel;
         },
         subscribe() {
-          for (const { options, fn } of subscriptions) {
-            let target;
-            const filters = [];
-            if (options.filter) {
-              const [field, value] = options.filter.split('=eq.');
-              if (field === 'id') target = fs.doc(db, options.table, value);
-              else filters.push(fs.where(field, '==', value));
-            }
-            if (options.table === 'mesajlar')
-              filters.push(fs.where('katilimcilar', 'array-contains', auth.currentUser.uid));
-            if (options.table === 'bildirimler' && !options.filter)
-              filters.push(fs.where('kullanici_id', '==', auth.currentUser.uid));
-            target ||= fs.query(fs.collection(db, options.table), ...filters);
-            let initial = true;
-            stops.push(
-              fs.onSnapshot(
-                target,
-                (snap) => {
-                  if (initial) {
-                    initial = false;
-                    return;
-                  }
-                  fn({ new: typeof snap.data === 'function' ? snap.data() : null });
-                },
-                (error) => console.error(error.code),
-              ),
-            );
-          }
+          firestore()
+            .then(({ sdk: fs, db }) => {
+              if (closed) return;
+              for (const { options, fn } of subscriptions) {
+                let target;
+                const filters = [];
+                if (options.filter) {
+                  const [field, value] = options.filter.split('=eq.');
+                  if (field === 'id') target = fs.doc(db, options.table, value);
+                  else filters.push(fs.where(field, '==', value));
+                }
+                if (options.table === 'mesajlar')
+                  filters.push(fs.where('katilimcilar', 'array-contains', auth.currentUser.uid));
+                if (options.table === 'bildirimler' && !options.filter)
+                  filters.push(fs.where('kullanici_id', '==', auth.currentUser.uid));
+                target ||= fs.query(fs.collection(db, options.table), ...filters);
+                let initial = true;
+                stops.push(
+                  fs.onSnapshot(
+                    target,
+                    (snap) => {
+                      if (initial) {
+                        initial = false;
+                        return;
+                      }
+                      fn({ new: typeof snap.data === 'function' ? snap.data() : null });
+                    },
+                    (error) => console.error(error.code),
+                  ),
+                );
+              }
+            })
+            .catch((error) => console.error(error.code || error.message));
           return channel;
         },
         unsubscribe() {
+          closed = true;
           stops.splice(0).forEach((stop) => stop());
         },
       };

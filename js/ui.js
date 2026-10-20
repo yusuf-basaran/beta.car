@@ -54,7 +54,7 @@ export function chips() {
 export function header() {
   $('#header').innerHTML =
     `<header class="header"><div class="header-inner"><a class="brand" href="index.html" aria-label="BETA.CAR">` +
-    `<img src="logo.png" alt="BETA.CAR" width="154" height="72"><span hidden>BETA<span>.CAR</span></span></a><nav class="main-nav" aria-label="` +
+    `<img src="logo-header.webp" alt="BETA.CAR" width="154" height="72" fetchpriority="high"><span hidden>BETA<span>.CAR</span></span></a><nav class="main-nav" aria-label="` +
     `${esc(t('home'))}` +
     `">` +
     `${nav.map(([s, k]) => `<a href="ilanlar.html?kategori=${esc(s)}" data-cat="${esc(s)}" class="${state.mainCat === s ? 'active' : ''}">${esc(t(k))}</a>`).join('')}` +

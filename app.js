@@ -2,37 +2,68 @@ import { render } from './js/navigation.js';
 import { cfg } from './js/config.js';
 import { state } from './js/state.js';
 import { read, write } from './js/utils.js';
-import { $, footer, header, notify } from './js/ui.js';
+import { $, notify } from './js/ui.js';
 import { t } from './js/i18n.js';
 import { query, rpc, table } from './js/api.js';
 import { load } from './js/pages/home.js';
 import { createClient } from './js/firebase.js';
 
 async function start() {
+  if (document.body.dataset.page === '404') {
+    state.phase = 'ready';
+    render();
+    return;
+  }
   render();
   try {
     state.db = await createClient(cfg);
-    if (!state.db) return;
+    if (!state.db) {
+      state.phase = 'unconfigured';
+      render();
+      return;
+    }
     const { data } = await state.db.auth.getUser();
     state.user = data?.user;
-    let cached;
-    try {
-      cached = JSON.parse(sessionStorage.getItem('bc-vehicles') || 'null');
-    } catch {}
-    if (cached?.url === state.db.projectId && Date.now() - cached.time < 86400000)
-      state.lex = cached.data;
-    else {
-      const r = await state.db.rpc('arac_sozlugu');
-      if (r.error) throw r.error;
-      state.lex = r.data;
-      try {
-        sessionStorage.setItem(
-          'bc-vehicles',
-          JSON.stringify({ url: state.db.projectId, time: Date.now(), data: state.lex }),
-        );
-      } catch {}
+    const page = document.body.dataset.page;
+    if (!state.user && ['account', 'editor', 'photos', 'messages', 'admin'].includes(page)) {
+      state.phase = 'ready';
+      render();
+      return;
     }
-    if (state.user) {
+    const references = async () => {
+      const vehicles = ['home', 'list', 'editor', 'valuation', 'model'].includes(page);
+      let cached;
+      if (vehicles) {
+        try {
+          cached = JSON.parse(sessionStorage.getItem('bc-vehicles') || 'null');
+        } catch {}
+      }
+      if (cached?.url === state.db.projectId && Date.now() - cached.time < 86400000)
+        state.lex = cached.data;
+      else cached = null;
+      const data = await rpc('baslangic', {
+        p_sozluk: vehicles && !cached,
+        p_donanim: ['list', 'editor', 'detail', 'compare'].includes(page),
+      });
+      state.cats = data.cats;
+      state.eqs = data.eqs;
+      state.settings = data.settings;
+      if (data.lex) {
+        state.lex = data.lex;
+        try {
+          sessionStorage.setItem(
+            'bc-vehicles',
+            JSON.stringify({
+              url: state.db.projectId,
+              time: Date.now(),
+              data: state.lex,
+            }),
+          );
+        } catch {}
+      }
+    };
+    const favorites = async () => {
+      if (!state.user) return;
       const favs = read('bc-favs');
       if (favs.length) {
         const r = await state.db.from('favoriler').upsert(
@@ -50,13 +81,9 @@ async function start() {
           'bc-favs',
           r.data.map((f) => f.ilan_id),
         );
-    }
-    [state.cats, state.eqs, state.settings] = await Promise.all([
-      query(table('kategoriler').order('sira')),
-      query(table('donanimlar')),
-      rpc('genel_ayarlar'),
-    ]);
-    if (state.user) {
+    };
+    const profile = async () => {
+      if (!state.user) return;
       state.me = await rpc('profilim');
       const pending = read('bc-company', null);
       if (pending && pending.email?.toLowerCase() === state.user.email?.toLowerCase()) {
@@ -74,11 +101,10 @@ async function start() {
         );
         write('bc-company', null);
       }
-    }
-    if (document.body.dataset.page === 'home') await load();
-    else render();
-    header();
-    footer();
+    };
+    await Promise.all([references(), favorites(), profile(), page === 'home' ? load(false) : null]);
+    state.phase = 'ready';
+    render();
     if (state.user) {
       const refresh = async () => {
         const r = await state.db
@@ -92,7 +118,6 @@ async function start() {
           n.textContent = r.count > 99 ? '99+' : r.count;
         }
       };
-      await refresh();
       const messages = async () => {
         const r = await state.db
           .from('mesajlar')
@@ -105,7 +130,7 @@ async function start() {
           n.textContent = r.count > 99 ? '99+' : r.count;
         }
       };
-      await messages();
+      await Promise.all([refresh(), messages()]);
       state.db
         .channel(`unread:${state.user.id}`)
         .on('change', { table: 'mesajlar' }, messages)
@@ -123,7 +148,8 @@ async function start() {
         .subscribe();
     }
   } catch {
-    notify(t('error'));
+    state.phase = 'error';
+    render();
   }
 }
 state.lang =

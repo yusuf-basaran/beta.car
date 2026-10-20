@@ -21,6 +21,7 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
       'style.css',
       'app.js',
       'logo.png',
+      'logo-header.webp',
       'manifest.json',
       'robots.txt',
       'sitemap.xml',
@@ -33,6 +34,8 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
       '.env',
     ])
       await writeFile(path.join(root, name), '');
+    await writeFile(path.join(root, 'app.js'), "import './js/config.js';");
+    await writeFile(path.join(root, 'index.html'), '<script type="module" src="app.js"></script>');
     const source = "export const cfg = { url: '', anon: '' };";
     await writeFile(path.join(root, 'js/config.js'), source);
     const build = (env, args = []) =>
@@ -46,7 +49,18 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
     assert(!files.includes('supabase.sql') && !files.includes('.env'));
     await build({}, ['--firebase']);
     assert(!(await readdir(path.join(root, '.build'))).includes('index.html'));
-    assert.equal(await readFile(path.join(root, 'functions/site/index.html'), 'utf8'), '');
+    const template = await readFile(path.join(root, 'functions/site/index.html'), 'utf8');
+    const version = template.match(/app\.js\?v=([a-f0-9]{12})/)[1];
+    assert.match(
+      await readFile(path.join(root, '.build/app.js'), 'utf8'),
+      new RegExp('config\\.js\\?v=' + version),
+    );
+    await build({}, ['--firebase']);
+    assert.equal(await readFile(path.join(root, 'functions/site/index.html'), 'utf8'), template);
+    await writeFile(path.join(root, 'js/config.js'), source + '\n');
+    await build({}, ['--firebase']);
+    assert.notEqual(await readFile(path.join(root, 'functions/site/index.html'), 'utf8'), template);
+    await writeFile(path.join(root, 'js/config.js'), source);
     const config = {
       apiKey: 'public-test',
       projectId: 'demo-beta-car',

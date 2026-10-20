@@ -1,5 +1,7 @@
 export const state = {
   lang: 'tr',
+  phase: 'loading',
+  homeError: false,
   db: undefined,
   user: undefined,
   cars: [],

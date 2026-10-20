@@ -28,6 +28,75 @@ test('Betik gecikince başlık alanı sayfayı kaydırmaz', async ({ page }) => 
   }
 });
 
+for (const guest of [false, true]) {
+  test(`Geciken bağlantı yanlış uyarı göstermez: ${guest ? 'ziyaretçi' : 'üye'}`, async ({
+    page,
+  }) => {
+    await setup(page, (f) => {
+      f.guest = guest;
+      f.delay = 1200;
+    });
+    await page.addInitScript(() => {
+      globalThis.startupWarnings = [];
+      new MutationObserver(() => {
+        const text = document.querySelector('main')?.textContent || '';
+        if (text.includes('Firebase bağlantısı yapılandırılmalı'))
+          globalThis.startupWarnings.push(text);
+      }).observe(document, { childList: true, subtree: true });
+    });
+    await page.goto('/ilan-ver.html');
+    await expect(page.locator('main')).toHaveAttribute('aria-busy', 'true');
+    await expect(page.getByRole('status').filter({ hasText: 'Yükleniyor' })).toBeVisible();
+    await expect(page.locator('main a[href^="giris.html"]')).toHaveCount(0);
+    if (guest) await expect(page.locator('main')).toContainText('Bu işlem için giriş yapın.');
+    else await expect(page.locator('#editor')).toBeVisible();
+    await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false');
+    expect(await page.evaluate(() => globalThis.startupWarnings)).toEqual([]);
+    if (guest) expect(await page.evaluate(() => globalThis.calls || [])).toEqual([]);
+  });
+}
+
+test('Bağlantı hatası gerçek hata ve yeniden deneme sunar', async ({ page }) => {
+  await setup(page, (f) => {
+    f.failure = true;
+  });
+  await page.goto('/ilan-ver.html');
+  await expect(page.getByRole('alert')).toContainText('Veriler alınamadı.');
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false');
+  await page.unroute('**/js/firebase.js');
+  await setup(page);
+  await page.locator('#startup-retry').click();
+  await expect(page.locator('#editor')).toBeVisible();
+});
+
+test('Ana sayfa gereksiz modülleri yüklemez ve sözlüğü yeniden indirmez', async ({ page }) => {
+  await setup(page, (f) => {
+    f.guest = true;
+  });
+  const scripts = [];
+  page.on('request', (r) => {
+    if (r.resourceType() === 'script') scripts.push(r.url());
+  });
+  await page.goto('/');
+  await expect(page.locator('.listing').first()).toBeVisible();
+  expect(await page.evaluate(() => globalThis.calls.map((c) => c.name).sort())).toEqual([
+    'ana_sayfa',
+    'baslangic',
+  ]);
+  expect(scripts.some((s) => /\/pages\/(admin|editor|messages|account|detail)\.js/.test(s))).toBe(
+    false,
+  );
+  expect(
+    await page.evaluate(() => globalThis.calls.find((c) => c.name === 'baslangic').p.p_sozluk),
+  ).toBe(true);
+  await page.reload();
+  await expect(page.locator('.listing').first()).toBeVisible();
+  expect(
+    await page.evaluate(() => globalThis.calls.find((c) => c.name === 'baslangic').p.p_sozluk),
+  ).toBe(false);
+  await expect(page.locator('datalist[id^=makes] option')).toHaveCount(2);
+});
+
 test('Ana sayfa ilanı ve bağlı araç listelerini yükler', async ({ page }) => {
   await setup(page);
   const errors = [];

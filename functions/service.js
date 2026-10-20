@@ -22,6 +22,8 @@ import { conversation, seller } from './messages.js';
 import { adminData, adminWrite, approve, merge } from './admin.js';
 
 const readonly = [
+  'baslangic',
+  'ana_sayfa',
   'arac_sozlugu',
   'genel_ayarlar',
   'sayaclar',
@@ -110,6 +112,40 @@ export function createService({ db, auth, bucket }) {
       s.put('_yetkiler', c.uid, { kullanici_id: c.uid, admin: false, engelli: false });
       return null;
     }
+    if (name === 'baslangic') {
+      fields(p, ['p_sozluk', 'p_donanim']);
+      check(typeof p.p_sozluk === 'boolean' && typeof p.p_donanim === 'boolean');
+      const [cats, eqs, settings, lex] = await Promise.all([
+        read(s, c, { table: 'kategoriler', op: 'read', order: [['sira', true]] }),
+        p.p_donanim ? read(s, c, { table: 'donanimlar', op: 'read' }) : { data: [] },
+        dispatch(s, c, 'genel_ayarlar', {}),
+        p.p_sozluk ? dispatch(s, c, 'arac_sozlugu', {}) : null,
+      ]);
+      return { cats: cats.data, eqs: eqs.data, settings, lex };
+    }
+    if (name === 'ana_sayfa') {
+      fields(p, ['p_son']);
+      check(Array.isArray(p.p_son) && p.p_son.length <= 10);
+      const [cars, firms, posts, banners, counts] = await Promise.all([
+        dispatch(s, c, 'ana_akim', p),
+        read(s, c, {
+          table: 'firmalar',
+          op: 'read',
+          filters: [['one_cikan', 'eq', true]],
+          limit: 12,
+        }),
+        read(s, c, {
+          table: 'yazilar',
+          op: 'read',
+          filters: [['aktif', 'eq', true]],
+          order: [['yayin', false]],
+          limit: 3,
+        }),
+        read(s, c, { table: 'bannerlar', op: 'read', filters: [['aktif', 'eq', true]] }),
+        dispatch(s, c, 'sayaclar', {}),
+      ]);
+      return { cars, firms: firms.data, posts: posts.data, banners: banners.data, counts };
+    }
     if (name === 'arac_sozlugu') {
       if (!catalogue || catalogue.until < Date.now())
         catalogue = {
@@ -134,8 +170,11 @@ export function createService({ db, auth, bucket }) {
     }
     if (name === 'genel_ayarlar') {
       const out = {};
-      for (const k of ['kurlar', 'sosyal', 'iletisim_telefon'])
-        out[k] = await setting(s, k, k === 'iletisim_telefon' ? '' : {});
+      await Promise.all(
+        ['kurlar', 'sosyal', 'iletisim_telefon'].map(async (k) => {
+          out[k] = await setting(s, k, k === 'iletisim_telefon' ? '' : {});
+        }),
+      );
       return out;
     }
     if (name === 'profilim') {

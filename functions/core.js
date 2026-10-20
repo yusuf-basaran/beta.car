@@ -96,9 +96,8 @@ export class Store {
     let q = this.db.collection(name);
     for (const [k, op, v] of where) q = q.where(k, op, v);
     const queryKey = JSON.stringify([name, where]);
-    if (!this.queries.has(queryKey))
-      this.queries.set(queryKey, this.tx ? await this.tx.get(q) : await q.get());
-    const snap = this.queries.get(queryKey);
+    if (!this.queries.has(queryKey)) this.queries.set(queryKey, this.tx ? this.tx.get(q) : q.get());
+    const snap = await this.queries.get(queryKey);
     const rows = new Map();
     snap.docs.forEach((d) => {
       if (!this.cache.has(d.ref.path)) this.cache.set(d.ref.path, d.data());

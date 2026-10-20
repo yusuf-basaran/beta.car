@@ -3,21 +3,6 @@ import { state } from './state.js';
 import { $, $$, fail, footer, header, icon, syncMeta } from './ui.js';
 import { t } from './i18n.js';
 import { home } from './pages/home.js';
-import { listPage } from './pages/list.js';
-import { detailPage } from './pages/detail.js';
-import { comparePage } from './pages/compare.js';
-import { valuationPage } from './pages/valuation.js';
-import { loginPage } from './pages/login.js';
-import { accountPage } from './pages/account.js';
-import { editorPage } from './pages/editor.js';
-import { photosPage } from './pages/photos.js';
-import { messagesPage } from './pages/messages.js';
-import { wantedPage } from './pages/wanted.js';
-import { packagesPage } from './pages/packages.js';
-import { firmPage, firmsPage } from './pages/firms.js';
-import { postsPage } from './pages/posts.js';
-import { legalPage } from './pages/legal.js';
-import { adminPage } from './pages/admin.js';
 
 export function render() {
   document.documentElement.lang = state.lang;
@@ -25,6 +10,19 @@ export function render() {
   header();
   footer();
   $$('[data-i]').forEach((n) => (n.textContent = t(n.dataset.i)));
+  const main = $('#main');
+  main.setAttribute('aria-busy', String(state.phase === 'loading'));
+  if (state.phase === 'loading') {
+    if (document.body.dataset.page === 'home') home();
+    else if (!main.textContent.trim() || main.querySelector('[data-startup]'))
+      main.innerHTML = `<p class="wrap empty" data-startup role="status">${esc(t('loading'))}</p>`;
+    return;
+  }
+  if (state.phase === 'error' || state.phase === 'unconfigured') {
+    main.innerHTML = `<div class="wrap empty" role="alert"><p>${esc(t(state.phase === 'error' ? 'error' : 'connect'))}</p><button class="btn" id="startup-retry">${esc(t('retry'))}</button></div>`;
+    $('#startup-retry').onclick = () => location.reload();
+    return;
+  }
   if (document.body.dataset.page === 'home') home();
   else if (document.body.dataset.page !== '404') route().catch(fail);
   else if (document.body.dataset.page === '404') {
@@ -46,23 +44,26 @@ export async function route() {
     page = document.body.dataset.page;
   $('#main').className = 'wrap page';
   const map = {
-    list: listPage,
-    detail: detailPage,
-    compare: comparePage,
-    model: () => valuationPage(true),
-    valuation: () => valuationPage(false),
-    login: loginPage,
-    account: accountPage,
-    editor: editorPage,
-    photos: photosPage,
-    messages: messagesPage,
-    wanted: wantedPage,
-    packages: packagesPage,
-    firms: firmsPage,
-    firm: firmPage,
-    posts: postsPage,
-    legal: legalPage,
-    admin: adminPage,
+    list: ['list', 'listPage'],
+    detail: ['detail', 'detailPage'],
+    compare: ['compare', 'comparePage'],
+    model: ['valuation', 'valuationPage', true],
+    valuation: ['valuation', 'valuationPage', false],
+    login: ['login', 'loginPage'],
+    account: ['account', 'accountPage'],
+    editor: ['editor', 'editorPage'],
+    photos: ['photos', 'photosPage'],
+    messages: ['messages', 'messagesPage'],
+    wanted: ['wanted', 'wantedPage'],
+    packages: ['packages', 'packagesPage'],
+    firms: ['firms', 'firmsPage'],
+    firm: ['firms', 'firmPage'],
+    posts: ['posts', 'postsPage'],
+    legal: ['legal', 'legalPage'],
+    admin: ['admin', 'adminPage'],
   };
-  await map[page]?.(id);
+  const entry = map[page];
+  if (!entry) return;
+  const module = await import(`./pages/${entry[0]}.js`);
+  if (id === state.routeId) await module[entry[1]](entry.length > 2 ? entry[2] : id);
 }
