@@ -2,7 +2,7 @@
 
 Yayın tarihi: 20 Ekim 2026. Proje: `beta-car-a019a9b0` · Bölge: `europe-west1` · Firestore Standard.
 
-[Site](https://beta-car-a019a9b0.web.app) · [Firebase Console](https://console.firebase.google.com/project/beta-car-a019a9b0/overview)
+[Site](https://beta-car.vercel.app) · [Firebase arka ucu](https://beta-car-a019a9b0.web.app) · [Firebase Console](https://console.firebase.google.com/project/beta-car-a019a9b0/overview)
 
 | Bileşen                            | Durum                                                                            |
 | ---------------------------------- | -------------------------------------------------------------------------------- |

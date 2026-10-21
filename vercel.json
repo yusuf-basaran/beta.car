@@ -1,21 +1,81 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build -- --firebase",
   "outputDirectory": ".build",
   "cleanUrls": false,
   "rewrites": [
     {
+      "source": "/__/firebase/init.json",
+      "destination": "https://beta-car-a019a9b0.web.app/__/firebase/init.json"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://beta-car-a019a9b0.web.app/api/:path*"
+    },
+    {
+      "source": "/",
+      "destination": "https://beta-car-a019a9b0.web.app/"
+    },
+    {
+      "source": "/ilanlar.html",
+      "destination": "https://beta-car-a019a9b0.web.app/ilanlar.html"
+    },
+    {
+      "source": "/ilan.html",
+      "destination": "https://beta-car-a019a9b0.web.app/ilan.html"
+    },
+    {
+      "source": "/model.html",
+      "destination": "https://beta-car-a019a9b0.web.app/model.html"
+    },
+    {
+      "source": "/degerleme.html",
+      "destination": "https://beta-car-a019a9b0.web.app/degerleme.html"
+    },
+    {
+      "source": "/karsilastir.html",
+      "destination": "https://beta-car-a019a9b0.web.app/karsilastir.html"
+    },
+    {
+      "source": "/talepler.html",
+      "destination": "https://beta-car-a019a9b0.web.app/talepler.html"
+    },
+    {
+      "source": "/paketler.html",
+      "destination": "https://beta-car-a019a9b0.web.app/paketler.html"
+    },
+    {
+      "source": "/firmalar.html",
+      "destination": "https://beta-car-a019a9b0.web.app/firmalar.html"
+    },
+    {
+      "source": "/firma.html",
+      "destination": "https://beta-car-a019a9b0.web.app/firma.html"
+    },
+    {
+      "source": "/yazilar.html",
+      "destination": "https://beta-car-a019a9b0.web.app/yazilar.html"
+    },
+    {
+      "source": "/sayfa.html",
+      "destination": "https://beta-car-a019a9b0.web.app/sayfa.html"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://beta-car-a019a9b0.web.app/sitemap.xml"
+    },
+    {
       "source": "/kullanilmis",
-      "destination": "/ilanlar.html?kategori=kullanilmis"
+      "destination": "https://beta-car-a019a9b0.web.app/kullanilmis"
     },
     {
       "source": "/sifir",
-      "destination": "/ilanlar.html?kategori=sifir"
+      "destination": "https://beta-car-a019a9b0.web.app/sifir"
     },
     {
       "source": "/parca",
-      "destination": "/ilanlar.html?kategori=parca"
+      "destination": "https://beta-car-a019a9b0.web.app/parca"
     }
   ],
   "headers": [
@@ -43,6 +103,57 @@
           "value": "max-age=31536000; includeSubDomains"
         }
       ]
+    },
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/:page(admin|hesabim|mesajlar|giris|ilan-ver|foto|cevrimdisi).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/404.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
     }
   ]
 }

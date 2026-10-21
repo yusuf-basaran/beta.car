@@ -1,6 +1,6 @@
 # SEO
 
-Ana adres: https://beta-car-a019a9b0.web.app/ · Kontrol tarihi: 20 Ekim 2026.
+Ana adres: https://beta-car.vercel.app/ · Kontrol tarihi: 20 Ekim 2026.
 
 ## Yayındaki düzen
 
@@ -35,7 +35,7 @@ Birim testleri zararlı metin kaçışı, JSON-LD, canonical, sitemap kapsamı/p
 
 Mevcut Firebase CLI oturumu Search Console yetkisini içermez; API denetimi `403: insufficient authentication scopes` döndürdü. Mülk doğrulaması ve sitemap gönderimi bu oturumla yapılmadı.
 
-1. [Search Console](https://search.google.com/search-console) içinde **URL ön eki** mülkü olarak `https://beta-car-a019a9b0.web.app/` adresini ekleyin.
+1. [Search Console](https://search.google.com/search-console) içinde **URL ön eki** mülkü olarak `https://beta-car.vercel.app/` adresini ekleyin.
 2. Google'ın sunduğu yöntemle sahipliği doğrulayın. HTML etiketi yöntemi seçilirse verilen `google-site-verification` etiketi site başlığına eklenip yeniden yayımlanır.
 3. **Site Haritaları** bölümüne `sitemap.xml` gönderin; URL Denetimi ile ana sayfayı kontrol edin.
 

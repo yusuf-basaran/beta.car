@@ -1,11 +1,11 @@
 # Son kontrol
 
-Kontrol tarihi: 20 Ekim 2026. Firebase altyapısı ve yeni uygulama ikonları kullanılır. Lint, birim, emülatör, tarayıcı, build ve biçim kontrolleri başarılıdır. Auth, Firestore, Storage, altı sunucu işlevi, üç zamanlanmış iş ve Hosting yayımlanmıştır. [Canlı site](https://beta-car-a019a9b0.web.app) tarayıcı ve erişim kontrollerini geçti. Önceki dört commit korunur; yeni commit'ler Yusuf Basaran kimliğiyle yazılır.
+Kontrol tarihi: 20 Ekim 2026. Firebase altyapısı ve yeni uygulama ikonları kullanılır. Lint, birim, emülatör, tarayıcı, build ve biçim kontrolleri başarılıdır. Auth, Firestore, Storage, altı sunucu işlevi, üç zamanlanmış iş ve Hosting yayımlanmıştır. [Canlı site](https://beta-car.vercel.app) tarayıcı ve erişim kontrollerini geçti. Önceki dört commit korunur; yeni commit'ler Yusuf Basaran kimliğiyle yazılır.
 
 | Kontrol                  | Kapsam                                                                                                                         |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
 | `npm run lint`           | İstemci, sunucu, betik ve test kodları                                                                                         |
-| `npm test`               | 16 saf fonksiyon, SEO, build ve korunan SQL regresyon testi                                                                    |
+| `npm test`               | 17 saf fonksiyon, SEO, Vercel yönlendirmesi, build ve korunan SQL regresyon testi                                              |
 | `npm run test:firebase`  | 14 test başarılı; Auth, Firestore, Storage, Functions, Hosting, SEO, gerçek SDK girişi ve sunucu kuralları                     |
 | `npm run test:browser`   | 21 arayüz senaryosu; servis yanıtları taklit edilir; geciken bağlantı, hata/yeniden deneme ve gereksiz istekler kontrol edilir |
 | `npm run build`          | 20 HTML sayfası, ES modülleri, stil, logo ve ikonlar                                                                           |
@@ -46,3 +46,7 @@ Skeleton yer tutucular ilk açılışta, ana sayfa bölümlerinde, ilan sonuçla
 `cevrimdisi.html`, bağlantı kurulamadığında service worker üzerinden sunulur. Site bir kez çevrimiçi açılıp bu ekranın dosyaları yüklendikten sonra kullanılabilir. Yalnızca çevrimdışı HTML, stil, logo, ikon ve dil/arayüz modülleri saklanır. İlan sayfaları, API yanıtları, Firebase yapılandırması, oturum bilgileri, mesajlar, paket talepleri ve dosyalar Cache Storage'a yazılmaz. Normal gezinme ağdan yapılır; sunucu 404 veya 500 yanıtları çevrimdışı ekranıyla değiştirilmez.
 
 Açık sayfada bağlantı kesilince form alanları korunur ve bağlantı bandı gösterilir. Çevrimdışı ekranın yeniden deneme düğmesi önbelleksiz ağ kontrolü yapar, ardından aynı sitedeki önceki adrese döner. Dış adrese yönlendirme kabul edilmez. TR/EN seçimi, mobil taşma, gerçek tarayıcı çevrimdışı modu ve özel veri önbelleği kontrol edilir. Yeni yayında yalnız bu ekrana ait eski önbellek sürümleri temizlenir.
+
+## Geçici ana adres
+
+`https://beta-car.vercel.app` ana alan adı geçişine kadar paylaşım ve SEO adresidir. Vercel statik arayüzü, Firebase ise veri, kimlik, dosya, zamanlanmış işler ve sunucu HTML/sitemap içeriğini sunar. Firebase public yapılandırması ve API istekleri aynı Vercel adresi üzerinden arka uca iletilir. Firebase Auth yetkili alan adlarına üretim Vercel adresi eklenmiştir. Kaynak `cfg.url`, `cfg.anon` ve `cfg.firebase` alanları boştur.

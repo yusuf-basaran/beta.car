@@ -46,3 +46,23 @@ test('İstemci ayarları boş ve güvenlik başlıkları etkindir', async () => 
   assert.match(headers['Strict-Transport-Security'], /max-age=31536000/);
   assert.equal(headers['X-Content-Type-Options'], 'nosniff');
 });
+
+test('Vercel Firebase yapılandırmasını, API ve SEO sayfalarını arka uca iletir', async () => {
+  const config = JSON.parse(await readFile(new URL('vercel.json', root), 'utf8'));
+  const backend = 'https://beta-car-a019a9b0.web.app';
+  const routes = new Map(config.rewrites.map((r) => [r.source, r.destination]));
+  assert.match(config.buildCommand, /--firebase/);
+  assert.equal(routes.get('/__/firebase/init.json'), backend + '/__/firebase/init.json');
+  assert.equal(routes.get('/api/:path*'), backend + '/api/:path*');
+  const hosting = JSON.parse(await readFile(new URL('firebase.json', root), 'utf8'));
+  for (const file of hosting.hosting.ignore.filter((name) => /\.(html|xml)$/.test(name)))
+    assert.ok(routes.has(file === 'index.html' ? '/' : '/' + file), file);
+  for (const category of ['/kullanilmis', '/sifir', '/parca'])
+    assert.equal(routes.get(category), backend + category);
+  assert.ok(hosting.auth.authorizedDomains.includes('beta-car.vercel.app'));
+  const seo = JSON.parse(await readFile(new URL('functions/seo-config.json', root), 'utf8'));
+  assert.equal(seo.origin, 'https://beta-car.vercel.app');
+  assert.ok(!/^firebase\.json$/m.test(await readFile(new URL('.vercelignore', root), 'utf8')));
+  const api = config.headers.find((h) => h.source === '/api/:path*');
+  assert.ok(api.headers.some((h) => h.key === 'Cache-Control' && h.value === 'no-store'));
+});

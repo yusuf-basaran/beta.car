@@ -49,6 +49,7 @@ if (!apps.length) {
   apps = run(['apps:list', 'WEB', '--project', project], true);
 }
 run(['deploy', '--project', project, '--only', 'auth,firestore', '--non-interactive']);
+script('scripts/firebase/domains.mjs', project);
 run([
   'firestore:databases:update',
   '(default)',

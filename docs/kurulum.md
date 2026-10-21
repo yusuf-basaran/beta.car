@@ -99,3 +99,9 @@ npm run build
 ```
 
 Tarayıcı için isteğe bağlı `CHROMIUM_PATH` kullanılabilir. [Yayın kontrol listesi](yayin-kontrol-listesi.md) ve [kabul testleri](kabul-testleri.md) canlı projede tamamlanır.
+
+## Vercel ön yüzü
+
+Geçici ana adres `https://beta-car.vercel.app` olarak kullanılır. Vercel, statik dosyaları `.build` dizininden sunar; Firebase web yapılandırması, API, herkese açık HTML ve sitemap isteklerini `vercel.json` üzerinden mevcut Firebase Hosting adresine iletir. Tarayıcıdaki adres Vercel olarak kalır. Kaynak bağlantı alanları boş kalabilir; Vercel ortamına service account ya da sunucu anahtarı girilmez. Üretim alan adı Firebase Auth yetkili alan adları arasında bulunmalıdır.
+
+Vercel projesinde Framework: Other, build komutu `npm run build -- --firebase`, çıktı dizini `.build` ve üretim dalı `main` kullanılır. Firebase sunucu şablonları veya SEO ayarları değiştiğinde önce Firebase `seo` işlevi yayımlanır; GitHub üretim commit'i Vercel yayınını başlatır. Ana alan adı geçişinde SEO ana adresi, canonical/paylaşım etiketleri, robots/sitemap ve Auth yetkili alan adları birlikte güncellenir. Firebase arka uç adresi yönlendirme hedefi olarak korunur.
