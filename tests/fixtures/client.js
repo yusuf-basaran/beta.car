@@ -95,6 +95,17 @@ export async function createClient() {
     rpc(name, p = {}) {
       record(name, p);
       let listings = T.ilan_kartlari.filter((c) => !p.p?.sehir || c.sehir === p.p.sehir);
+      if (p.p?.q) {
+        const norm = (s) =>
+          String(s || '')
+            .normalize('NFKD')
+            .replace(/\p{M}/gu, '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, '');
+        listings = listings.filter((c) =>
+          norm([c.baslik, c.marka, c.model, c.no].join(' ')).includes(norm(p.p.q)),
+        );
+      }
       if (p.p?.sira === 'fiyat_artan') listings.sort((a, b) => a.fiyat - b.fiyat);
       if (p.p?.sira === 'fiyat_azalan') listings.sort((a, b) => b.fiyat - a.fiyat);
       const out = {

@@ -1590,6 +1590,20 @@ textarea {
   margin: 0;
   flex-shrink: 0;
 }
+.listing-search {
+  display: flex;
+  gap: var(--s2);
+  margin-bottom: var(--s5);
+}
+.listing-search .keyword {
+  min-width: 0;
+}
+.listing-search .keyword:focus-within {
+  border-color: var(--cyan);
+}
+.listing-search > .btn {
+  min-width: 80px;
+}
 .search-layout {
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);

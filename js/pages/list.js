@@ -1,5 +1,5 @@
 import { number, t } from '../i18n.js';
-import { esc, read } from '../utils.js';
+import { esc, filterUrl, read } from '../utils.js';
 import {
   $,
   $$,
@@ -10,6 +10,7 @@ import {
   displayPrice,
   empty,
   fail,
+  icon,
   meta,
   notify,
   pageHead,
@@ -31,6 +32,7 @@ import { need, query, rpc } from '../api.js';
 export function readFilter(form, values) {
   const f = new FormData(form),
     p = { ...Object.fromEntries(f), ...values() };
+  if (p.q) p.q = p.q.trim();
   p.donanim = f.getAll('donanim').map(Number);
   p.detay = {};
   for (const k of Object.keys(p)) {
@@ -110,10 +112,10 @@ export async function listPage(id) {
       'listTitle',
       `<button class="btn secondary" id="filter-toggle">${esc(t('filter'))}</button>`,
     ) +
+    `<div class="listing-search" role="search" aria-label="${esc(t('search'))}"><label class="keyword">${icon('search')}${inp('q', 'search', params.get('q') || '', `form="filters" maxlength="140" placeholder="${esc(t('keywords'))}" aria-label="${esc(t('keywordsLabel'))}" aria-controls="results" autocomplete="off"`)}</label><button class="btn" type="submit" form="filters">${esc(t('search'))}</button></div>` +
     (`<div class="search-layout"><form id="filters" class="panel filters"><h2>` +
       `${esc(t('filter'))}` +
       `</h2>` +
-      `${label('keywordsLabel', inp('q', 'search', params.get('q') || ''))}` +
       `${label('category', categorySelect('kategori', params.get('kategori')))}` +
       `${vehicleForm()}` +
       `<div class="fields">` +
@@ -196,11 +198,20 @@ export async function listPage(id) {
   );
   bindVehicleEquipment(form, $('#equipment-filter'));
   async function run() {
+    clearTimeout(timer);
+    if (id !== state.routeId) return;
     const p = readFilter(form, values);
     p.sira = $('[name=sira]').value;
     p.sayfa = page;
     if (params.get('satici')) p.satici = params.get('satici');
     if (params.get('onecikarma')) p.onecikarma = params.get('onecikarma');
+    const url = new URL(location.href);
+    url.search = filterUrl(p);
+    if (state.lang === 'en') url.searchParams.set('lang', 'en');
+    if (params.has('son')) url.searchParams.set('son', '1');
+    for (const key of [...params.keys()]) params.delete(key);
+    for (const [key, value] of url.searchParams) params.append(key, value);
+    history.replaceState(null, '', url);
     if (!state.db) {
       $('#results').innerHTML = `<p class="empty">${esc(t('connect'))}</p>`;
       return;
@@ -267,14 +278,21 @@ export async function listPage(id) {
     await run();
     form.classList.remove('open');
   });
-  form.onchange = () => {
+  const schedule = () => {
     clearTimeout(timer);
+    page = 1;
     timer = setTimeout(() => run().catch(fail), 300);
   };
+  form.onchange = schedule;
+  form.q.oninput = (event) => {
+    if (!event.isComposing) schedule();
+  };
+  form.q.oncompositionend = schedule;
   $('#filter-toggle').onclick = () => form.classList.toggle('open');
   $('#clear-filter').type = 'button';
   $('#clear-filter').onclick = () => {
     form.reset();
+    form.q.value = '';
     form.tip.dispatchEvent(new Event('change'));
     page = 1;
     run().catch(fail);
