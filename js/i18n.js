@@ -509,7 +509,7 @@ export const D = {
   noPayment: ['Site içinde ödeme adımı yoktur.', 'There is no payment step on the site.'],
 };
 
-export const t = (key) => D[key]?.[state.lang === 'en' ? 1 : 0] ?? key;
+export const t = (key, lang = state.lang) => D[key]?.[lang === 'en' ? 1 : 0] ?? key;
 
 export const locale = () => (state.lang === 'en' ? 'en-GB' : 'tr-TR');
 

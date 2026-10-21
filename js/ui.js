@@ -1,5 +1,5 @@
 import { esc, formatPrice, key, read, write } from './utils.js';
-import { catKeys, footerGroups, nav, paths, slugs } from './data.js';
+import { icon, headerHtml, footerHtml, chipsHtml, skeletonHtml } from './layout.js';
 import { D, locale, number, t } from './i18n.js';
 import { state } from './state.js';
 import { render } from './navigation.js';
@@ -19,21 +19,12 @@ export const path = (s) => {
   }
 };
 
-export const icon = (name) =>
-  `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ` +
-  `aria-hidden="true"><path d="` +
-  `${esc(paths[name])}` +
-  `"></path></svg>`;
+export { icon };
 
 export const titleLink = (label, url) =>
   `<div class="section-head"><h2>${esc(t(label))}</h2><a href="${esc(url)}">${esc(t('all'))}${icon('arrow')}</a></div>`;
 
-export function skeleton(count = 1, announce = true) {
-  return `<div class="skeleton" ${announce ? 'role="status"' : 'aria-hidden="true"'}>
-    ${announce ? `<span class="sr-only">${esc(t('loading'))}</span>` : ''}
-    ${Array.from({ length: count }, () => `<div class="skeleton-card" aria-hidden="true"><span class="skeleton-shape"></span><div class="skeleton-body">${'<span class="skeleton-shape skeleton-bar"></span>'.repeat(4)}</div></div>`).join('')}
-  </div>`;
-}
+export const skeleton = (count = 1, announce = true) => skeletonHtml(count, announce, state.lang);
 
 export function notify(s) {
   const n = $('#notice');
@@ -43,75 +34,16 @@ export function notify(s) {
   notify.timer = setTimeout(() => n.classList.remove('show'), 3500);
 }
 
-export function chips() {
-  const list =
-    state.mainCat === 'parca'
-      ? ['carParts', 'motorParts', 'truckParts']
-      : state.mainCat === 'sifir'
-        ? ['otomobil', 'motosiklet', 'minivan', 'suv', 'deniz', 'ticari', 'is_makinesi']
-        : catKeys;
-  return list
-    .map(
-      (c, i) =>
-        `<a href="ilanlar.html?kategori=${esc(state.mainCat)}-${esc(state.mainCat === 'parca' ? ['binek', 'motor', 'yuk'][i] : slugs[catKeys.indexOf(c)])}">${esc(t(c))}</a>`,
-    )
-    .join('');
-}
+export const chips = () => chipsHtml(state.mainCat, state.lang);
 
 export function header() {
-  $('#header').innerHTML =
-    `<header class="header"><div class="header-inner"><a class="brand" href="index.html" aria-label="BETA.CAR">` +
-    `<img src="logo-header.webp" alt="BETA.CAR" width="154" height="72" fetchpriority="high"><span hidden>BETA<span>.CAR</span></span></a><nav class="main-nav" aria-label="` +
-    `${esc(t('home'))}` +
-    `">` +
-    `${nav.map(([s, k]) => `<a href="ilanlar.html?kategori=${esc(s)}" data-cat="${esc(s)}" class="${state.mainCat === s ? 'active' : ''}">${esc(t(k))}</a>`).join('')}` +
-    `<a href="paketler.html">` +
-    `${esc(t('packages'))}` +
-    `</a><a href="firmalar.html">` +
-    `${esc(t('firms'))}` +
-    `</a></nav><div class="header-actions"><a class="icon-btn desktop" href="ilanlar.html" aria-label="` +
-    `${esc(t('search'))}` +
-    `">` +
-    `${icon('search')}` +
-    `</a><button id="language" class="language" aria-label="` +
-    `${esc(t('lang'))}` +
-    `">` +
-    `${esc(state.lang.toUpperCase())}` +
-    `</button><a class="icon-btn desktop" href="hesabim.html?sekme=bildirimler" aria-label="` +
-    `${esc(t('notifications'))}` +
-    `">` +
-    `${icon('bell')}` +
-    `<span id="notification-count" class="count" hidden></span></a><a class="icon-btn desktop" href="mesajlar.html" aria-label="` +
-    `${esc(t('messages'))}` +
-    `">` +
-    `${icon('message')}` +
-    `<span id="message-count" class="count" hidden></span></a><a class="login desktop" href="` +
-    `${state.user ? 'hesabim.html' : 'giris.html'}` +
-    `">` +
-    `${esc(t(state.user ? 'account' : 'login'))}` +
-    `</a><a class="btn sell" href="ilan-ver.html">` +
-    `${icon('plus')}` +
-    `${esc(t('sell'))}` +
-    `</a></div></div><nav id="chips" class="chips" aria-label="` +
-    `${esc(t('type'))}` +
-    `">` +
-    `${chips()}` +
-    `</nav></header><nav class="mobile-nav" aria-label="` +
-    `${esc(t('home'))}` +
-    `">` +
-    `${[
-      ['home', 'index.html', 'home'],
-      ['search', 'ilanlar.html', 'search'],
-      ['sell', 'ilan-ver.html', 'plus'],
-      ['favs', 'hesabim.html?sekme=favoriler', 'heart'],
-      ['account', 'hesabim.html', 'user'],
-    ]
-      .map(
-        ([label, href, i]) =>
-          `<a href="${esc(href)}" class="${label === 'sell' ? 'mobile-sell' : ''}">${icon(i)}<span>${esc(t(label))}</span></a>`,
-      )
-      .join('')}` +
-    `</nav><div id="connection-status" class="connection-status" role="status" ${navigator.onLine ? 'hidden' : ''}>${esc(t('offlineNotice'))}<a href="/cevrimdisi.html?next=${encodeURIComponent(location.pathname + location.search)}">${esc(t('offlineView'))}</a></div>`;
+  $('#header').innerHTML = headerHtml({
+    lang: state.lang,
+    category: state.mainCat,
+    user: state.user,
+    online: navigator.onLine,
+    current: location.pathname + location.search,
+  });
   $('.brand img').addEventListener('error', (e) => {
     e.target.hidden = true;
     $('.brand > span').hidden = false;
@@ -136,33 +68,12 @@ export function header() {
 }
 
 export function footer() {
-  $('#footer').innerHTML =
-    `<footer class="footer"><div class="wrap footer-grid">` +
-    `${footerGroups.map(([k, links]) => `<div><h2>${esc(t(k))}</h2>${links.map(([label, s]) => `<a href="${s === 'paketler' ? 'paketler.html' : `sayfa.html?s=${esc(s)}`}">${esc(t(label))}</a>`).join('')}</div>`).join('')}` +
-    `</div><div class="wrap footer-bottom"><span>© ` +
-    `${esc(new Date().getFullYear())}` +
-    ` BETA.CAR</span><span>` +
-    `${Object.entries(state.settings.sosyal || {})
-      .map(
-        ([n, url]) =>
-          `<a class="social-link" href="${path(url)}" target="_blank" rel="noopener">${esc(n)}</a>`,
-      )
-      .join('')}` +
-    `${esc(t('gallery'))}` +
-    `</span></div></footer>` +
-    `${
-      read('bc-consent', null)
-        ? ''
-        : `<aside class="cookie" aria-label="` +
-          `${esc(t('cookies'))}` +
-          `"><p>` +
-          `${esc(t('cookieText'))}` +
-          ` <a href="sayfa.html?s=cerez-politikasi">` +
-          `${esc(t('cookies'))}` +
-          `</a></p><div><button class="btn" data-consent="essential">` +
-          `${esc(t('cookieOnly'))}` +
-          `</button></div></aside>`
-    }`;
+  $('#footer').innerHTML = footerHtml({
+    lang: state.lang,
+    social: state.settings.sosyal,
+    consent: read('bc-consent', null),
+    base: location.href,
+  });
   $$('[data-consent]').forEach(
     (b) =>
       (b.onclick = () => {
@@ -429,9 +340,10 @@ export const pageHead = (k, extra = '') =>
 export const box = (title, body) =>
   `<section class="panel"><h2>${esc(t(title))}</h2>${body}</section>`;
 
-export const empty = () => `<p class="empty">${esc(t('empty'))}</p>`;
+export const empty = () =>
+  `<div class="empty" role="status">${icon('search')}<p>${esc(t('empty'))}</p></div>`;
 
 export const loginPrompt = () =>
-  `<p class="empty">${esc(t(state.db ? 'needLogin' : 'connect'))} <a href="giris.html?next=${encodeURIComponent(location.pathname + location.search)}">${esc(t('signin'))}</a></p>`;
+  `<div class="empty" role="status">${icon('user')}<p>${esc(t('needLogin'))}</p><a class="btn" href="giris.html?next=${encodeURIComponent(location.pathname + location.search)}">${esc(t('login'))}</a></div>`;
 
 export { esc } from './utils.js';

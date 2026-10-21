@@ -15,10 +15,8 @@ export function render() {
   if (state.phase === 'loading') {
     if (document.body.dataset.page === 'home') home();
     else {
-      const loading = `<div class="wrap page" data-startup>${skeleton(2)}</div>`;
-      if (main.querySelector('[data-startup]'))
-        main.querySelector('[data-startup]').outerHTML = loading;
-      else main.insertAdjacentHTML('beforeend', loading);
+      if (!main.querySelector('[data-server-page]'))
+        main.innerHTML = `<div class="wrap page" data-startup>${skeleton(2)}</div>`;
     }
     return;
   }
@@ -46,7 +44,6 @@ export function render() {
 export async function route() {
   const id = ++state.routeId,
     page = document.body.dataset.page;
-  $('#main').className = 'wrap page';
   const map = {
     list: ['list', 'listPage'],
     detail: ['detail', 'detailPage'],
@@ -72,7 +69,10 @@ export async function route() {
   main.setAttribute('aria-busy', 'true');
   try {
     const module = await import(`./pages/${entry[0]}.js`);
-    if (id === state.routeId) await module[entry[1]](entry.length > 2 ? entry[2] : id);
+    if (id === state.routeId) {
+      main.className = 'wrap page';
+      await module[entry[1]](entry.length > 2 ? entry[2] : id);
+    }
   } catch (error) {
     if (id === state.routeId && main.querySelector('.skeleton'))
       main.innerHTML = `<p class="empty" role="alert">${esc(t('error'))}</p>`;

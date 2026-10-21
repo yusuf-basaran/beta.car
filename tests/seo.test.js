@@ -2,9 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createSeo, renderSeo, listingPath, sitemapXml, origin } from '../functions/seo.js';
+import { layouts } from '../js/layout.js';
 import { published, active } from '../functions/core.js';
 
-const template = (name) => readFile(new URL('../' + name, import.meta.url), 'utf8');
+const template = (name) =>
+  name === 'layout.json'
+    ? Promise.resolve(JSON.stringify(layouts()))
+    : readFile(new URL('../' + name, import.meta.url), 'utf8');
 const id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const rows = {
   ilanlar: [

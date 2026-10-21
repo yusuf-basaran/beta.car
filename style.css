@@ -544,10 +544,25 @@ h2 {
   height: 16px;
 }
 .empty {
-  border-block: 1px solid var(--line);
-  padding: var(--s5) 0;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--s3);
+  min-height: 140px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: var(--s5);
+  margin-block: var(--s4);
   color: var(--muted);
   font-size: 13px;
+  line-height: 1.7;
+  text-align: center;
+}
+.empty > .icon {
+  width: 28px;
+  height: 28px;
+  color: var(--cyan);
 }
 .connection {
   color: var(--muted);
@@ -1317,6 +1332,96 @@ h2 {
 }
 .page-head h1 {
   font-size: 34px;
+}
+.server-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s5);
+  padding-bottom: var(--s5);
+  margin-bottom: var(--s5);
+  border-bottom: 1px solid var(--line);
+}
+.server-heading h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  margin-top: var(--s3);
+  overflow-wrap: anywhere;
+}
+.server-heading > .btn {
+  flex-shrink: 0;
+}
+.server-description {
+  max-width: 70ch;
+  margin-top: var(--s4);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.server-body {
+  display: grid;
+  gap: var(--s4);
+  line-height: 1.8;
+  font-size: 14px;
+}
+.server-body > p {
+  max-width: 75ch;
+}
+.server-body .panel {
+  margin: 0;
+}
+.server-body h2 {
+  font-size: 22px;
+  margin-bottom: var(--s3);
+}
+.server-body .panel h2 {
+  font-size: 18px;
+  font-style: normal;
+}
+.server-body .panel p {
+  color: var(--muted);
+}
+.server-body .listing-list {
+  gap: var(--s4);
+}
+.server-body .listing-list:empty,
+.server-links:empty {
+  display: none;
+}
+.server-links {
+  display: grid;
+  gap: var(--s2);
+}
+.server-links > p {
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.server-links a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  min-height: 24px;
+  font-weight: 600;
+}
+.server-links a::after {
+  content: '\2192';
+  color: var(--cyan);
+}
+noscript {
+  display: block;
+  padding: var(--s4);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+@media (scripting: none) {
+  [data-startup] {
+    display: none;
+  }
 }
 .panel {
   padding: var(--s5);
@@ -2139,6 +2244,10 @@ meter {
   }
 }
 @media (max-width: 640px) {
+  .server-heading {
+    flex-direction: column;
+    gap: var(--s4);
+  }
   .page {
     padding-top: var(--s5);
   }

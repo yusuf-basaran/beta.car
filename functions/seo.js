@@ -68,7 +68,22 @@ const structured = (id, data) =>
   json({ '@context': 'https://schema.org', ...data }) +
   '</script>';
 
-export function renderSeo(template, page) {
+export function renderSeo(template, page, layout) {
+  const category = new URL(page.path, origin).searchParams.get('kategori') || page.path.slice(1),
+    active =
+      ['kullanilmis', 'sifir', 'parca'].find(
+        (k) => category === k || category.startsWith(k + '-'),
+      ) || 'kullanilmis';
+  if (layout)
+    template = template
+      .replace(
+        /<div id="header">[\s\S]*?<\/div>(\s*<main)/,
+        (_, after) => `<div id="header">${layout.header[active]}</div>${after}`,
+      )
+      .replace(
+        /<div id="footer">[\s\S]*?<\/div>(\s*<div id="notice")/,
+        (_, after) => `<div id="footer">${layout.footer}</div>${after}`,
+      );
   const en = page.lang === 'en',
     canonical = url(page.path, page.lang);
   const meta = (name, content) =>
@@ -174,30 +189,23 @@ export function renderSeo(template, page) {
     )
     .replace(
       /<main id="main"[^>]*>[\s\S]*?<\/main>/,
-      '<main id="main" tabindex="-1"><section class="wrap page"><nav aria-label="' +
-        (en ? 'Main navigation' : 'Ana menü') +
-        '">' +
-        Object.entries(config.pages)
-          .filter(([p]) =>
-            [
-              '/',
-              '/kullanilmis',
-              '/sifir',
-              '/parca',
-              '/firmalar.html',
-              '/paketler.html',
-              '/yazilar.html',
-            ].includes(p),
-          )
-          .map(([p, titles]) => link(url(p, page.lang), titles[en ? 1 : 0]))
-          .join(' · ') +
-        '</nav><h1>' +
-        esc(page.title) +
-        '</h1><p>' +
+      '<main id="main" tabindex="-1"><section class="wrap page server-page" data-server-page><div class="server-heading"><div><p class="eyebrow">Luxury &amp; Prestige Gallery</p><h1>' +
+        esc(page.title.replace(/\s*\|\s*BETA\.CAR$/i, '')) +
+        '</h1><p class="server-description">' +
         esc(desc) +
-        '</p>' +
+        '</p></div><a class="btn secondary" href="' +
+        esc(url(page.path === '/' ? '/ilanlar.html' : '/', page.lang)) +
+        '">' +
+        (page.path === '/'
+          ? en
+            ? 'Browse listings'
+            : 'İlanları İncele'
+          : en
+            ? 'Home'
+            : 'Ana Sayfa') +
+        '</a></div><div class="server-body">' +
         (page.content || '') +
-        '</section></main>',
+        '</div></section></main>',
     );
 }
 
@@ -252,7 +260,11 @@ export function createSeo(
   service,
   template = (name) => readFile(new URL('./site/' + name, import.meta.url), 'utf8'),
 ) {
-  let sitemap;
+  let sitemap, layout;
+  const render = async (file, page) => {
+    layout ||= template('layout.json').then(JSON.parse);
+    return renderSeo(await template(file), page, (await layout)[page.lang]);
+  };
   const call = async (name, data = {}) => (await service.execute({ name, data })).data;
   const query = async (table, filters = [], more = {}) =>
     (await service.execute({ query: { table, op: 'read', filters, ...more } })).data;
@@ -273,7 +285,7 @@ export function createSeo(
     status,
     noindex: true,
     cache: 'no-store',
-    body: renderSeo(await template(file), {
+    body: await render(file, {
       lang,
       path: '/404.html',
       title: lang === 'en' ? 'Page not found' : 'Sayfa bulunamadı',
@@ -386,9 +398,9 @@ export function createSeo(
       if (path === '/') {
         const posts = await query('yazilar');
         page.content +=
-          '<h2>' +
+          '<section class="server-section"><h2>' +
           (en ? 'Garage Journal' : 'Garaj Yazıları') +
-          '</h2>' +
+          '</h2><div class="server-links">' +
           posts
             .map(
               (r) =>
@@ -399,7 +411,8 @@ export function createSeo(
                 ) +
                 '</p>',
             )
-            .join('');
+            .join('') +
+          '</div></section>';
       }
       if (
         path === '/ilanlar.html' &&
@@ -513,16 +526,19 @@ export function createSeo(
           )
           .join('');
     } else if (path === '/firmalar.html') {
-      page.content = (await query('firmalar'))
-        .map(
-          (r) =>
-            '<p>' +
-            link(url('/firma.html?id=' + encodeURIComponent(r.id), lang), r.ad) +
-            ' · ' +
-            esc(r.sehir) +
-            '</p>',
-        )
-        .join('');
+      page.content =
+        '<div class="server-links">' +
+        (await query('firmalar'))
+          .map(
+            (r) =>
+              '<p>' +
+              link(url('/firma.html?id=' + encodeURIComponent(r.id), lang), r.ad) +
+              ' · ' +
+              esc(r.sehir) +
+              '</p>',
+          )
+          .join('') +
+        '</div>';
     } else if (path === '/paketler.html') {
       page.content = (await query('paketler'))
         .map(
@@ -572,7 +588,7 @@ export function createSeo(
       status: 200,
       noindex: !!page.noindex,
       ...(['/ilan.html', '/firma.html'].includes(path) ? { cache: 'no-store' } : {}),
-      body: renderSeo(await template(file), page),
+      body: await render(file, page),
     };
   };
 }

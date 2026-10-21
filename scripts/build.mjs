@@ -21,6 +21,9 @@ const assets = [
   'og-image.png',
   'js',
 ];
+const { layouts, headerHtml, footerHtml, skeletonHtml } = await import(
+  new URL('../js/layout.js', import.meta.url)
+);
 const pages = (await readdir(root)).filter((name) => name.endsWith('.html'));
 await mkdir(output, { recursive: true });
 for (const name of [...pages, ...assets]) {
@@ -78,7 +81,14 @@ for (const name of pages) {
   const html = await readFile(file, 'utf8');
   await writeFile(
     file,
-    html.replace(/(src="\/?(?:app\.js|js\/offline\.js)|href="\/?style\.css)"/g, `$1?v=${version}"`),
+    html
+      .replace('<div id="header"></div>', `<div id="header">${headerHtml()}</div>`)
+      .replace('<div id="footer"></div>', `<div id="footer">${footerHtml()}</div>`)
+      .replace(
+        /(<main id="main"[^>]*>)\s*<\/main>/,
+        `$1<div class="wrap page" data-startup>${skeletonHtml(2)}</div></main>`,
+      )
+      .replace(/(src="\/?(?:app\.js|js\/offline\.js)|href="\/?style\.css)"/g, `$1?v=${version}"`),
   );
 }
 const worker = await readFile(path.join(output, 'sw.js'), 'utf8');
@@ -90,6 +100,7 @@ await writeFile(
 );
 const templates = path.join(root, 'functions/site');
 await mkdir(templates, { recursive: true });
+await writeFile(path.join(templates, 'layout.json'), JSON.stringify(layouts()));
 for (const name of pages) await cp(path.join(output, name), path.join(templates, name));
 if (process.argv.includes('--firebase')) {
   const hosting = JSON.parse(await readFile(path.join(root, 'firebase.json'), 'utf8')).hosting;
