@@ -159,6 +159,11 @@ export async function createClient() {
         konusma_ac: T.konusmalar[0].id,
         kota: { id: T.ilanlar[0].id, durum: 'yayinda' },
       };
+      if (name === 'ilan_sil' && !globalThis.fixture.rpcFailures?.includes(name)) {
+        T.ilanlar = T.ilanlar.filter((c) => c.id !== p.p_ilan);
+        T.ilan_kartlari = T.ilan_kartlari.filter((c) => c.id !== p.p_ilan);
+        out.ilan_sil = { id: p.p_ilan };
+      }
       const response = globalThis.fixture.rpcFailures?.includes(name)
         ? { data: null, error: Error('Bağlantı kesildi') }
         : { data: out[name] ?? true, error: null };

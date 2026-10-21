@@ -11,6 +11,7 @@ import { createService } from './service.js';
 import { Store, check, rate, hash } from './core.js';
 import { maintenance, cleanup, listingEvent, emailQueue } from './jobs.js';
 import { createSeo } from './seo.js';
+import { pendingDeletions } from './deletion.js';
 
 initializeApp();
 setGlobalOptions({
@@ -109,7 +110,10 @@ export const api = onRequest(async (req, res) => {
     });
   }
 });
-export const bakim = onSchedule('every 15 minutes', () => maintenance(db));
+export const bakim = onSchedule('every 15 minutes', async () => {
+  await maintenance(db);
+  await pendingDeletions(db, getStorage().bucket());
+});
 export const temizlik = onSchedule({ schedule: '20 3 * * *', timeZone: 'UTC' }, () => cleanup(db));
 export const eposta = onSchedule(
   {

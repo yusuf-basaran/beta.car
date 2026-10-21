@@ -1561,12 +1561,12 @@ textarea {
   color: var(--cyan);
   border-color: var(--cyan);
 }
-.account-tools [data-listing-op='arsiv'] {
+.account-tools [data-listing-op='sil'] {
   background: var(--danger-soft);
   color: var(--danger-text);
   border-color: var(--red);
 }
-.account-tools [data-listing-op='arsiv']:hover {
+.account-tools [data-listing-op='sil']:hover {
   background: var(--red);
   color: var(--text);
 }
@@ -1944,6 +1944,23 @@ dialog {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: var(--s5);
+}
+.confirm-dialog {
+  width: min(480px, calc(100vw - 32px));
+}
+.confirm-dialog h2 {
+  font-size: 24px;
+}
+.confirm-dialog p {
+  margin-block: var(--s4) var(--s5);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.confirm-dialog .actions {
+  justify-content: flex-end;
 }
 dialog::backdrop {
   background: #000b;

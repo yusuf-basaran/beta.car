@@ -13,7 +13,7 @@ import {
   pageHead,
 } from '../ui.js';
 import { locale, status, t } from '../i18n.js';
-import { button, check, guard, inp, promoteDialog, safeAction } from '../forms.js';
+import { button, check, confirmAction, guard, inp, promoteDialog, safeAction } from '../forms.js';
 import { state } from '../state.js';
 import { query, rpc, table } from '../api.js';
 import { params } from '../context.js';
@@ -95,7 +95,7 @@ export async function accountPage() {
                   ['satildi', 'markSold', 'check'],
                   ['yayinla', 'renew', 'renew'],
                   ['yukari', 'bump', 'up'],
-                  ['arsiv', 'remove', 'trash'],
+                  ['sil', 'remove', 'trash'],
                 ]
                   .map(
                     ([op, k, symbol]) =>
@@ -115,6 +115,30 @@ export async function accountPage() {
       $$('[data-listing-op]').forEach(
         (b) =>
           (b.onclick = safeAction(async () => {
+            if (b.dataset.listingOp === 'sil') {
+              const id = b.dataset.id,
+                listing = list.find((c) => c.id === id);
+              if (
+                !(await confirmAction(
+                  t('deleteListing'),
+                  `${listing.baslik}\n\n${t('confirmListingDelete')}`,
+                  'deleteForever',
+                ))
+              )
+                return;
+              await rpc('ilan_sil', { p_ilan: id, p_onay: true });
+              for (const key of ['bc-favs', 'bc-recent', 'bc-compare'])
+                write(
+                  key,
+                  read(key).filter((value) => value !== id),
+                );
+              if (read('bc-draft', '') === id) write('bc-draft', '');
+              state.cars = state.cars.filter((c) => c.id !== id);
+              state.listed = state.listed.filter((c) => c.id !== id);
+              notify(t('listingDeleted'));
+              await draw();
+              return;
+            }
             if (b.dataset.listingOp === 'copy') {
               const n = await rpc('ilan_kopyala', { p_ilan: b.dataset.id });
               location.href = `ilan-ver.html?id=${n}`;

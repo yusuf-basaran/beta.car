@@ -9,7 +9,7 @@ service firebase.storage {
     function report() { return request.resource.contentType in ['application/pdf','image/jpeg','image/png']; }
     match /ilanlar/{uid}/{listing}/{file} {
       allow read: if true;
-      allow create: if enabled() && request.auth.uid == uid && request.resource.size <= 10 * 1024 * 1024 && image() && firestore.get(/databases/(default)/documents/ilanlar/$(listing)).data.kullanici_id == uid;
+      allow create: if enabled() && request.auth.uid == uid && request.resource.size <= 10 * 1024 * 1024 && image() && firestore.get(/databases/(default)/documents/ilanlar/$(listing)).data.kullanici_id == uid && firestore.get(/databases/(default)/documents/ilanlar/$(listing)).data.durum != 'siliniyor';
       allow delete: if enabled() && request.auth.uid == uid;
     }
     match /firmalar/{uid}/{path=**} {
@@ -19,7 +19,7 @@ service firebase.storage {
     }
     match /ekspertiz/{uid}/{listing}/{file} {
       allow read: if enabled() && (request.auth.uid == uid || admin());
-      allow create: if enabled() && request.auth.uid == uid && request.resource.size <= 10 * 1024 * 1024 && report() && firestore.get(/databases/(default)/documents/ilanlar/$(listing)).data.kullanici_id == uid;
+      allow create: if enabled() && request.auth.uid == uid && request.resource.size <= 10 * 1024 * 1024 && report() && firestore.get(/databases/(default)/documents/ilanlar/$(listing)).data.kullanici_id == uid && firestore.get(/databases/(default)/documents/ilanlar/$(listing)).data.durum != 'siliniyor';
       allow delete: if enabled() && request.auth.uid == uid;
     }
     match /dekontlar/{uid}/{requestId}/{file} {

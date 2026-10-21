@@ -7,7 +7,8 @@ import { initializeApp, getFirestore, getAuth, getStorage } from '../../scripts/
 import { seed } from '../../scripts/firebase/seed.mjs';
 import { createService } from '../../functions/service.js';
 import { maintenance } from '../../functions/jobs.js';
-import { hash } from '../../functions/core.js';
+import { pendingDeletions } from '../../functions/deletion.js';
+import { hash, id } from '../../functions/core.js';
 import { firstAdmin } from '../../functions/bootstrap.js';
 
 const project = 'demo-beta-car',
@@ -611,6 +612,167 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
       server.kill();
       await once(server, 'exit');
     }
+  });
+  await t.test(
+    'Kalıcı silme sahiplik ve onay ister; dosyaları ve 500 üzeri bağlı kaydı temizler',
+    async () => {
+      const key = id(),
+        copy = id(),
+        uid = 'uye-a';
+      await put('ilanlar', key, {
+        ...base,
+        id: key,
+        kullanici_id: uid,
+        durum: 'taslak',
+        fotograflar: [],
+        olusturma: future(0),
+      });
+      const photo = `ilanlar/${uid}/${key}/kapak.png`,
+        shared = `ilanlar/${uid}/${key}/ortak.png`,
+        removed = `ilanlar/${uid}/${key}/eski.png`,
+        report = `ekspertiz/${uid}/${key}/rapor.pdf`;
+      for (const path of [photo, shared, removed, report])
+        assert.equal(
+          (await upload(uid, path, path.endsWith('.pdf') ? 'application/pdf' : 'image/png')).status,
+          200,
+        );
+      const url = (path) =>
+        `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(path)}?alt=media`;
+      await db
+        .collection('ilanlar')
+        .doc(key)
+        .update({ fotograflar: [url(photo), url(shared)] });
+      await put('ilanlar', copy, {
+        ...base,
+        id: copy,
+        kullanici_id: uid,
+        durum: 'taslak',
+        fotograflar: [url(shared)],
+      });
+      await put('ilan_ekspertiz', key, {
+        ilan_id: key,
+        dosya: `${uid}/${key}/rapor.pdf`,
+        firma: 'Kıyı Kontrol',
+        tarih: future(0),
+      });
+      const signed = await rpc(uid, 'dosya_url', {
+        bucket: 'ekspertiz',
+        file: `${uid}/${key}/rapor.pdf`,
+      });
+      for (const table of [
+        'ilan_parca',
+        'ilan_donanim',
+        'fiyat_gecmisi',
+        'randevular',
+        'sikayetler',
+        '_foto',
+        '_araclar',
+        '_ziyaretler',
+      ])
+        await put(table, 'silme-' + key, { ilan_id: key });
+      for (const table of ['_haklar', '_istatistik']) await put(table, key, { ucretli: true });
+      await put('islem_kaydi', 'eski-' + key, { kayit: key, onceki: { ...base } });
+      await put('bildirimler', 'bildirim-' + key, { kullanici_id: uid, veri: { ilan_id: key } });
+      await put('_eposta', 'bildirim-' + key, { kullanici_id: uid, durum: 'beklemede' });
+      await put('konusmalar', 'konusma-' + key, {
+        ilan_id: key,
+        alici_id: 'uye-b',
+        satici_id: uid,
+        katilimcilar: ['uye-b', uid],
+      });
+      await put('mesajlar', 'mesaj-' + key, {
+        konusma_id: 'konusma-' + key,
+        metin: 'Araç bilgisi',
+        katilimcilar: ['uye-b', uid],
+      });
+      const batch = db.bulkWriter();
+      for (let n = 0; n < 520; n++)
+        batch.set(db.collection('favoriler').doc(key + '-' + n), {
+          ilan_id: key,
+          kullanici_id: 'uye-b',
+        });
+      await batch.close();
+      await reject(rpc(null, 'ilan_sil', { p_ilan: key, p_onay: true }), /giriş/i);
+      await reject(rpc('dogrulanmamis', 'ilan_sil', { p_ilan: key, p_onay: true }), /Doğrulanmış/);
+      await reject(rpc('uye-b', 'ilan_sil', { p_ilan: key, p_onay: true }), /bulunamadı/);
+      await reject(rpc(uid, 'ilan_sil', { p_ilan: key }), /onayı/);
+      assert.ok(await doc('ilanlar', key));
+      assert.equal((await bucket.file(photo).exists())[0], true);
+      const quotaBefore = (await doc('abonelikler', request)).kalan_ilan;
+      await rpc(uid, 'ilan_sil', { p_ilan: key, p_onay: true });
+      for (const table of ['ilanlar', '_haklar', '_istatistik', '_silinen_ilanlar'])
+        assert.equal(await doc(table, key), undefined);
+      for (const table of [
+        'ilan_parca',
+        'ilan_donanim',
+        'ilan_ekspertiz',
+        'fiyat_gecmisi',
+        'favoriler',
+        'randevular',
+        'sikayetler',
+        '_foto',
+        '_araclar',
+        '_ziyaretler',
+      ])
+        assert.equal((await db.collection(table).where('ilan_id', '==', key).get()).size, 0, table);
+      for (const path of [photo, removed, report])
+        assert.equal((await bucket.file(path).exists())[0], false, path);
+      assert.equal((await bucket.file(shared).exists())[0], true);
+      assert.equal(await doc('bildirimler', 'bildirim-' + key), undefined);
+      assert.equal(await doc('_eposta', 'bildirim-' + key), undefined);
+      assert.equal((await db.collection('_dosyalar').where('path', '==', report).get()).size, 0);
+      assert.equal((await fetch('http://127.0.0.1:5000' + signed)).status, 403);
+      assert.equal((await doc('konusmalar', 'konusma-' + key)).ilan_id, null);
+      assert.equal((await doc('mesajlar', 'mesaj-' + key)).metin, 'Araç bilgisi');
+      const logs = await db.collection('islem_kaydi').where('kayit', '==', key).get();
+      assert.equal(logs.size, 1);
+      assert.deepEqual(logs.docs[0].data().onceki, { id: key });
+      assert.equal((await doc('abonelikler', request)).kalan_ilan, quotaBefore);
+      await rpc(uid, 'ilan_sil', { p_ilan: copy, p_onay: true });
+      assert.equal((await bucket.file(shared).exists())[0], false);
+    },
+  );
+  await t.test('Kesilen dosya temizliği başarı bildirmez; bakım silmeyi tamamlar', async () => {
+    const key = id(),
+      uid = 'uye-a',
+      path = `ilanlar/${uid}/${key}/kapak.png`;
+    await put('ilanlar', key, {
+      ...base,
+      id: key,
+      kullanici_id: uid,
+      durum: 'taslak',
+      fotograflar: [],
+    });
+    assert.equal((await upload(uid, path, 'image/png')).status, 200);
+    const blocked = createService({
+      db,
+      auth,
+      bucket: {
+        name: bucket.name,
+        getFiles: bucket.getFiles.bind(bucket),
+        file: () => {
+          throw Error('Dosya servisi kesildi');
+        },
+      },
+    });
+    await reject(
+      blocked.execute({ name: 'ilan_sil', data: { p_ilan: key, p_onay: true } }, users[uid]),
+      /kesildi/,
+    );
+    assert.equal((await doc('ilanlar', key)).durum, 'siliniyor');
+    assert.ok(await doc('_silinen_ilanlar', key));
+    assert.equal((await rest(firestore('_silinen_ilanlar', key), uid)).status, 403);
+    assert.equal((await upload(uid, `ilanlar/${uid}/${key}/sonra.png`, 'image/png')).status, 403);
+    await reject(rpc(uid, 'kota', { p_ilan: key, p_islem: 'kaldir' }), /siliniyor/);
+    await reject(
+      query(uid, 'ilanlar', 'update', { baslik: 'Yeni başlık' }, [['id', 'eq', key]]),
+      /siliniyor/,
+    );
+    await reject(rpc(uid, 'ilan_kopyala', { p_ilan: key }), /bulunamadı/);
+    await pendingDeletions(db, bucket);
+    assert.equal(await doc('ilanlar', key), undefined);
+    assert.equal(await doc('_silinen_ilanlar', key), undefined);
+    assert.equal((await bucket.file(path).exists())[0], false);
   });
   await t.test('İlk yönetici doğrulanmış sunucu ayarıyla yalnız bir kez atanır', async () => {
     await firstAdmin(db, users.dogrulanmamis, users.dogrulanmamis.email);

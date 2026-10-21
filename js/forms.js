@@ -123,3 +123,19 @@ export function promoteDialog(ilan) {
   });
   d.showModal();
 }
+
+export function confirmAction(title, message, action = 'remove') {
+  return new Promise((resolve) => {
+    const d = document.createElement('dialog');
+    d.className = 'confirm-dialog';
+    d.setAttribute('aria-labelledby', 'confirm-title');
+    d.setAttribute('aria-describedby', 'confirm-message');
+    d.innerHTML = `<form method="dialog"><h2 id="confirm-title">${esc(title)}</h2><p id="confirm-message">${esc(message)}</p><div class="actions"><button class="btn secondary" value="cancel" autofocus>${esc(t('cancel'))}</button><button class="btn danger" value="confirm">${esc(t(action))}</button></div></form>`;
+    d.onclose = () => {
+      resolve(d.returnValue === 'confirm');
+      d.remove();
+    };
+    document.body.append(d);
+    d.showModal();
+  });
+}

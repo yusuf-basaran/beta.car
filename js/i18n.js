@@ -343,6 +343,17 @@ export const D = {
   edit: ['Düzenle', 'Edit'],
   copy: ['Kopyala', 'Copy'],
   remove: ['Sil', 'Delete'],
+  deleteListing: ['İlanı kalıcı sil', 'Permanently delete listing'],
+  deleteForever: ['Kalıcı olarak sil', 'Delete permanently'],
+  confirmListingDelete: [
+    'İlan, fotoğrafları, ekspertiz raporu ve bağlı ilan kayıtları sunucudan kalıcı olarak silinecek. Bu işlem geri alınamaz. Kullanılmış ilan hakkı geri verilmez.',
+    'The listing, its photos, inspection report and related listing records will be permanently deleted from the server. This cannot be undone. Used listing credits will not be refunded.',
+  ],
+  listingDeleted: [
+    'İlan sunucudan kalıcı olarak silindi.',
+    'The listing was permanently deleted from the server.',
+  ],
+  siliniyor: ['Siliniyor', 'Deleting'],
   unpublish: ['Yayından kaldır', 'Unpublish'],
   markSold: ['Satıldı işaretle', 'Mark sold'],
   renew: ['Yenile', 'Renew'],

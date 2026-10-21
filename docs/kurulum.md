@@ -73,7 +73,7 @@ SMS kapalıyken `sms_zorunlu` false kalır. Firebase Authentication telefon sağ
 
 ## Zamanlanmış işler ve e-posta
 
-Cloud Scheduler işlevleri: `bakim` 15 dakikada bir talep/abonelik/ilan sürelerini kontrol eder; `temizlik` her gün 03:20 UTC geçici kayıtları siler; `eposta` iki dakikada bir bildirim kuyruğunu işler. İlan yazma tetikleyicisi `ilanBildirim` kayıtlı arama ve fiyat takibi bildirimlerini yazar. Yerel testler bakım fonksiyonunu doğrudan çağırır; canlı Scheduler çalışması ayrıca doğrulanır.
+Cloud Scheduler işlevleri: `bakim` 15 dakikada bir yarım kalan kalıcı silmeleri tamamlar, talep/abonelik/ilan sürelerini kontrol eder; `temizlik` her gün 03:20 UTC geçici kayıtları siler; `eposta` iki dakikada bir bildirim kuyruğunu işler. İlan yazma tetikleyicisi `ilanBildirim` kayıtlı arama ve fiyat takibi bildirimlerini yazar. Yerel testler bakım fonksiyonunu doğrudan çağırır; canlı Scheduler çalışması ayrıca doğrulanır.
 
 Auth e-postaları Firebase Authentication tarafından gönderilir. Uygulama bildirimleri için HTTPS JSON e-posta sağlayıcısı gerekir. Sunucu ortamında `MAIL_ENABLED=true`, `MAIL_API_URL` ve `MAIL_FROM` tanımlanır. Sağlayıcı anahtarı:
 
@@ -105,3 +105,5 @@ Tarayıcı için isteğe bağlı `CHROMIUM_PATH` kullanılabilir. [Yayın kontro
 Geçici ana adres `https://beta-car.vercel.app` olarak kullanılır. Vercel, statik dosyaları `.build` dizininden sunar; Firebase web yapılandırması, API, herkese açık HTML ve sitemap isteklerini `vercel.json` üzerinden mevcut Firebase Hosting adresine iletir. Tarayıcıdaki adres Vercel olarak kalır. Kaynak bağlantı alanları boş kalabilir; Vercel ortamına service account ya da sunucu anahtarı girilmez. Üretim alan adı Firebase Auth yetkili alan adları arasında bulunmalıdır.
 
 Vercel projesinde Framework: Other, build komutu `npm run build -- --firebase`, çıktı dizini `.build` ve üretim dalı `main` kullanılır. Firebase sunucu şablonları veya SEO ayarları değiştiğinde önce Firebase `seo` işlevi yayımlanır; GitHub üretim commit'i Vercel yayınını başlatır. Ana alan adı geçişinde SEO ana adresi, canonical/paylaşım etiketleri, robots/sitemap ve Auth yetkili alan adları birlikte güncellenir. Firebase arka uç adresi yönlendirme hedefi olarak korunur.
+
+Kalıcı ilan silme, doğrulanmış ilan sahibinin `ilan_sil` isteğinde açık onay vermesini gerektirir. İlan silinirken değişiklik ve dosya yükleme kapatılır; fotoğraflar, raporlar ve bağlı ilan kayıtları temizlenmeden başarı yanıtı dönmez. Kesilen işler özel `_silinen_ilanlar` kuyruğundan yeniden yürütülür. Başka bir ilanda kullanılan fotoğraflar, son referans kalkınca silinir. Mesaj geçmişi korunur, silinen ilanla bağlantısı kaldırılır. İşlem kaydında yalnız ilan kimliği, işlemi yapan üye ve tarih tutulur; kullanılmış paket hakkı iade edilmez.

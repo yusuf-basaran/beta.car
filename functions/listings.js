@@ -39,6 +39,7 @@ export const listingFields = [
 export async function saveListing(s, c, data, old, file) {
   member(c);
   fields(data, listingFields);
+  check(old?.durum !== 'siliniyor', 'İlan siliniyor; değiştirilemez', 409);
   const row = {
     id: id(),
     kullanici_id: c.uid,
@@ -187,6 +188,7 @@ export async function quota(s, c, p) {
     r = await s.get('ilanlar', p.p_ilan),
     profile = await s.get('profil', uid);
   check(r?.kullanici_id === uid, 'İlan bulunamadı', 404);
+  check(r.durum !== 'siliniyor', 'İlan siliniyor; değiştirilemez', 409);
   const next = { ...r, guncelleme: now() };
   if (p.p_islem === 'yayinla') {
     check(
@@ -273,7 +275,10 @@ export async function photos(s, c, name, p, file) {
   if (name === 'foto_al') {
     const token = await s.get('_foto', p.p_kod);
     check(
-      token?.kullanici_id === uid && !token.kullanildi && Date.parse(token.bitis) > Date.now(),
+      token?.kullanici_id === uid &&
+        !token.kullanildi &&
+        Date.parse(token.bitis) > Date.now() &&
+        (await s.get('ilanlar', token.ilan_id))?.durum !== 'siliniyor',
       'Fotoğraf oturumu geçersiz',
     );
     s.put('_foto', p.p_kod, { ...token, kullanildi: true });
@@ -281,6 +286,7 @@ export async function photos(s, c, name, p, file) {
   }
   const r = await s.get('ilanlar', p.p_ilan);
   check(r?.kullanici_id === uid, 'İlan bulunamadı', 404);
+  check(r.durum !== 'siliniyor', 'İlan siliniyor; değiştirilemez', 409);
   if (name === 'foto_oturum') {
     const token = id();
     s.put('_foto', token, {

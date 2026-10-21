@@ -16,6 +16,7 @@ import {
   setting,
 } from './core.js';
 import { saveEditor } from './editor.js';
+import { deleteListing } from './deletion.js';
 import { read, search, statistics } from './data.js';
 import { write, primary } from './write.js';
 import { packages } from './packages.js';
@@ -286,7 +287,7 @@ export function createService({ db, auth, bucket }) {
     if (name === 'ilan_kopyala') {
       member(c);
       const original = await s.get('ilanlar', p.p_ilan);
-      check(original?.kullanici_id === c.uid, 'İlan bulunamadı');
+      check(original?.kullanici_id === c.uid && original.durum !== 'siliniyor', 'İlan bulunamadı');
       const data = Object.fromEntries(
         [
           'kategori_id',
@@ -349,7 +350,7 @@ export function createService({ db, auth, bucket }) {
       ) {
         const key = hash(listing.id + ':' + p.p_kim + ':' + p.p_tur + ':' + now().slice(0, 10));
         if (!(await s.get('_ziyaretler', key))) {
-          s.put('_ziyaretler', key, { expires: days(30) });
+          s.put('_ziyaretler', key, { ilan_id: listing.id, expires: days(30) });
           stats = { ...stats, [p.p_tur]: stats[p.p_tur] + 1 };
           s.put('_istatistik', listing.id, stats);
         }
@@ -423,6 +424,8 @@ export function createService({ db, auth, bucket }) {
       const c = await context(user),
         p = body.data || {};
       object(p);
+      if (!body.query && body.name === 'ilan_sil')
+        return { data: await deleteListing(db, bucket, c, p), error: null };
       const isRead = body.query ? body.query.op === 'read' : readonly.includes(body.name);
       if (isRead) {
         const s = new Store(db);

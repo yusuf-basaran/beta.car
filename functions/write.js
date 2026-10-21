@@ -78,7 +78,10 @@ export function primary(table, r) {
 async function owner(s, c, table, r) {
   if (table === 'profil') return r.id === c.uid;
   if (table === 'firma_ozel') return (await s.get('firmalar', r.firma_id))?.kullanici_id === c.uid;
-  if (table.startsWith('ilan_')) return (await s.get('ilanlar', r.ilan_id))?.kullanici_id === c.uid;
+  if (table.startsWith('ilan_')) {
+    const listing = await s.get('ilanlar', r.ilan_id);
+    return listing?.kullanici_id === c.uid && listing.durum !== 'siliniyor';
+  }
   return r.kullanici_id === c.uid;
 }
 async function validate(s, c, table, r, file) {
@@ -274,7 +277,7 @@ export async function write(s, c, q, file) {
   for (const value of values) {
     const data = ['insert', 'upsert'].includes(q.op) ? value : q.value;
     if (q.table === 'ilanlar') {
-      check(q.op !== 'delete', 'İlanı arşiv işlemiyle kaldırın');
+      check(q.op !== 'delete', 'İlanı kalıcı silme işlemiyle kaldırın');
       const row = await saveListing(s, c, data, q.op === 'update' ? value : null, file);
       result.push(row);
       continue;
