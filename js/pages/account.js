@@ -6,6 +6,7 @@ import {
   card,
   empty,
   fail,
+  icon,
   loginPrompt,
   meta,
   notify,
@@ -81,33 +82,31 @@ export async function accountPage() {
                 `<div class="account-listing">` +
                 `${state.me.tip === 'kurumsal' ? `<label class="check"><input type="checkbox" data-bulk="${esc(c.id)}">${esc(c.baslik)}</label>` : ''}` +
                 `${card(c)}` +
-                `<div class="actions"><span>` +
+                `<div class="account-tools"><div class="account-summary"><span class="listing-state">` +
                 `${esc(status(c.durum))}` +
-                `</span><a href="ilan-ver.html?id=` +
+                `</span><span data-stat="${esc(c.id)}"></span></div><div class="actions"><a class="text-btn" href="ilan-ver.html?id=` +
                 `${esc(c.id)}` +
                 `">` +
-                `${esc(t('edit'))}` +
+                `${icon('edit')}${esc(t('edit'))}` +
                 `</a>` +
                 `${[
-                  ['copy', 'copy'],
-                  ['kaldir', 'unpublish'],
-                  ['satildi', 'markSold'],
-                  ['yayinla', 'renew'],
-                  ['yukari', 'bump'],
-                  ['arsiv', 'remove'],
+                  ['copy', 'copy', 'copy'],
+                  ['kaldir', 'unpublish', 'pause'],
+                  ['satildi', 'markSold', 'check'],
+                  ['yayinla', 'renew', 'renew'],
+                  ['yukari', 'bump', 'up'],
+                  ['arsiv', 'remove', 'trash'],
                 ]
                   .map(
-                    ([op, k]) =>
-                      `<button class="text-btn" data-listing-op="${esc(op)}" data-id="${esc(c.id)}">${esc(t(k))}</button>`,
+                    ([op, k, symbol]) =>
+                      `<button class="text-btn" data-listing-op="${esc(op)}" data-id="${esc(c.id)}">${icon(symbol)}${esc(t(k))}</button>`,
                   )
                   .join('')}` +
                 `<button class="text-btn" data-own-promote="` +
                 `${esc(c.id)}` +
                 `">` +
-                `${esc(t('promote'))}` +
-                `</button><span data-stat="` +
-                `${esc(c.id)}` +
-                `"></span></div></div>`,
+                `${icon('promote')}${esc(t('promote'))}` +
+                `</button></div></div></div>`,
             )
             .join('') || empty()
         }` +
