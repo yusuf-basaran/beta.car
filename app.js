@@ -32,19 +32,46 @@ async function start() {
     }
     const references = async () => {
       const vehicles = ['home', 'list', 'editor', 'valuation', 'model', 'wanted'].includes(page);
-      let cached;
+      let cached, refs;
       if (vehicles) {
         try {
           cached = JSON.parse(sessionStorage.getItem('bc-vehicles') || 'null');
         } catch {}
       }
-      if (cached?.url === state.db.projectId && Date.now() - cached.time < 86400000)
+      if (
+        cached?.url === state.db.projectId &&
+        cached.schema === 2 &&
+        Date.now() - cached.time < 300000
+      )
         state.lex = cached.data;
       else cached = null;
-      const data = await rpc('baslangic', {
-        p_sozluk: vehicles && !cached,
-        p_donanim: ['list', 'editor', 'detail', 'compare'].includes(page),
-      });
+      const equipment = ['list', 'editor', 'detail', 'compare'].includes(page);
+      try {
+        refs = JSON.parse(sessionStorage.getItem('bc-references') || 'null');
+      } catch {}
+      if (refs?.url !== state.db.projectId || refs.schema !== 2 || Date.now() - refs.time >= 60000)
+        refs = null;
+      if (refs && (!equipment || refs.equipment) && (!vehicles || cached)) {
+        state.cats = refs.cats;
+        state.eqs = equipment ? refs.eqs : [];
+        state.settings = refs.settings;
+        return;
+      }
+      const data = await rpc('baslangic', { p_sozluk: vehicles && !cached, p_donanim: equipment });
+      try {
+        sessionStorage.setItem(
+          'bc-references',
+          JSON.stringify({
+            url: state.db.projectId,
+            schema: 2,
+            time: Date.now(),
+            cats: data.cats,
+            eqs: equipment ? data.eqs : refs?.eqs || [],
+            equipment: equipment || refs?.equipment || false,
+            settings: data.settings,
+          }),
+        );
+      } catch {}
       state.cats = data.cats;
       state.eqs = data.eqs;
       state.settings = data.settings;
@@ -55,6 +82,7 @@ async function start() {
             'bc-vehicles',
             JSON.stringify({
               url: state.db.projectId,
+              schema: 2,
               time: Date.now(),
               data: state.lex,
             }),

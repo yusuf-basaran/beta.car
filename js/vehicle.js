@@ -32,43 +32,80 @@ export function vehicleForm() {
   );
 }
 
+export function categorySelect(name, value = '', any = true) {
+  const title = (c) => (state.lang === 'en' && c?.ad_en ? c.ad_en : c?.ad || '');
+  return `<select name="${esc(name)}">${any ? `<option value="">${esc(t('any'))}</option>` : ''}${state.cats
+    .filter((c) => !c.ust_id)
+    .map((root) => {
+      const rows = state.cats.filter((c) => c.slug.startsWith(root.slug + '-'));
+      return `<optgroup label="${esc(title(root))}">${(any ? [root, ...rows] : rows)
+        .map((c) => {
+          const v = name === 'kategori_id' ? c.id : c.slug,
+            parent = state.cats.find((p) => p.id === c.ust_id),
+            text = parent && parent.id !== root.id ? `${title(parent)} / ${title(c)}` : title(c);
+          return `<option value="${esc(v)}" ${String(v) === String(value) ? 'selected' : ''}>${esc(text)}</option>`;
+        })
+        .join('')}</optgroup>`;
+    })
+    .join('')}</select>`;
+}
+
 export function bindVehicles(form) {
   const type = $('[name=tip]', form),
     make = $('[name=marka]', form),
     model = $('[name=model]', form),
-    year = $('[name=yil]', form);
+    year = $('[name=yil]', form),
+    category = $('[name=kategori_id], [name=kategori]', form),
+    makeOther = $('[name=diger_marka]', form),
+    modelOther = $('[name=diger_model]', form);
   let brands = [],
     models = [];
   const chosenMake = () => brands.find((m) => key(m[1]) === key(make.value));
-  function years() {
-    const m = models.find((m) => key(m[2]) === key(model.value)),
-      first = m?.[3] || 1950,
-      last = m?.[4] || new Date().getFullYear() + 1,
-      prev = year.value;
+  const chosenModel = () => models.find((m) => key(m[2]) === key(model.value));
+  const other = (input) => key(input.value) === key(t('other'));
+  function toggle(input, visible) {
+    input.closest('label').hidden = !visible;
+    input.required = visible;
+    if (!visible) input.value = '';
+  }
+  function changed() {
+    form.dispatchEvent(new CustomEvent('vehiclechange'));
+  }
+  function years(reset = true) {
+    const m = chosenModel(),
+      first = Math.max(1950, Number(m?.[3]) || 1950),
+      last = Math.min(new Date().getFullYear() + 1, Number(m?.[4]) || new Date().getFullYear() + 1),
+      prev = reset ? '' : year.value;
     year.innerHTML =
       `<option value="">${esc(t('any'))}</option>` +
       Array.from(
         { length: Math.max(0, last - first + 1) },
-        (_, i) => `<option>${esc(last - i)}</option>`,
+        (_, i) => `<option>${last - i}</option>`,
       ).join('');
     year.value = prev;
-    const other = key(model.value) === key(t('other'));
-    $('[name=diger_model]', form).closest('label').hidden = !other;
-    $('[name=diger_model]', form).required = other;
+    year.disabled = !m && !other(model);
+    toggle(modelOther, other(model));
+    model.setCustomValidity(model.value && !m && !other(model) ? t('chooseModel') : '');
+    changed();
   }
   function updateModels(reset = true) {
     const m = chosenMake();
     make.dataset.id = m?.[0] || '';
-    const ids = brands.filter((b) => key(b[1]) === key(make.value)).map((b) => b[0]);
-    models = state.lex.modeller.filter((x) => ids.includes(x[1]));
+    const ids = new Set(brands.filter((b) => key(b[1]) === key(make.value)).map((b) => b[0]));
+    models = state.lex.modeller
+      .filter((x) => ids.has(x[1]))
+      .sort((a, b) => a[2].localeCompare(b[2], locale()));
+    const seen = new Set();
     $('datalist[id^=models]', form).innerHTML =
-      models.map((m) => `<option value="${esc(m[2])}"></option>`).join('') +
-      `<option value="${esc(t('other'))}"></option>`;
+      models
+        .filter((m) => !seen.has(key(m[2])) && seen.add(key(m[2])))
+        .map((m) => `<option value="${esc(m[2])}"></option>`)
+        .join('') + `<option value="${esc(t('other'))}"></option>`;
     if (reset) model.value = '';
-    const other = key(make.value) === key(t('other'));
-    $('[name=diger_marka]', form).closest('label').hidden = !other;
-    $('[name=diger_marka]', form).required = other;
-    years();
+    model.disabled = !m && !other(make);
+    toggle(makeOther, other(make));
+    make.setCustomValidity(make.value && !m && !other(make) ? t('chooseMake') : '');
+    years(reset);
   }
   function updateMakes(reset = true) {
     brands = state.lex.markalar
@@ -81,25 +118,60 @@ export function bindVehicles(form) {
     const seen = new Set();
     $('datalist[id^=makes]', form).innerHTML =
       brands
-        .filter((m) => !seen.has(m[1]) && seen.add(m[1]))
+        .filter((m) => !seen.has(key(m[1])) && seen.add(key(m[1])))
         .map((m) => `<option value="${esc(m[1])}"></option>`)
         .join('') + `<option value="${esc(t('other'))}"></option>`;
     if (reset) make.value = '';
     updateModels(reset);
   }
-  type.onchange = () => updateMakes();
-  make.oninput = () => updateModels();
-  model.oninput = years;
-  updateMakes(false);
+  function categoryChanged(reset = true) {
+    const cat = state.cats.find(
+        (c) =>
+          String(c.id) === (category?.value || form.dataset.category) ||
+          c.slug === (category?.value || form.dataset.category),
+      ),
+      allowed = cat?.arac_tipi
+        ? [cat.arac_tipi]
+        : cat
+          ? [
+              ...new Set(
+                state.cats
+                  .filter((c) => c.slug.startsWith(cat.slug + '-'))
+                  .map((c) => c.arac_tipi)
+                  .filter(Boolean),
+              ),
+            ]
+          : types,
+      previous = type.value;
+    type.innerHTML =
+      `<option value="">${esc(t('any'))}</option>` +
+      types
+        .filter((x) => allowed.includes(x))
+        .map((x) => `<option value="${esc(x)}">${esc(t(x))}</option>`)
+        .join('');
+    type.value = cat?.arac_tipi || (allowed.includes(previous) ? previous : '');
+    type.disabled = !!cat?.arac_tipi;
+    if (form.id === 'editor') {
+      const required = !cat?.slug.startsWith('parca');
+      make.required = model.required = year.required = required;
+    }
+    updateMakes(reset && previous !== type.value);
+  }
+  type.addEventListener('change', () => updateMakes());
+  category?.addEventListener('change', () => categoryChanged());
+  form.addEventListener('categorychange', () => categoryChanged());
+  make.addEventListener('input', () => updateModels());
+  model.addEventListener('input', () => years());
+  categoryChanged(false);
   return () => {
-    const m = models.find((m) => key(m[2]) === key(model.value));
+    const m = chosenModel();
     return {
       tip: type.value,
       marka: m?.[1] || make.dataset.id,
       model: m?.[0] || '',
       yil: year.value,
-      diger_marka: $('[name=diger_marka]', form).value,
-      diger_model: $('[name=diger_model]', form).value,
+      diger_marka: other(make) ? makeOther.value : '',
+      diger_model: other(model) ? modelOther.value : '',
     };
   };
 }
@@ -249,6 +321,19 @@ export function equipmentEdit(ids = [], tip = '') {
       )
       .join('')}`
   );
+}
+
+export function bindVehicleEquipment(form, host) {
+  let previous;
+  const draw = () => {
+    if (previous === form.tip.value) return;
+    previous = form.tip.value;
+    const selected = $$('[name=donanim]:checked', host).map((e) => Number(e.value));
+    host.innerHTML = equipmentEdit(selected, previous);
+    bindEquipment();
+  };
+  form.addEventListener('vehiclechange', draw);
+  draw();
 }
 
 export function bindEquipment() {

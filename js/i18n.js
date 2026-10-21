@@ -37,6 +37,14 @@ export const D = {
   year: ['Yıl', 'Year'],
   any: ['Tümü', 'All'],
   other: ['Diğer', 'Other'],
+  chooseMake: [
+    'Listeden bir marka seçin veya Diğer seçeneğini kullanın.',
+    'Select a make from the list or choose Other.',
+  ],
+  chooseModel: [
+    'Seçili markanın modellerinden birini seçin veya Diğer seçeneğini kullanın.',
+    'Select a model for this make or choose Other.',
+  ],
   otherMake: ['Markayı yaz', 'Enter make'],
   otherModel: ['Modeli yaz', 'Enter model'],
   keywords: ['Marka, model veya ilan no', 'Make, model or listing number'],

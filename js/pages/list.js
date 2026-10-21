@@ -17,8 +17,14 @@ import {
 } from '../ui.js';
 import { button, check, inp, label, safeAction, select } from '../forms.js';
 import { params } from '../context.js';
-import { cityList, nav } from '../data.js';
-import { bindEquipment, bindVehicles, equipmentEdit, vehicleForm } from '../vehicle.js';
+import { cityList } from '../data.js';
+import {
+  bindVehicleEquipment,
+  bindVehicles,
+  categorySelect,
+  equipmentEdit,
+  vehicleForm,
+} from '../vehicle.js';
 import { state } from '../state.js';
 import { need, query, rpc } from '../api.js';
 
@@ -108,14 +114,7 @@ export async function listPage(id) {
       `${esc(t('filter'))}` +
       `</h2>` +
       `${label('keywordsLabel', inp('q', 'search', params.get('q') || ''))}` +
-      `${label(
-        'category',
-        select(
-          'kategori',
-          nav.map(([v, k]) => [v, k]),
-          params.get('kategori'),
-        ),
-      )}` +
+      `${label('category', categorySelect('kategori', params.get('kategori')))}` +
       `${vehicleForm()}` +
       `<div class="fields">` +
       `${label('min', inp('min', 'number', '', 'min="0"'))}` +
@@ -151,7 +150,7 @@ export async function listPage(id) {
       `<details><summary>` +
       `${esc(t('equipment'))}` +
       `</summary>` +
-      `${equipmentEdit()}` +
+      `<div id="equipment-filter">${equipmentEdit()}</div>` +
       `</details><div class="actions">` +
       `${button('apply')}` +
       `${button('clear', 'clear-filter', 'text-btn')}` +
@@ -176,6 +175,11 @@ export async function listPage(id) {
       else el.value = v;
     }
   }
+  $('[name=kategori]', form).dispatchEvent(new Event('change'));
+  const type = $('[name=tip]', form);
+  if (!type.disabled && [...type.options].some((o) => o.value === params.get('tip')))
+    type.value = params.get('tip');
+  $('[name=tip]', form).dispatchEvent(new Event('change'));
   const b = state.lex.markalar.find((m) => String(m[0]) === params.get('marka')),
     m = state.lex.modeller.find((m) => String(m[0]) === params.get('model'));
   if (b) {
@@ -190,7 +194,7 @@ export async function listPage(id) {
   $$('[name=donanim]', form).forEach(
     (e) => (e.checked = params.getAll('donanim').includes(e.value)),
   );
-  bindEquipment();
+  bindVehicleEquipment(form, $('#equipment-filter'));
   async function run() {
     const p = readFilter(form, values);
     p.sira = $('[name=sira]').value;

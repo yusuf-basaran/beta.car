@@ -2,9 +2,18 @@ export async function createClient(cfg) {
   let config = cfg.firebase;
   if (!config?.projectId) {
     try {
-      const r = await fetch('/__/firebase/init.json');
-      if (r.ok) config = await r.json();
+      const cached = JSON.parse(sessionStorage.getItem('bc-firebase') || 'null');
+      if (cached?.data?.projectId && Date.now() - cached.time < 3600000) config = cached.data;
     } catch {}
+    if (!config?.projectId) {
+      const r = await fetch('/__/firebase/init.json', { signal: AbortSignal.timeout(15000) });
+      if (r.ok) {
+        config = await r.json();
+        try {
+          sessionStorage.setItem('bc-firebase', JSON.stringify({ time: Date.now(), data: config }));
+        } catch {}
+      }
+    }
   }
   if (!config?.projectId) return null;
   const base = 'https://www.gstatic.com/firebasejs/13.0.0/';
@@ -33,10 +42,10 @@ export async function createClient(cfg) {
       return { sdk, storage };
     }));
   await auth.authStateReady();
-  if (auth.currentUser) {
+  if (auth.currentUser && !auth.currentUser.emailVerified) {
     try {
       await authSdk.reload(auth.currentUser);
-      await auth.currentUser.getIdToken(true);
+      if (auth.currentUser.emailVerified) await auth.currentUser.getIdToken(true);
     } catch (error) {
       if (
         ![
@@ -64,7 +73,11 @@ export async function createClient(cfg) {
         body: JSON.stringify(data),
       });
       const result = await r.json();
-      if (!r.ok || result.error) throw Error(result.error?.message || 'İşlem tamamlanamadı');
+      if (r.status === 401 && token) await authSdk.signOut(auth);
+      if (!r.ok || result.error)
+        throw Object.assign(Error(result.error?.message || 'İşlem tamamlanamadı'), {
+          hint: result.error?.hint,
+        });
       return result;
     } catch (error) {
       return { data: null, error };

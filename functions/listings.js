@@ -83,19 +83,33 @@ export async function saveListing(s, c, data, old, file) {
   check(['GBP', 'EUR', 'USD', 'TL'].includes(row.para_birimi), 'Para birimi geçersiz');
   if (row.fiyat != null) number(row.fiyat);
   if (row.km != null) number(row.km, 0, 1e8);
-  if (row.yil != null) number(row.yil, 1950, 2200);
+  if (row.yil != null) {
+    number(row.yil, 1950, new Date().getFullYear() + 1);
+    check(Number.isInteger(row.yil), 'Model yılı geçersiz');
+  }
   if (row.sehir)
     check(
       ['Girne', 'Lefkoşa', 'Gazimağusa', 'İskele', 'Güzelyurt', 'Lefke'].includes(row.sehir),
       'Şehir geçersiz',
     );
-  check(await s.get('kategoriler', row.kategori_id), 'Kategori bulunamadı');
-  if (row.marka_id) check(await s.get('markalar', row.marka_id), 'Marka bulunamadı');
-  if (row.model_id)
-    check(
-      same((await s.get('modeller', row.model_id))?.marka_id, row.marka_id),
-      'Marka ile model uyuşmuyor',
-    );
+  const category = await s.get('kategoriler', row.kategori_id);
+  check(category?.ust_id && category.arac_tipi, 'Alt kategori seçin');
+  if (row.marka_id) {
+    const make = await s.get('markalar', row.marka_id);
+    check(make && make.tip === category.arac_tipi, 'Marka seçilen kategoriye uygun değil');
+  }
+  if (row.model_id) {
+    const model = await s.get('modeller', row.model_id);
+    check(same(model?.marka_id, row.marka_id), 'Marka ile model uyuşmuyor');
+    if (row.yil != null)
+      check(
+        (!model.bas_yil || row.yil >= model.bas_yil) &&
+          (!model.bit_yil || row.yil <= model.bit_yil),
+        'Model yılı aralığa uygun değil',
+      );
+  }
+  for (const field of ['diger_marka', 'diger_model'])
+    if (row[field]) row[field] = text(row[field], 1, 80);
   object(row.detay);
   check(
     JSON.stringify(row.detay).length <= 8000 &&
@@ -208,7 +222,11 @@ export async function quota(s, c, p) {
       const sub = (await s.all('abonelikler', [['kullanici_id', '==', uid]]))
         .filter((x) => x.durum === 'aktif' && Date.parse(x.bitis) > Date.now() && x.kalan_ilan > 0)
         .sort((a, b) => a.bitis.localeCompare(b.bitis))[0];
-      check(sub, 'Paket al veya mevcut ilanlarından birini kaldır');
+      if (!sub)
+        throw Object.assign(Error('Paket al veya mevcut ilanlarından birini kaldır'), {
+          status: 400,
+          hint: 'paketler.html',
+        });
       s.put('abonelikler', sub.id, { ...sub, kalan_ilan: sub.kalan_ilan - 1 });
       s.put('_haklar', r.id, { ucretli: true, abonelik_id: sub.id });
     } else if (!previous) s.put('_haklar', r.id, { ucretli: false });

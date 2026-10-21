@@ -12,8 +12,10 @@ import {
   same,
   active,
   published,
+  mapRows,
   setting,
 } from './core.js';
+import { saveEditor } from './editor.js';
 import { read, search, statistics } from './data.js';
 import { write, primary } from './write.js';
 import { packages } from './packages.js';
@@ -32,6 +34,7 @@ const readonly = [
   'ilan_durum',
   'satici',
   'model_ozeti',
+  'istatistiklerim',
   'profilim',
   'yetkim',
   'admin_veri',
@@ -39,7 +42,7 @@ const readonly = [
   'banka_bilgisi',
 ];
 export function createService({ db, auth, bucket }) {
-  let catalogue;
+  let catalogue, references;
   async function context(user) {
     if (!user) return { uid: null, verified: false, admin: false };
     const role = (await db.collection('_yetkiler').doc(user.uid).get()).data();
@@ -92,6 +95,7 @@ export function createService({ db, auth, bucket }) {
     return target;
   }
   async function dispatch(s, c, name, p) {
+    if (name === 'ilan_kaydet') return saveEditor(s, c, p, file);
     if (name === 'profil_kaydet') {
       check(c.uid, 'Giriş yapın', 401);
       fields(p, ['ad', 'tip']);
@@ -115,14 +119,31 @@ export function createService({ db, auth, bucket }) {
     if (name === 'baslangic') {
       fields(p, ['p_sozluk', 'p_donanim']);
       check(typeof p.p_sozluk === 'boolean' && typeof p.p_donanim === 'boolean');
-      const [cats, eqs, settings, lex] = await Promise.all([
-        read(s, c, { table: 'kategoriler', op: 'read', order: [['sira', true]] }),
-        p.p_donanim ? read(s, c, { table: 'donanimlar', op: 'read' }) : { data: [] },
-        dispatch(s, c, 'genel_ayarlar', {}),
-        p.p_sozluk ? dispatch(s, c, 'arac_sozlugu', {}) : null,
-      ]);
-      return { cats: cats.data, eqs: eqs.data, settings, lex };
+      if (!references || references.until < Date.now())
+        references = {
+          until: Date.now() + 60000,
+          data: Promise.all([
+            read(
+              s,
+              { uid: null, admin: false },
+              { table: 'kategoriler', op: 'read', order: [['sira', true]] },
+            ),
+            read(s, { uid: null, admin: false }, { table: 'donanimlar', op: 'read' }),
+            dispatch(s, c, 'genel_ayarlar', {}),
+          ]),
+        };
+      try {
+        const [[cats, eqs, settings], lex] = await Promise.all([
+          references.data,
+          p.p_sozluk ? dispatch(s, c, 'arac_sozlugu', {}) : null,
+        ]);
+        return { cats: cats.data, eqs: p.p_donanim ? eqs.data : [], settings, lex };
+      } catch (error) {
+        references = null;
+        throw error;
+      }
     }
+
     if (name === 'ana_sayfa') {
       fields(p, ['p_son']);
       check(Array.isArray(p.p_son) && p.p_son.length <= 10);
@@ -150,16 +171,28 @@ export function createService({ db, auth, bucket }) {
       if (!catalogue || catalogue.until < Date.now())
         catalogue = {
           until: Date.now() + 300000,
-          data: Promise.all([s.all('markalar'), s.all('modeller')]).then(([makes, models]) => ({
-            markalar: makes.map((m) => [m.id, m.ad, m.tip]),
-            modeller: models.map((m) => [
-              m.id,
-              m.marka_id,
-              m.ad,
-              m.bas_yil ?? null,
-              m.bit_yil ?? null,
-            ]),
-          })),
+          data: (async () => {
+            const snapshot = await s.get('_katalog', 'aktif');
+            if (snapshot?.aktif) {
+              const rows = await Promise.all(snapshot.parcalar.map((k) => s.get('_katalog', k)));
+              if (rows.every(Boolean)) {
+                const lex = { markalar: [], modeller: [], surum: snapshot.surum };
+                for (const row of rows) lex[row.tur].push(...JSON.parse(row.veri));
+                return lex;
+              }
+            }
+            const [makes, models] = await Promise.all([s.all('markalar'), s.all('modeller')]);
+            return {
+              markalar: makes.map((m) => [m.id, m.ad, m.tip]),
+              modeller: models.map((m) => [
+                m.id,
+                m.marka_id,
+                m.ad,
+                m.bas_yil ?? null,
+                m.bit_yil ?? null,
+              ]),
+            };
+          })(),
         };
       try {
         return await catalogue.data;
@@ -291,6 +324,16 @@ export function createService({ db, auth, bucket }) {
       });
       return copy.id;
     }
+    if (name === 'istatistiklerim') {
+      member(c);
+      fields(p, ['p_ilanlar']);
+      check(Array.isArray(p.p_ilanlar) && p.p_ilanlar.length <= 100, 'En çok 100 ilan seçilebilir');
+      return mapRows([...new Set(p.p_ilanlar)], async (id) => {
+        const listing = await s.get('ilanlar', id);
+        check(listing?.kullanici_id === c.uid, 'İlan yetkisi yok', 403);
+        return { id, ...(await dispatch(s, c, 'istatistik', { p_ilan: id })) };
+      });
+    }
     if (name === 'istatistik') {
       const listing = await s.get('ilanlar', p.p_ilan);
       check(
@@ -420,8 +463,11 @@ export function createService({ db, auth, bucket }) {
         ['oneri_onayla', 'birlestir'].includes(body.name) ||
         (['yonet', 'admin_duzenle'].includes(body.name) &&
           ['markalar', 'modeller'].includes(p.p_tablo))
-      )
+      ) {
         catalogue = null;
+        await db.collection('_katalog').doc('aktif').set({ aktif: false }, { merge: true });
+      }
+      if (['yonet', 'admin_duzenle'].includes(body.name)) references = null;
       if (body.name === 'hesap_sil') {
         await auth.revokeRefreshTokens(c.uid);
         await auth.updateUser(c.uid, { disabled: true });

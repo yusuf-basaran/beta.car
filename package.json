@@ -17,7 +17,8 @@
     "test:firebase": "npm run build -- --firebase && firebase emulators:exec --project demo-beta-car --only auth,firestore,storage,functions,hosting \"node --test tests/firebase/*.test.js\"",
     "firebase:emulators": "node scripts/firebase/emulators.mjs",
     "firebase:deploy": "node scripts/firebase/deploy.mjs",
-    "firebase:seed": "node scripts/firebase/seed.mjs"
+    "firebase:seed": "node scripts/firebase/seed.mjs",
+    "firebase:catalogue": "node scripts/firebase/catalogue.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.10",

@@ -69,7 +69,7 @@ export function home() {
     `${esc(t('search'))}` +
     `">` +
     `${nav.map(([s], i) => `<button type="button" role="tab" aria-selected="${esc(s === state.mainCat)}" data-tab="${esc(s)}">${esc(t(['usedShort', 'newShort', 'parts'][i]))}</button>`).join('')}` +
-    `</div><form id="search-form"><div class="keyword-row"><label class="keyword">` +
+    `</div><form id="search-form" data-category="${esc(state.mainCat)}"><div class="keyword-row"><label class="keyword">` +
     `${icon('search')}` +
     `<input name="q" type="search" placeholder="` +
     `${esc(t('keywords'))}` +
@@ -297,6 +297,11 @@ export function setCategory(cat) {
   header();
   $('#chips').innerHTML = chips();
   $$('[data-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === cat)));
+  const form = $('#search-form');
+  if (form) {
+    form.dataset.category = cat;
+    form.dispatchEvent(new Event('categorychange'));
+  }
 }
 
 export async function load(draw = true) {

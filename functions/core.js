@@ -69,6 +69,12 @@ export function matches(r, filters = []) {
         : op === 'in' && Array.isArray(v) && v.some((x) => same(r[k], x)),
   );
 }
+export async function mapRows(rows, fn) {
+  const out = [];
+  for (let n = 0; n < rows.length; n += 16)
+    out.push(...(await Promise.all(rows.slice(n, n + 16).map(fn))));
+  return out;
+}
 export class Store {
   constructor(db, tx) {
     this.db = db;
@@ -76,6 +82,7 @@ export class Store {
     this.cache = new Map();
     this.writes = new Map();
     this.queries = new Map();
+    this.reads = new Map();
   }
   ref(name, key) {
     check(
@@ -87,8 +94,21 @@ export class Store {
   async get(name, key) {
     const ref = this.ref(name, key);
     if (!this.cache.has(ref.path)) {
-      const snap = this.tx ? await this.tx.get(ref) : await ref.get();
-      this.cache.set(ref.path, snap.exists ? snap.data() : null);
+      if (!this.reads.has(ref.path))
+        this.reads.set(
+          ref.path,
+          (this.tx ? this.tx.get(ref) : ref.get())
+            .then((snap) => {
+              if (!this.cache.has(ref.path))
+                this.cache.set(ref.path, snap.exists ? snap.data() : null);
+              return this.cache.get(ref.path);
+            })
+            .catch((error) => {
+              this.reads.delete(ref.path);
+              throw error;
+            }),
+        );
+      return this.reads.get(ref.path);
     }
     return this.cache.get(ref.path);
   }

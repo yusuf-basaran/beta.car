@@ -61,6 +61,8 @@ Kaynak `js/config.js` bağlantı alanları boş kalır. Firebase Hosting public 
 
 Kurulum, ilk yönetici, paket/banka ayarları, SMS ve bildirim e-postaları [kurulum belgesinde](docs/kurulum.md) açıklanır. Eski SQL dosyaları korunur; Firebase'de uygulanmaz. Canlı veri aktarımı ayrıca planlanır.
 
+Marka/model aktarımı, bağlı seçimler ve veri erişimi [araç kataloğu belgesinde](docs/arac-katalogu.md) açıklanır.
+
 ## Test
 
 ```bash

@@ -6,11 +6,12 @@ import { esc, read, write } from '../utils.js';
 import { need, query, rpc, table, uploadFile } from '../api.js';
 import { check, guard, inp, label, safeAction, select } from '../forms.js';
 import {
-  bindEquipment,
+  bindVehicleEquipment,
   bindPanels,
   bindVehicles,
   bodyBox,
   bodySvg,
+  categorySelect,
   equipmentBox,
   equipmentEdit,
   vehicleForm,
@@ -39,6 +40,13 @@ export async function editorPage() {
       fotograflar: [],
       ...read('bc-valuation', {}),
     };
+  if (!c.id) {
+    const make = state.lex.markalar.find((m) => String(m[0]) === String(c.marka_id || c.marka));
+    if (make)
+      c.kategori_id =
+        state.cats.find((k) => k.slug.startsWith('kullanilmis-') && k.arac_tipi === make[2])?.id ||
+        c.kategori_id;
+  }
   let id = c.id,
     photos = [...(c.fotograflar || [])],
     parts = {},
@@ -61,17 +69,7 @@ export async function editorPage() {
     `<nav class="steps">` +
       `${steps.map((k, i) => `<span data-step-label="${esc(i)}">${esc(i + 1)}. ${esc(t(k))}</span>`).join('')}` +
       `</nav><form id="editor"><fieldset data-step="0" class="panel">` +
-      `${label(
-        'category',
-        select(
-          'kategori_id',
-          state.cats
-            .filter((k) => k.ust_id)
-            .map((k) => [k.id, state.lang === 'en' ? k.ad_en : k.ad]),
-          c.kategori_id,
-          false,
-        ),
-      )}` +
+      `${label('category', categorySelect('kategori_id', c.kategori_id, false))}` +
       `</fieldset><fieldset data-step="1" class="panel">` +
       `${label('title', inp('baslik', 'text', c.baslik, 'required minlength="5" maxlength="140"'))}` +
       `${vehicleForm()}` +
@@ -132,7 +130,7 @@ export async function editorPage() {
   const mark = state.lex.markalar.find((m) => String(m[0]) === String(c.marka_id || c.marka)),
     model = state.lex.modeller.find((m) => String(m[0]) === String(c.model_id || c.model));
   if (mark) {
-    form.tip.value = mark[2];
+    if (!form.tip.disabled) form.tip.value = mark[2];
     form.tip.dispatchEvent(new Event('change'));
     form.marka.value = mark[1];
     form.marka.dispatchEvent(new Event('input'));
@@ -182,7 +180,6 @@ export async function editorPage() {
     $('#body-editor').innerHTML = bodySvg(parts, true);
     bindBody();
   };
-  bindEquipment();
   function data() {
     const f = new FormData(form),
       v = values(),
@@ -208,58 +205,60 @@ export async function editorPage() {
       video: f.get('video') || null,
     };
   }
-  async function persist() {
-    need();
-    const d = data();
-    const phone = d.detay.telefon;
-    if (phone)
-      await query(state.db.from('profil').update({ telefon: phone }).eq('id', state.user.id));
-    delete d.detay.telefon;
-    if (d.baslik.length < 5) throw Error(t('invalid'));
-    if (id) await query(state.db.from('ilanlar').update(d).eq('id', id));
-    else {
-      id = (await query(state.db.from('ilanlar').insert(d).select('id').single())).id;
-      history.replaceState(null, '', `?id=${id}`);
-      write('bc-draft', id);
+  bindVehicleEquipment(form, $('#equipment-editor'));
+  let saving;
+  async function persist(publish = false) {
+    if (saving) {
+      await saving;
+      return persist(publish);
     }
-    await query(state.db.from('ilan_parca').delete().eq('ilan_id', id));
-    if (Object.keys(parts).length)
-      await query(
-        state.db
-          .from('ilan_parca')
-          .insert(Object.entries(parts).map(([parca, durum]) => ({ ilan_id: id, parca, durum }))),
-      );
-    const chosen = $$('[name=donanim]:checked', form).map((e) => Number(e.value));
-    await query(state.db.from('ilan_donanim').delete().eq('ilan_id', id));
-    if (chosen.length)
-      await query(
-        state.db
-          .from('ilan_donanim')
-          .insert(chosen.map((donanim_id) => ({ ilan_id: id, donanim_id }))),
-      );
-    const file = form.rapor.files[0];
-    if (file) {
-      if (!form.ekspertiz_firma.value || !form.ekspertiz_tarih.value) throw Error(t('invalid'));
-      const dosya = await uploadFile('ekspertiz', file, id);
-      report = {
-        ilan_id: id,
-        dosya,
-        firma: form.ekspertiz_firma.value,
-        tarih: form.ekspertiz_tarih.value,
+    saving = (async () => {
+      need();
+      const d = data(),
+        phone = d.detay.telefon;
+      delete d.detay.telefon;
+      if (d.baslik.length < 5) throw Error(t('invalid'));
+      let uploaded;
+      const save = async (publishing) => {
+        const result = await rpc('ilan_kaydet', {
+          p_ilan: id || null,
+          p_veri: d,
+          p_parcalar: parts,
+          p_donanim: $$('[name=donanim]:checked', form).map((e) => Number(e.value)),
+          p_rapor: uploaded || null,
+          p_telefon: phone || null,
+          p_tip: form.tip.value,
+          p_yayin: publishing,
+        });
+        id = result.id;
+        history.replaceState(null, '', `?id=${id}`);
+        write('bc-draft', id);
+        return id;
       };
-      await query(state.db.from('ilan_ekspertiz').upsert(report));
-      form.rapor.value = '';
+      const file = form.rapor.files[0];
+      if (file) {
+        if (!form.ekspertiz_firma.value || !form.ekspertiz_tarih.value) throw Error(t('invalid'));
+        if (!id) await save(false);
+        uploaded = {
+          dosya: await uploadFile('ekspertiz', file, id),
+          firma: form.ekspertiz_firma.value,
+          tarih: form.ekspertiz_tarih.value,
+        };
+      }
+      await save(publish);
+      if (uploaded) {
+        report = { ...uploaded, ilan_id: id };
+        form.rapor.value = '';
+      }
+      return id;
+    })();
+    try {
+      return await saving;
+    } finally {
+      saving = null;
     }
-    if (values().diger_marka || values().diger_model)
-      await query(
-        state.db.from('oneriler').insert({
-          tip: form.tip.value || 'otomobil',
-          marka: values().diger_marka || form.marka.value,
-          model: values().diger_model || null,
-        }),
-      );
-    return id;
   }
+
   function updateStep() {
     const current = $(`[data-step="${step}"]`);
     $$('[data-step]').forEach((f) => (f.hidden = f !== current));
@@ -307,15 +306,16 @@ export async function editorPage() {
     notify(t('success'));
   });
   guard(form, async () => {
-    await persist();
     try {
-      await rpc('kota', { p_ilan: id, p_islem: 'yayinla' });
+      await persist(true);
       write('bc-draft', '');
       write('bc-valuation', {});
       location.href = 'hesabim.html';
     } catch (e) {
-      if (e.hint === 'paketler.html') location.href = 'paketler.html';
-      else throw e;
+      if (e.hint === 'paketler.html') {
+        await persist();
+        location.href = 'paketler.html';
+      } else throw e;
     }
   });
   function drawPhotos() {

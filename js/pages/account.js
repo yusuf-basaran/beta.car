@@ -127,11 +127,15 @@ export async function accountPage() {
       $$('[data-own-promote]').forEach(
         (b) => (b.onclick = () => promoteDialog(b.dataset.ownPromote)),
       );
-      for (const c of list) {
-        const s = await rpc('istatistik', { p_ilan: c.id });
-        const n = $$('[data-stat]').find((n) => n.dataset.stat === c.id);
-        if (n)
-          n.textContent = `${s.goruntulenme || 0} ${t('views')} · ${s.favori || 0} ${t('favs')} · ${s.mesaj || 0} ${t('messageCount')} · ${s.telefon || 0} ${t('phoneClicks')}`;
+      for (let start = 0; start < list.length; start += 100) {
+        const stats = await rpc('istatistiklerim', {
+          p_ilanlar: list.slice(start, start + 100).map((c) => c.id),
+        });
+        for (const s of stats) {
+          const n = $$('[data-stat]').find((n) => n.dataset.stat === s.id);
+          if (n)
+            n.textContent = `${s.goruntulenme || 0} ${t('views')} · ${s.favori || 0} ${t('favs')} · ${s.mesaj || 0} ${t('messageCount')} · ${s.telefon || 0} ${t('phoneClicks')}`;
+        }
       }
       if (state.me.tip === 'kurumsal') {
         $('#csv-open').onclick = csvDialog;

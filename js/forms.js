@@ -6,7 +6,8 @@ import { state } from './state.js';
 
 export const safeAction = (fn) => async (e) => {
   e?.preventDefault();
-  const b = e?.submitter;
+  const b = e?.submitter || (e?.currentTarget?.tagName === 'BUTTON' ? e.currentTarget : null);
+  if (b?.disabled) return;
   if (b) b.disabled = true;
   try {
     await fn(e);

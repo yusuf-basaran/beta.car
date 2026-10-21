@@ -92,9 +92,7 @@ test('Ana sayfa gereksiz modülleri yüklemez ve sözlüğü yeniden indirmez', 
   ).toBe(true);
   await page.reload();
   await expect(page.locator('.listing').first()).toBeVisible();
-  expect(
-    await page.evaluate(() => globalThis.calls.find((c) => c.name === 'baslangic').p.p_sozluk),
-  ).toBe(false);
+  expect(await page.evaluate(() => globalThis.calls.map((c) => c.name))).toEqual(['ana_sayfa']);
   await expect(page.locator('datalist[id^=makes] option')).toHaveCount(2);
 });
 

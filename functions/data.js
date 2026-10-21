@@ -1,4 +1,4 @@
-import { active, published, same, clean, check, number, norm, matches } from './core.js';
+import { active, published, same, clean, check, number, norm, matches, mapRows } from './core.js';
 
 export async function card(s, r, c) {
   const [make, model, profile, firms, parts, equipment, reports, history] = await Promise.all([
@@ -184,9 +184,9 @@ export async function read(s, c, q) {
       where.splice(0, where.length, ['katilimcilar', 'array-contains', c.uid]);
     list = await s.all(name, where.slice(0, 1));
   }
-  const result = [];
-  for (const r of list)
-    if (matches(r, filters) && (await canRead(s, c, q.table, r))) {
+  const result = (
+    await mapRows(list, async (r) => {
+      if (!matches(r, filters) || !(await canRead(s, c, q.table, r))) return null;
       let row = clean(r);
       if (q.table === 'ilan_kartlari') row = await card(s, r, c);
       if (name === 'profil')
@@ -203,8 +203,9 @@ export async function read(s, c, q) {
         delete row.detay.sasi;
         delete row.detay.plaka_no;
       }
-      result.push(row);
-    }
+      return row;
+    })
+  ).filter(Boolean);
   const order = q.order || [];
   check(
     Array.isArray(order) &&
@@ -262,55 +263,60 @@ export async function search(s, c, p = {}) {
   source = source.filter(
     (r) => published(r) && (!selected || selected.some((x) => same(x, r.kategori_id))),
   );
-  let rows = [];
-  for (const r of source) {
-    if (
-      ['id', 'marka', 'model', 'yil', 'para_birimi', 'yakit', 'vites', 'sehir', 'satici'].some(
-        (k) =>
-          p[k] != null &&
-          p[k] !== '' &&
-          !same(r[{ marka: 'marka_id', model: 'model_id', satici: 'kullanici_id' }[k] || k], p[k]),
+  const rows = (
+    await mapRows(source, async (r) => {
+      if (
+        ['id', 'marka', 'model', 'yil', 'para_birimi', 'yakit', 'vites', 'sehir', 'satici'].some(
+          (k) =>
+            p[k] != null &&
+            p[k] !== '' &&
+            !same(
+              r[{ marka: 'marka_id', model: 'model_id', satici: 'kullanici_id' }[k] || k],
+              p[k],
+            ),
+        )
       )
-    )
-      continue;
-    if (
-      (p.min != null && r.fiyat < Number(p.min)) ||
-      (p.max != null && r.fiyat > Number(p.max)) ||
-      (p.yil_min && r.yil < Number(p.yil_min)) ||
-      (p.yil_max && r.yil > Number(p.yil_max)) ||
-      (p.km_max && r.km > Number(p.km_max))
-    )
-      continue;
-    if (
-      p.onecikarma &&
-      (r.onecikarma !== p.onecikarma || Date.parse(r.onecikarma_bitis) <= Date.now())
-    )
-      continue;
-    if (p.tip && !categories.some((k) => same(k.id, r.kategori_id) && k.arac_tipi === p.tip))
-      continue;
-    if (p.detay && Object.entries(p.detay).some(([k, v]) => !same(r.detay?.[k], v))) continue;
-    const row = await card(s, r, c);
-    if (p.q && !norm([row.baslik, row.marka, row.model, row.no].join(' ')).includes(norm(p.q)))
-      continue;
-    if (p.ekspertizli === 'true' && !row.ekspertizli) continue;
-    if (p.donanim?.length && !p.donanim.every((x) => row.donanim_ids.some((d) => same(d, x))))
-      continue;
-    if (
-      p.kaporta &&
-      (row.parca_sayisi !== 13 ||
-        (p.kaporta === 'orijinal' && row.boyali + row.degisen + row.hasarli > 0) ||
-        (p.kaporta === 'degisensiz' && row.degisen > 0) ||
-        (p.kaporta === 'hasarsiz' && row.hasarli > 0) ||
-        (['1', '2', '3'].includes(p.kaporta) &&
-          (row.boyali + row.degisen > Number(p.kaporta) || row.hasarli > 0)))
-    )
-      continue;
-    if (p.satici_tipi) {
-      const firms = await s.all('firmalar', [['kullanici_id', '==', r.kullanici_id]]);
-      if (p.satici_tipi === 'bireysel' ? firms.length : firms[0]?.tur !== p.satici_tipi) continue;
-    }
-    rows.push(row);
-  }
+        return null;
+      if (
+        (p.min != null && r.fiyat < Number(p.min)) ||
+        (p.max != null && r.fiyat > Number(p.max)) ||
+        (p.yil_min && r.yil < Number(p.yil_min)) ||
+        (p.yil_max && r.yil > Number(p.yil_max)) ||
+        (p.km_max && r.km > Number(p.km_max))
+      )
+        return null;
+      if (
+        p.onecikarma &&
+        (r.onecikarma !== p.onecikarma || Date.parse(r.onecikarma_bitis) <= Date.now())
+      )
+        return null;
+      if (p.tip && !categories.some((k) => same(k.id, r.kategori_id) && k.arac_tipi === p.tip))
+        return null;
+      if (p.detay && Object.entries(p.detay).some(([k, v]) => !same(r.detay?.[k], v))) return null;
+      const row = await card(s, r, c);
+      if (p.q && !norm([row.baslik, row.marka, row.model, row.no].join(' ')).includes(norm(p.q)))
+        return null;
+      if (p.ekspertizli === 'true' && !row.ekspertizli) return null;
+      if (p.donanim?.length && !p.donanim.every((x) => row.donanim_ids.some((d) => same(d, x))))
+        return null;
+      if (
+        p.kaporta &&
+        (row.parca_sayisi !== 13 ||
+          (p.kaporta === 'orijinal' && row.boyali + row.degisen + row.hasarli > 0) ||
+          (p.kaporta === 'degisensiz' && row.degisen > 0) ||
+          (p.kaporta === 'hasarsiz' && row.hasarli > 0) ||
+          (['1', '2', '3'].includes(p.kaporta) &&
+            (row.boyali + row.degisen > Number(p.kaporta) || row.hasarli > 0)))
+      )
+        return null;
+      if (p.satici_tipi) {
+        const firms = await s.all('firmalar', [['kullanici_id', '==', r.kullanici_id]]);
+        if (p.satici_tipi === 'bireysel' ? firms.length : firms[0]?.tur !== p.satici_tipi)
+          return null;
+      }
+      return row;
+    })
+  ).filter(Boolean);
   const key = { fiyat_artan: 'fiyat', fiyat_azalan: 'fiyat', yil: 'yil', km: 'km' }[p.sira];
   rows.sort((a, b) =>
     key

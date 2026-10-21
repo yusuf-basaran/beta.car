@@ -102,7 +102,10 @@ export const api = onRequest(async (req, res) => {
     if (status === 500) console.error('İstek başarısız', error.code || error.message);
     res.status(status).json({
       data: null,
-      error: { message: status === 500 ? 'İşlem tamamlanamadı' : error.message },
+      error: {
+        message: status === 500 ? 'İşlem tamamlanamadı' : error.message,
+        ...(error.hint === 'paketler.html' ? { hint: error.hint } : {}),
+      },
     });
   }
 });

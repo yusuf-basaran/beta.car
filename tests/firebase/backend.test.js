@@ -158,6 +158,20 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
     assert.equal(response.status, 200, await response.clone().text());
     assert.equal((await response.json()).data.id, 'uye-a');
   });
+  await t.test('Hatalı yazma istekleri de sunucu hız sınırına sayılır', async () => {
+    const key = hash('uye-a:api'),
+      before = (await doc('_hiz', key))?.daily || 0;
+    const response = await rest(`http://127.0.0.1:5001/${project}/europe-west1/api`, 'uye-a', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'ilan_kaydet',
+        data: { p_veri: { ...base, kullanici_id: 'uye-b' }, p_parcalar: {}, p_donanim: [] },
+      }),
+    });
+    assert.equal(response.status, 403);
+    assert.equal((await doc('_hiz', key)).daily, before + 1);
+  });
   await t.test('İlan sahipliği, ücretsiz limit, gövde ve donanım korunur', async () => {
     listing = (await query('uye-a', 'ilanlar', 'insert', base, [], { one: 'required' })).id;
     await query('uye-a', 'ilan_parca', 'upsert', {
@@ -198,6 +212,53 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
     await reject(() => rpc('uye-a', 'kota', { p_ilan: ids[2], p_islem: 'yayinla' }), /Paket al/);
     await rpc('uye-a', 'kota', { p_ilan: listing, p_islem: 'yukari' });
     await reject(() => rpc('uye-a', 'kota', { p_ilan: listing, p_islem: 'yukari' }), /Günde/);
+  });
+  await t.test('Tek ilan kaydı, ilişkiler ve yayın aynı işlemde tamamlanır', async () => {
+    const payload = {
+      p_veri: base,
+      p_parcalar: { kaput: 'orijinal', tavan: 'boyali' },
+      p_donanim: [1],
+      p_telefon: '+905338000001',
+      p_tip: 'otomobil',
+      p_yayin: false,
+    };
+    const saved = await rpc('uye-c', 'ilan_kaydet', payload);
+    const row = await doc('ilanlar', saved.id);
+    assert.deepEqual(row._parts, payload.p_parcalar);
+    assert.deepEqual(row._equipment, [1]);
+    assert.equal((await doc('profil', 'uye-c')).telefon, payload.p_telefon);
+    const updated = {
+      ...payload,
+      p_ilan: saved.id,
+      p_veri: { ...base, baslik: 'Güncel araç başlığı' },
+      p_parcalar: { kaput: 'orijinal' },
+      p_yayin: true,
+    };
+    await rpc('uye-c', 'ilan_kaydet', updated);
+    assert.equal((await doc('ilanlar', saved.id)).durum, 'yayinda');
+    assert.equal((await doc('ilanlar', saved.id))._parts.tavan, undefined);
+    await rpc('uye-c', 'ilan_kaydet', updated);
+    assert.equal((await doc('ilanlar', saved.id)).durum, 'yayinda');
+    await reject(() => rpc('uye-b', 'ilan_kaydet', updated), /bulunamadı/);
+    await reject(
+      () =>
+        rpc('uye-c', 'ilan_kaydet', {
+          ...updated,
+          p_yayin: false,
+          p_parcalar: { kaput: 'yanlis' },
+          p_veri: { ...base, baslik: 'Kaydedilmemesi gereken başlık' },
+        }),
+      /Kaporta/,
+    );
+    assert.equal((await doc('ilanlar', saved.id)).baslik, 'Güncel araç başlığı');
+    await reject(
+      () => rpc('uye-c', 'ilan_kaydet', { ...payload, p_veri: { ...base, kategori_id: 4 } }),
+      /kategori/,
+    );
+    await reject(() => rpc('uye-c', 'istatistiklerim', { p_ilanlar: [listing] }), /yetkisi/);
+    const stats = await rpc('uye-c', 'istatistiklerim', { p_ilanlar: [saved.id] });
+    assert.equal(stats[0].id, saved.id);
+    await rpc('uye-c', 'kota', { p_ilan: saved.id, p_islem: 'arsiv' });
   });
   await t.test(
     'SEO yönlendirmesi ilan, yazı, sitemap ve özel sayfa durumlarını sunar',
