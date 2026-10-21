@@ -278,8 +278,8 @@ a.text-btn:hover,
 }
 .language {
   padding: var(--s2);
-  min-height: 40px;
-  min-width: 40px;
+  min-height: 44px;
+  min-width: 44px;
   font-size: 12px;
   font-weight: 700;
 }
@@ -974,15 +974,12 @@ h2 {
     font-size: 24px;
   }
   .header-actions .sell {
-    min-height: 38px;
+    min-height: 44px;
     padding: var(--s2) var(--s3);
     font-size: 11px;
   }
   .header-actions .sell .icon {
     width: 15px;
-  }
-  .language {
-    min-height: 38px;
   }
   .main-nav {
     gap: var(--s5);
