@@ -9,14 +9,35 @@ export async function createClient() {
       getUser: async () => ({
         data: { user: guest ? null : { id: ME.id, email: 'uye@example.invalid' } },
       }),
+      pendingEmail: async () => ({ data: globalThis.fixture.pendingEmail || null }),
+      sendEmailCode: async (lang) => {
+        record('sendEmailCode', { lang });
+        return globalThis.fixture.codeSendFailure
+          ? { error: Error('Kod gönderilemedi') }
+          : { data: { retryAfter: 60 } };
+      },
+      verifyEmailCode: async ({ token }) => {
+        record('verifyEmailCode', { token });
+        return token === '123456'
+          ? { data: { user: ME } }
+          : { error: Error('Doğrulama kodu yanlış') };
+      },
       signOut: async () => ({}),
       signInWithPassword: async (p) => {
         record('signin', p);
-        return { data: { user: ME } };
+        return {
+          data: globalThis.fixture.emailCode
+            ? { verification: 'code', email: ME.email || 'uye@example.invalid' }
+            : { user: ME },
+        };
       },
       signUp: async (p) => {
         record('register', p);
-        return { data: { user: ME } };
+        return {
+          data: globalThis.fixture.emailCode
+            ? { verification: 'code', email: ME.email || 'uye@example.invalid' }
+            : { user: ME },
+        };
       },
       resetPasswordForEmail: async () => ({}),
       updateUser: async () => ({}),

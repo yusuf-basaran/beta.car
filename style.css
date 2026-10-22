@@ -2577,3 +2577,25 @@ meter {
   font-size: clamp(26px, 6vw, 36px);
   overflow-wrap: anywhere;
 }
+
+.email-code h2 {
+  font-size: 24px;
+}
+.email-code > p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-block: var(--s3);
+  overflow-wrap: anywhere;
+}
+.email-code input[name='code'] {
+  font-size: 26px;
+  letter-spacing: 0.3em;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+#code-error {
+  color: var(--danger-text);
+  margin-top: var(--s3);
+  font-size: 13px;
+}

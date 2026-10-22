@@ -75,14 +75,14 @@ SMS kapalıyken `sms_zorunlu` false kalır. Firebase Authentication telefon sağ
 
 Cloud Scheduler işlevleri: `bakim` 15 dakikada bir yarım kalan kalıcı silmeleri tamamlar, talep/abonelik/ilan sürelerini kontrol eder; `temizlik` her gün 03:20 UTC geçici kayıtları siler; `eposta` iki dakikada bir bildirim kuyruğunu işler. İlan yazma tetikleyicisi `ilanBildirim` kayıtlı arama ve fiyat takibi bildirimlerini yazar. Yerel testler bakım fonksiyonunu doğrudan çağırır; canlı Scheduler çalışması ayrıca doğrulanır.
 
-Auth e-postaları Firebase Authentication tarafından gönderilir. Uygulama bildirimleri için HTTPS JSON e-posta sağlayıcısı gerekir. Sunucu ortamında `MAIL_ENABLED=true`, `MAIL_API_URL` ve `MAIL_FROM` tanımlanır. Sağlayıcı anahtarı:
+Altı haneli e-posta doğrulaması ve gönderim hizmeti ayarları [e-posta doğrulama belgesinde](eposta-dogrulama.md) açıklanır. Gönderim hizmeti kapalıyken Firebase Authentication bağlantılı doğrulamayı sürdürür; şifre sıfırlama Firebase Authentication tarafından gönderilir. Uygulama bildirimleri için HTTPS JSON e-posta sağlayıcısı gerekir. Sunucu ortamında `MAIL_ENABLED=true`, `MAIL_API_URL` ve `MAIL_FROM` tanımlanır. Sağlayıcı anahtarı:
 
 ```bash
 npx firebase functions:secrets:set MAIL_API_KEY --project PROJE_KIMLIGI
 npx firebase deploy --only functions --project PROJE_KIMLIGI
 ```
 
-`eposta` işlevi etkin ayarda bu sırrı bağlar. Uç nokta Bearer doğrulamasıyla `from`, `to`, `subject`, `text` alanlarını ve `Idempotency-Key` başlığını kabul etmelidir. Sağlayıcı yoksa kuyruk saklanır, teslimat gerçekleşmez. E-posta tercihi kapalı üyelere bildirim e-postası gönderilmez.
+`api` ve `eposta` işlevleri etkin ayarda bu sırrı bağlar. Uç nokta Bearer doğrulamasıyla `from`, `to`, `subject`, `text` alanlarını ve `Idempotency-Key` başlığını kabul etmelidir. Sağlayıcı yoksa kuyruk saklanır, teslimat gerçekleşmez. E-posta tercihi kapalı üyelere bildirim e-postası gönderilmez.
 
 ## Araç sözlüğü
 

@@ -17,6 +17,7 @@ import {
 } from './core.js';
 import { saveEditor } from './editor.js';
 import { deleteListing } from './deletion.js';
+import { verification } from './verification.js';
 import { read, search, statistics } from './data.js';
 import { write, primary } from './write.js';
 import { packages } from './packages.js';
@@ -42,7 +43,7 @@ const readonly = [
   'admin_talepler',
   'banka_bilgisi',
 ];
-export function createService({ db, auth, bucket }) {
+export function createService({ db, auth, bucket, mail }) {
   let catalogue, references;
   async function context(user) {
     if (!user) return { uid: null, verified: false, admin: false };
@@ -424,6 +425,11 @@ export function createService({ db, auth, bucket }) {
       const c = await context(user),
         p = body.data || {};
       object(p);
+      if (
+        !body.query &&
+        ['eposta_kod_durumu', 'eposta_kod_gonder', 'eposta_kod_onayla'].includes(body.name)
+      )
+        return { data: await verification(db, auth, c, body.name, p, mail), error: null };
       if (!body.query && body.name === 'ilan_sil')
         return { data: await deleteListing(db, bucket, c, p), error: null };
       const isRead = body.query ? body.query.op === 'read' : readonly.includes(body.name);

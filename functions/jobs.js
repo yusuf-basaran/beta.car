@@ -67,12 +67,13 @@ export async function maintenance(db) {
     });
 }
 export async function cleanup(db) {
-  for (const name of ['_hiz', '_foto', '_ziyaretler', '_dosyalar']) {
+  for (const name of ['_hiz', '_foto', '_ziyaretler', '_dosyalar', '_eposta_kodlari']) {
     const rows = await db.collection(name).get();
     const writer = db.bulkWriter();
     for (const doc of rows.docs) {
       const r = doc.data();
       if (
+        (name !== '_eposta_kodlari' || r.created < Date.now() - 3600000) &&
         (typeof r.expires === 'number' ? r.expires : Date.parse(r.expires || r.bitis)) <= Date.now()
       )
         writer.delete(doc.ref);

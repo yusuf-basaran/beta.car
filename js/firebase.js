@@ -100,6 +100,10 @@ export async function createClient(cfg) {
         result(async () => {
           await authSdk.signInWithEmailAndPassword(auth, email, password);
           if (!auth.currentUser.emailVerified) {
+            const status = await call({ name: 'eposta_kod_durumu' });
+            if (status.error) throw status.error;
+            if (status.data.enabled)
+              return { user: null, verification: 'code', email: auth.currentUser.email };
             await authSdk.signOut(auth);
             throw Error('E-posta adresinizi doğrulayın');
           }
@@ -116,7 +120,27 @@ export async function createClient(cfg) {
           }
           const r = await call({ name: 'profil_kaydet', data: options.data });
           if (r.error) throw r.error;
+          const status = await call({ name: 'eposta_kod_durumu' });
+          if (status.error) throw status.error;
+          if (status.data.enabled)
+            return { user: null, verification: 'code', email: auth.currentUser.email };
           await authSdk.sendEmailVerification(auth.currentUser, { url: options.emailRedirectTo });
+          return { user: user(), verification: 'link' };
+        }),
+      pendingEmail: () =>
+        result(async () => {
+          if (!auth.currentUser || auth.currentUser.emailVerified) return null;
+          const status = await call({ name: 'eposta_kod_durumu' });
+          if (status.error) throw status.error;
+          return status.data.enabled ? auth.currentUser.email : null;
+        }),
+      sendEmailCode: (lang) => call({ name: 'eposta_kod_gonder', data: { lang } }),
+      verifyEmailCode: ({ token }) =>
+        result(async () => {
+          const response = await call({ name: 'eposta_kod_onayla', data: { code: token } });
+          if (response.error) throw response.error;
+          await authSdk.reload(auth.currentUser);
+          await auth.currentUser.getIdToken(true);
           return { user: user() };
         }),
       resetPasswordForEmail: (email, options) =>

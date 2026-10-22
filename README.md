@@ -12,6 +12,8 @@ BETA.CAR, Kuzey Kıbrıs için araç ve parça ilan platformudur. Kullanılmış
 - Firma sayfaları, site içi mesajlaşma, araç karşılaştırma ve piyasa verisine dayalı değerleme
 - Yönetim paneli, içerik ve şikâyet yönetimi, Türkçe ve İngilizce arayüz
 
+[İşlevlerin tamamı ve kullanım rehberi](docs/ozellikler.md) · [E-posta kodu kurulumu](docs/eposta-dogrulama.md)
+
 ## Mimari
 
 ```text
