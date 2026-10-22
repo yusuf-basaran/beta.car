@@ -76,6 +76,13 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
     tokens[uid] = result.idToken;
   }
   await put('_yetkiler', 'yonetici', { kullanici_id: 'yonetici', admin: true, engelli: false });
+  await t.test('Kaldırılan doğrulama uçları hesap onayı vermez', async () => {
+    for (const name of ['eposta_kod_durumu', 'eposta_kod_gonder', 'eposta_kod_onayla']) {
+      await reject(() => service.execute({ name, data: {} }, users.dogrulanmamis));
+      await reject(() => service.execute({ name, data: {} }));
+    }
+    assert.equal((await auth.getUser('dogrulanmamis')).emailVerified, false);
+  });
   await t.test('Başlangıç verisi ve ana sayfa yalnız açık alanları birleştirir', async () => {
     await put('ayarlar', 'iban', { anahtar: 'iban', deger: 'PRIVATE-BANK-ACCOUNT' });
     const data = await rpc(null, 'baslangic', { p_sozluk: true, p_donanim: true });
@@ -540,64 +547,49 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
       assert.equal(registration.hidden, true);
       assert.equal((await doc('profil', registration.uid)).ad, 'Yeni Üye');
       await page.unroute('**/api');
-      let emailCode;
-      const codeService = createService({
-        db,
-        auth,
-        bucket,
-        mail: {
-          enabled: true,
-          url: 'https://mail.example.invalid/send',
-          key: 'test-mail-key',
-          from: 'site@example.invalid',
-          fetch: async (url, options) => {
-            emailCode = JSON.parse(options.body).text.match(/\b\d{6}\b/)[0];
-            return new Response('{}', { status: 200 });
-          },
-        },
-      });
-      await page.route('**/api', async (route) => {
-        const request = route.request(),
-          body = request.postDataJSON();
-        if (!body.name?.startsWith('eposta_kod_')) return route.continue();
-        const header = await request.headerValue('authorization');
-        const token = header ? await auth.verifyIdToken(header.slice(7)) : null;
-        const result = await codeService.execute(
-          body,
-          token ? await auth.getUser(token.uid) : null,
-        );
-        return route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(result),
+      const unverifiedLogin = await page.evaluate(async () => {
+        const { state } = await import('/js/state.js');
+        const response = await state.db.auth.signInWithPassword({
+          email: 'yeni-uye@example.invalid',
+          password: 'Test-parola-42!',
         });
+        return { error: response.error?.message, user: (await state.db.auth.getUser()).data.user };
       });
-      const codeLogin = await page.evaluate(async () => {
+      assert.match(unverifiedLogin.error, /E-posta adresinizi doğrulayın/);
+      assert.equal(unverifiedLogin.user, null);
+      const outbox = await (
+        await fetch(
+          `http://${process.env.FIREBASE_AUTH_EMULATOR_HOST}/emulator/v1/projects/${project}/oobCodes`,
+        )
+      ).json();
+      const link = outbox.oobCodes.find(
+        (r) => r.email === 'yeni-uye@example.invalid' && r.requestType === 'VERIFY_EMAIL',
+      );
+      assert.ok(link?.oobLink && link.oobCode);
+      const confirmation = await fetch(
+        `http://${process.env.FIREBASE_AUTH_EMULATOR_HOST}/identitytoolkit.googleapis.com/v1/accounts:update?key=demo-key`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ oobCode: link.oobCode }),
+        },
+      );
+      assert.equal(confirmation.status, 200);
+      const linkedUser = await page.evaluate(async () => {
         const { state } = await import('/js/state.js');
         const response = await state.db.auth.signInWithPassword({
           email: 'yeni-uye@example.invalid',
           password: 'Test-parola-42!',
         });
         if (response.error) throw response.error;
-        await state.db.auth.sendEmailCode('tr');
-        return response.data.verification;
-      });
-      assert.equal(codeLogin, 'code');
-      assert.match(emailCode, /^\d{6}$/);
-      const codeUser = await page.evaluate(async (token) => {
-        const { state } = await import('/js/state.js');
-        const response = await state.db.auth.verifyEmailCode({ token });
-        if (response.error) throw response.error;
-        const user = (await state.db.auth.getUser()).data.user;
         const profile = await state.db.rpc('profilim');
         if (profile.error) throw profile.error;
         await state.db.auth.signOut();
-        return { uid: user.id, profile: profile.data.id };
-      }, emailCode);
-      assert.equal(codeUser.uid, registration.uid);
-      assert.equal(codeUser.profile, registration.uid);
+        return { uid: response.data.user.id, profile: profile.data.id };
+      });
+      assert.equal(linkedUser.uid, registration.uid);
+      assert.equal(linkedUser.profile, registration.uid);
       assert.equal((await auth.getUser(registration.uid)).emailVerified, true);
-      await page.unroute('**/api');
       await page.locator('[name="email"]').fill('uye-a@example.invalid');
       await page.locator('[name="password"]').fill('Test-parola-42!');
       await page.waitForTimeout(1000);

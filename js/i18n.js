@@ -550,23 +550,6 @@ export const D = {
   companyName: ['Firma adı', 'Business name'],
   companyType: ['Firma türü', 'Business type'],
   tax: ['Vergi no', 'Tax number'],
-  verifyEmail: ['E-postayı doğrula', 'Verify email'],
-  enterEmailCode: ['6 haneli kodu girin', 'Enter the 6-digit code'],
-  emailCode: ['Doğrulama kodu', 'Verification code'],
-  emailCodeHelp: [
-    'E-postanızdaki kodu buraya yazın. Kod 10 dakika geçerlidir; bağlantıya tıklamanız gerekmez.',
-    'Enter the code from your email here. It is valid for 10 minutes; no link is required.',
-  ],
-  emailCodeSent: [
-    'Kod gönderildi. Gelen kutunuzu ve gereksiz e-posta klasörünü kontrol edin.',
-    'Code sent. Check your inbox and spam folder.',
-  ],
-  resendCode: ['Kodu tekrar gönder', 'Resend code'],
-  changeEmail: ['Farklı e-posta kullan', 'Use a different email'],
-  codeWait: [
-    'Yeni kod için 60 saniye bekleyin.',
-    'Wait 60 seconds before requesting another code.',
-  ],
   confirmEmail: [
     'E-posta doğrulama bağlantınızı kontrol edin.',
     'Check your email verification link.',

@@ -6,7 +6,7 @@ Kontrol tarihi: 22 Ekim 2026. Firebase altyapısı ve yeni uygulama ikonları ku
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
 | `npm run lint`           | İstemci, sunucu, betik ve test kodları                                                                                         |
 | `npm test`               | 21 saf fonksiyon, SEO, Vercel yönlendirmesi, build ve korunan SQL regresyon testi                                              |
-| `npm run test:firebase`  | 28 test başarılı; Auth, Firestore, Storage, Functions, Hosting, SEO, gerçek SDK girişi ve sunucu kuralları                     |
+| `npm run test:firebase`  | 19 test başarılı; Auth, Firestore, Storage, Functions, Hosting, SEO, gerçek SDK girişi ve sunucu kuralları                     |
 | `npm run test:browser`   | 45 arayüz senaryosu; servis yanıtları taklit edilir; geciken bağlantı, hata/yeniden deneme ve gereksiz istekler kontrol edilir |
 | `npm run build`          | 20 HTML sayfası, ES modülleri, stil, logo ve ikonlar                                                                           |
 | `npx prettier --check .` | Biçim kontrolü                                                                                                                 |

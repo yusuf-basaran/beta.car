@@ -1,33 +1,18 @@
-# E-posta koduyla doğrulama
+# E-posta bağlantısıyla doğrulama
 
-Firebase Auth hesabı ve parolası korunur. Altı haneli e-posta kodu Cloud Functions tarafından üretilir; doğrulama tamamlandığında Firebase Auth hesabının `emailVerified` alanı sunucuda güncellenir. Şifre sıfırlama bu doğrulamadan ayrıdır ve Firebase'in bağlantılı akışını kullanır.
+Üye kaydından sonra Firebase Authentication e-posta adresine doğrulama bağlantısı gönderir. Bağlantı Firebase'in kendi işlem ekranında açılır; kullanıcı doğrulamayı tamamlayıp siteye döner. Site yeniden açıldığında hesap bilgisi ve kimlik belirteci yenilenir.
 
-Kod 10 dakika geçerlidir. Beş yanlış denemede geçerli kod kilitlenir. Yeniden gönderim aralığı 60 saniye, üst sınır saatte beş gönderimdir. Kod kullanıcı kimliği ve o anki e-posta adresine bağlıdır; e-posta değişirse eski kod kullanılamaz. Kod `_eposta_kodlari` özel koleksiyonunda açık metin yerine sunucu anahtarıyla HMAC olarak saklanır. Başarılı kullanımda HMAC ve nonce kaldırılır. Süresi dolan kayıtlar, saatlik gönderim sınırı korunarak temizlik işinde kaldırılır. Koleksiyon istemciye kapalıdır.
+Doğrulanmamış hesapla giriş kabul edilmez; ilan ve mesaj gibi üye işlemleri sunucuda da korunur. Aynı e-posta ve parolayla kayıt yeniden denendiğinde doğrulanmamış hesaba yeni bağlantı gönderilebilir. Şifre sıfırlama Firebase Authentication'ın ayrı bağlantılı akışını kullanır.
 
-## Gönderim hizmeti
+E-posta onayı için ek gönderim sağlayıcısı veya uygulamaya ait kod doğrulama hizmeti gerekmez. Uygulama bildirimlerinin e-posta kuyruğu ayrı bir hizmettir.
 
-`MAIL_ENABLED=true`, `MAIL_API_URL` ve `MAIL_FROM` sunucu ortamında tanımlanır. `MAIL_API_KEY`, Firebase Secret Manager'da tutulur. API anahtarı tarayıcıya veya Git'e yazılmaz. Güncel HTTP sözleşmesi, Bearer yetkilendirmesi ve `from`, `to`, `subject`, `text` alanlarını kabul eden HTTPS gönderim uç noktasıdır; Resend `/emails` biçimiyle uyumludur. Başka bir hizmetin farklı gövde veya kimlik doğrulaması varsa sunucu adaptörü uygulanmalıdır. SMTP bağlantısı için ayrıca sunucu taşıyıcı adaptörü gerekir.
+## Firebase ayarları
 
-Gönderim ayarı tamamlanınca anahtarı yetkili terminalden girin:
-
-```bash
-npx firebase functions:secrets:set MAIL_API_KEY --project PROJE_KIMLIGI
-npm run build -- --firebase
-npx firebase deploy --only functions,hosting --project PROJE_KIMLIGI
-```
-
-Gönderici adresi/alan adı hizmette doğrulanmalı, gerçek bir alıcıya teslimat denenmelidir. Örnek veya sadece izinli test alıcısına gönderim yapan bir hesap, genel üyelik için hazır sayılmaz.
-
-## Kullanıcı akışı
-
-1. Üye e-posta/parolayla kayıt olur veya doğrulanmamış hesabıyla giriş yapar.
-2. Hizmet hazırsa sitede altı haneli kod ekranı açılır ve kod gönderilir.
-3. Üye e-postadaki sayıyı sitede yazar; bağlantıya tıklamaz.
-4. Sunucu kodu onaylar, Firebase Auth durumu güncellenir ve istemci kimlik belirtecini yeniler.
-5. Doğrulanmış hesap ilan, mesaj ve diğer üye işlemlerine devam eder.
-
-`eposta_kod_durumu` hazır değilse mevcut Firebase bağlantılı doğrulaması korunur. Böylece gönderim hizmeti bağlanmadan kayıt kapatılmaz. Etkin kod gönderiminde bir hata olursa başarılı gönderim mesajı gösterilmez; kullanıcı tekrar deneyebilir.
+- E-posta/parola sağlayıcısı açık ve site adresi yetkili alan adlarında olmalıdır.
+- Doğrulama bağlantısının işlem adresi Firebase'in varsayılan güvenilir adresidir.
+- Devam adresi sitenin `hesabim.html` sayfasıdır; parola sıfırlama dönüşü `giris.html` sayfasına yapılır.
+- Doğrulama, parola sıfırlama ve e-posta değişikliği şablonlarının görünen gönderen adı KONTAK kullanır. Varsayılan gönderici alan adı proje kimliğine bağlıdır.
 
 ## Kabul kontrolü
 
-Türkçe/İngilizce kayıt ve doğrulanmamış giriş; altı hane kontrolü; yanlış/eskimiş/yeni kod; yeniden gönderim ve saatlik sınır; başka hesap/e-posta ile kullanma; eşzamanlı istekler; gönderim hatası; Firebase Auth güncellemesi ve belirteç yenileme test edilir. Gerçek e-posta teslim testi ayrıca yapılır. Kodlar işlem günlüklerine yazılmaz.
+Kayıt, doğrulama e-postasının teslimi, bağlantıya tıklama, siteye dönüş ve giriş birlikte denenir. Doğrulama öncesi üye işlemleri reddedilmeli; doğrulama sonrasında kabul edilmelidir. Emülatör testinde gerçek Firebase bağlantısı ve hesap durumu kullanılır; canlı teslimat ayrıca kontrol edilir.

@@ -76,7 +76,7 @@ Alıcı marka/model, bütçe, para birimi, şehir ve açıklamayla talep paylaş
 
 ## 19. Üyelik ve e-posta onayı
 
-Bireysel ve kurumsal kayıt, giriş, çıkış ve şifre sıfırlama vardır. Kurumsal kayıtta firma bilgileri alınır. Doğrulanmamış hesap ilan/mesaj gibi üye işlemlerini yapamaz. Altı haneli e-posta kodu akışı gönderim hizmeti etkinleştirildiğinde kullanılır: kod 10 dakika geçerlidir, beş yanlış denemede kilitlenir, yeniden gönderim 60 saniye aralıklı ve saatte en çok beştir. Gönderim hizmeti etkin değilken Firebase'in mevcut bağlantılı e-posta doğrulaması korunur. Şifre sıfırlama ayrı bir bağlantılı akıştır.
+Bireysel ve kurumsal kayıt, giriş, çıkış ve şifre sıfırlama vardır. Kurumsal kayıtta firma bilgileri alınır. Doğrulanmamış hesap ilan/mesaj gibi üye işlemlerini yapamaz. E-posta doğrulaması Firebase Authentication'ın gönderdiği bağlantıyla tamamlanır. Şifre sıfırlama ayrı bir bağlantılı akıştır.
 
 ## 20. Hesabım
 
@@ -140,4 +140,4 @@ Açık sayfalarda sunucudan HTML, başlık/açıklama, canonical, TR/EN alternat
 
 ## 35. İşletime bağlı ayarlar
 
-Altı haneli e-posta kodu ve bildirim e-postası için gönderim hizmeti; SMS için telefon sağlayıcısı ayarı gerekir. Paket fiyat/kota/süreleri, banka bilgileri, kurlar, bannerlar ve iletişim bilgileri yönetici tarafından girilir. Değerleme için yeterli ilan, firma dizini için firma kaydı, vitrinler için uygun yayın gerekir. İşletmeci/yasal alanlar ve gerçek alan adı tamamlanmalıdır. Bu ayarlar yapılmadan ilgili özelliğin gerçek teslimatı veya içerik doluluğu tamamlanmış sayılmaz.
+Bildirim e-postası için gönderim hizmeti; SMS için telefon sağlayıcısı ayarı gerekir. Paket fiyat/kota/süreleri, banka bilgileri, kurlar, bannerlar ve iletişim bilgileri yönetici tarafından girilir. Değerleme için yeterli ilan, firma dizini için firma kaydı, vitrinler için uygun yayın gerekir. İşletmeci/yasal alanlar ve gerçek alan adı tamamlanmalıdır. Bu ayarlar yapılmadan ilgili özelliğin gerçek teslimatı veya içerik doluluğu tamamlanmış sayılmaz.

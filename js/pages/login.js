@@ -2,7 +2,7 @@ import { esc } from '../utils.js';
 import { params } from '../context.js';
 import { $, $$, meta, notify, pageHead } from '../ui.js';
 import { t } from '../i18n.js';
-import { button, guard, inp, label, safeAction, select } from '../forms.js';
+import { button, guard, inp, label, select } from '../forms.js';
 import { state } from '../state.js';
 import { write } from '../utils.js';
 
@@ -21,12 +21,6 @@ export function nextUrl() {
 export async function loginPage() {
   meta(t('seoLoginTitle'), t('seoLoginDescription'));
   let mode = params.get('mode') || 'signin';
-  const pending = await state.db?.auth.pendingEmail?.();
-  if (pending?.error) throw pending.error;
-  if (pending?.data) {
-    await codeForm(pending.data);
-    return;
-  }
   function draw() {
     $('#main').innerHTML =
       pageHead('signin') +
@@ -94,10 +88,6 @@ export async function loginPage() {
           password: data.get('password'),
         });
         if (r.error) throw r.error;
-        if (r.data?.verification === 'code') {
-          await codeForm(r.data.email);
-          return;
-        }
         location.href = nextUrl();
       } else if (mode === 'register') {
         r = await state.db.auth.signUp({
@@ -116,10 +106,6 @@ export async function loginPage() {
             tur: data.get('tur'),
             vergi: data.get('vergi'),
           });
-        if (r.data?.verification === 'code') {
-          await codeForm(r.data.email);
-          return;
-        }
         notify(t('confirmEmail'));
       } else if (mode === 'reset') {
         r = await state.db.auth.resetPasswordForEmail(data.get('email'), {
@@ -135,39 +121,4 @@ export async function loginPage() {
     });
   }
   draw();
-}
-
-async function codeForm(email) {
-  $('#main').innerHTML =
-    pageHead('verifyEmail') +
-    `<section class="auth panel email-code"><h2>${esc(t('enterEmailCode'))}</h2><p>${esc(email)}</p><p>${esc(t('emailCodeHelp'))}</p><p id="code-status" role="status" aria-live="polite"></p><form id="code-form">${label('emailCode', inp('code', 'text', '', 'inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required'))}${button('verifyEmail')}<p id="code-error" role="alert"></p></form><div class="actions"><button class="btn secondary" id="code-resend">${esc(t('resendCode'))}</button><button class="text-btn" id="code-exit">${esc(t('changeEmail'))}</button></div></section>`;
-  const resend = $('#code-resend');
-  let retryAt = 0;
-  const send = async () => {
-    if (Date.now() < retryAt) throw Error(t('codeWait'));
-    const response = await state.db.auth.sendEmailCode(state.lang);
-    if (response.error) throw response.error;
-    retryAt = Date.now() + (response.data.retryAfter || 60) * 1000;
-    $('#code-status').textContent = t('emailCodeSent');
-    $('#code-error').textContent = '';
-  };
-  resend.onclick = safeAction(send);
-  $('#code-exit').onclick = safeAction(async () => {
-    await state.db.auth.signOut();
-    location.href = 'giris.html';
-  });
-  guard($('#code-form'), async (data) => {
-    const response = await state.db.auth.verifyEmailCode({ token: data.get('code') });
-    if (response.error) {
-      $('#code-error').textContent = response.error.message;
-      return;
-    }
-    location.href = nextUrl();
-  });
-  try {
-    await send();
-  } catch (error) {
-    $('#code-status').textContent = error.message;
-  }
-  $('#code-form input[name=code]').focus();
 }

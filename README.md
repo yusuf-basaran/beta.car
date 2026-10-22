@@ -12,7 +12,7 @@ KONTAK, Kuzey Kıbrıs için araç ilan platformudur. Kullanılmış ve sıfır 
 - Firma sayfaları, site içi mesajlaşma, araç karşılaştırma ve piyasa verisine dayalı değerleme
 - Yönetim paneli, içerik ve şikâyet yönetimi, Türkçe ve İngilizce arayüz
 
-[İşlevlerin tamamı ve kullanım rehberi](docs/ozellikler.md) · [E-posta kodu kurulumu](docs/eposta-dogrulama.md)
+[İşlevlerin tamamı ve kullanım rehberi](docs/ozellikler.md) · [E-posta doğrulaması](docs/eposta-dogrulama.md)
 
 ## Mimari
 

@@ -9,37 +9,21 @@ export async function createClient() {
       getUser: async () => ({
         data: { user: guest ? null : { id: ME.id, email: 'uye@example.invalid' } },
       }),
-      pendingEmail: async () => ({ data: globalThis.fixture.pendingEmail || null }),
-      sendEmailCode: async (lang) => {
-        record('sendEmailCode', { lang });
-        return globalThis.fixture.codeSendFailure
-          ? { error: Error('Kod gönderilemedi') }
-          : { data: { retryAfter: 60 } };
-      },
-      verifyEmailCode: async ({ token }) => {
-        record('verifyEmailCode', { token });
-        return token === '123456'
-          ? { data: { user: ME } }
-          : { error: Error('Doğrulama kodu yanlış') };
-      },
       signOut: async () => ({}),
       signInWithPassword: async (p) => {
         record('signin', p);
-        return {
-          data: globalThis.fixture.emailCode
-            ? { verification: 'code', email: ME.email || 'uye@example.invalid' }
-            : { user: ME },
-        };
+        return globalThis.fixture.unverified
+          ? { error: Error('E-posta adresinizi doğrulayın') }
+          : { data: { user: ME } };
       },
       signUp: async (p) => {
         record('register', p);
-        return {
-          data: globalThis.fixture.emailCode
-            ? { verification: 'code', email: ME.email || 'uye@example.invalid' }
-            : { user: ME },
-        };
+        return { data: { user: ME, verification: 'link' } };
       },
-      resetPasswordForEmail: async () => ({}),
+      resetPasswordForEmail: async (email, options) => {
+        record('resetPassword', { email, options });
+        return {};
+      },
       updateUser: async () => ({}),
       verifyOtp: async () => ({}),
     },

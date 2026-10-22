@@ -75,7 +75,7 @@ SMS kapalıyken `sms_zorunlu` false kalır. Firebase Authentication telefon sağ
 
 Cloud Scheduler işlevleri: `bakim` 15 dakikada bir yarım kalan kalıcı silmeleri tamamlar, talep/abonelik/ilan sürelerini kontrol eder; `temizlik` her gün 03:20 UTC geçici kayıtları siler; `eposta` iki dakikada bir bildirim kuyruğunu işler. İlan yazma tetikleyicisi `ilanBildirim` kayıtlı arama ve fiyat takibi bildirimlerini yazar. Yerel testler bakım fonksiyonunu doğrudan çağırır; canlı Scheduler çalışması ayrıca doğrulanır.
 
-Altı haneli e-posta doğrulaması ve gönderim hizmeti ayarları [e-posta doğrulama belgesinde](eposta-dogrulama.md) açıklanır. Gönderim hizmeti kapalıyken Firebase Authentication bağlantılı doğrulamayı sürdürür; şifre sıfırlama Firebase Authentication tarafından gönderilir. Uygulama bildirimleri için HTTPS JSON e-posta sağlayıcısı gerekir. Sunucu ortamında `MAIL_ENABLED=true`, `MAIL_API_URL` ve `MAIL_FROM` tanımlanır. Sağlayıcı anahtarı:
+E-posta doğrulama ve şifre sıfırlama Firebase Authentication bağlantılarıyla tamamlanır. Ayrıntılar [e-posta doğrulama belgesindedir](eposta-dogrulama.md). Uygulama bildirimleri için HTTPS JSON e-posta sağlayıcısı gerekir. Sunucu ortamında `MAIL_ENABLED=true`, `MAIL_API_URL` ve `MAIL_FROM` tanımlanır. Sağlayıcı anahtarı:
 
 ```bash
 npx firebase functions:secrets:set MAIL_API_KEY --project PROJE_KIMLIGI
