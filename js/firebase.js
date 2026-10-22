@@ -23,6 +23,9 @@ export async function createClient(cfg) {
   ]);
   const app = appSdk.initializeApp(config);
   const auth = authSdk.getAuth(app);
+  const emailLanguage = () => {
+    auth.languageCode = document.documentElement.lang === 'en' ? 'en' : 'tr';
+  };
   if (cfg.emulators) {
     authSdk.connectAuthEmulator(auth, `http://${cfg.emulators.host}:9099`, {
       disableWarnings: true,
@@ -116,11 +119,15 @@ export async function createClient(cfg) {
           }
           const r = await call({ name: 'profil_kaydet', data: options.data });
           if (r.error) throw r.error;
+          emailLanguage();
           await authSdk.sendEmailVerification(auth.currentUser, { url: options.emailRedirectTo });
           return { user: user(), verification: 'link' };
         }),
       resetPasswordForEmail: (email, options) =>
-        result(() => authSdk.sendPasswordResetEmail(auth, email, { url: options.redirectTo })),
+        result(() => {
+          emailLanguage();
+          return authSdk.sendPasswordResetEmail(auth, email, { url: options.redirectTo });
+        }),
       updateUser: (data) =>
         result(async () => {
           if (data.password) return authSdk.updatePassword(auth.currentUser, data.password);

@@ -147,12 +147,60 @@
           "value": "no-cache"
         }
       ]
+    },
+    {
+      "source": "/:file(manifest.json|favicon.ico)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/assets/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
     }
   ],
   "redirects": [
     {
       "source": "/index.html",
       "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/icon-192.png",
+      "destination": "/assets/icon-192.png",
+      "permanent": true
+    },
+    {
+      "source": "/icon-512.png",
+      "destination": "/assets/icon-512.png",
+      "permanent": true
+    },
+    {
+      "source": "/favicon.png",
+      "destination": "/assets/favicon-32.png",
+      "permanent": true
+    },
+    {
+      "source": "/apple-touch-icon.png",
+      "destination": "/assets/apple-touch-icon.png",
+      "permanent": true
+    },
+    {
+      "source": "/logo.png",
+      "destination": "/assets/logo.webp",
+      "permanent": true
+    },
+    {
+      "source": "/logo-header.webp",
+      "destination": "/assets/logo-white.webp",
       "permanent": true
     }
   ]

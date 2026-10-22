@@ -12,6 +12,8 @@ E-posta onayı için ek gönderim sağlayıcısı veya uygulamaya ait kod doğru
 - Doğrulama bağlantısının işlem adresi Firebase'in varsayılan güvenilir adresidir.
 - Devam adresi sitenin `hesabim.html` sayfasıdır; parola sıfırlama dönüşü `giris.html` sayfasına yapılır.
 - Doğrulama, parola sıfırlama ve e-posta değişikliği şablonlarının görünen gönderen adı KONTAK kullanır. Varsayılan gönderici alan adı proje kimliğine bağlıdır.
+- Şablondaki `%APP_NAME%` değeri OAuth markasının herkese açık adından gelir; bu ad KONTAK olmalıdır. Yalnız proje veya web uygulamasının görünen adını değiştirmek yeterli değildir. Google ile giriş kapalı kalır.
+- Doğrulama ve parola sıfırlama e-postaları, gönderim sırasında seçili site dilini kullanır. Daha önce teslim edilmiş e-postaların içeriği değişmez.
 
 ## Kabul kontrolü
 

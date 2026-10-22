@@ -129,6 +129,14 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
       assert.match(home.headers.get('content-security-policy'), /frame-ancestors 'none'/);
       assert.equal(home.headers.get('x-content-type-options'), 'nosniff');
       assert.equal((await fetch('http://127.0.0.1:5000/assets/icon-192.png')).status, 200);
+      const manifestResponse = await fetch('http://127.0.0.1:5000/manifest.json');
+      assert.equal(manifestResponse.headers.get('cache-control'), 'no-cache');
+      const manifest = await manifestResponse.json();
+      assert.equal(manifest.name, 'KONTAK');
+      assert.ok(manifest.icons.every((icon) => /^\/assets\/icon-\d+\.png\?v=/.test(icon.src)));
+      const legacyIcon = await fetch('http://127.0.0.1:5000/icon-192.png', { redirect: 'manual' });
+      assert.equal(legacyIcon.status, 301);
+      assert.equal(legacyIcon.headers.get('location'), '/assets/icon-192.png');
       assert.equal((await fetch('http://127.0.0.1:5000/bulunamayan-sayfa')).status, 404);
       const response = await fetch('http://127.0.0.1:5000/api', {
         method: 'POST',

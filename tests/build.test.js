@@ -42,6 +42,7 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
     ])
       await writeFile(path.join(root, name), '');
     await cp(new URL('../sw.js', import.meta.url), path.join(root, 'sw.js'));
+    await cp(new URL('../manifest.json', import.meta.url), path.join(root, 'manifest.json'));
     await writeFile(path.join(root, 'app.js'), "import './js/config.js';");
     await cp(new URL('../index.html', import.meta.url), path.join(root, 'index.html'));
     const source = "export const cfg = { url: '', anon: '' };";
@@ -80,6 +81,13 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
     assert.match(translated, /New Vehicles/);
     assert.doesNotMatch(translated, /data-startup|Kullanılmış Araçlar/);
     const version = template.match(/app\.js\?v=([a-f0-9]{12})/)[1];
+    const manifest = JSON.parse(await readFile(path.join(root, '.build/manifest.json'), 'utf8'));
+    assert.equal(manifest.name, 'KONTAK');
+    assert.equal(manifest.id, '/');
+    assert.equal(manifest.background_color, '#F2F4F7');
+    assert.ok(manifest.icons.every((icon) => icon.src.endsWith('?v=' + version)));
+    assert.match(template, new RegExp('favicon-32\\.png\\?v=' + version));
+    assert.match(template, /href="manifest\.json"/);
     const worker = await readFile(path.join(root, '.build/sw.js'), 'utf8');
     assert.ok(worker.includes('bc-offline-' + version));
     assert.ok(worker.includes('/style.css?v=' + version));
@@ -90,6 +98,10 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
     );
     await build({}, ['--firebase']);
     assert.equal(await readFile(path.join(root, 'functions/site/index.html'), 'utf8'), template);
+    await writeFile(path.join(root, 'assets/icon-192.png'), 'updated-icon');
+    await build({}, ['--firebase']);
+    assert.notEqual(await readFile(path.join(root, 'functions/site/index.html'), 'utf8'), template);
+    await writeFile(path.join(root, 'assets/icon-192.png'), '');
     await writeFile(path.join(root, 'js/config.js'), source + '\n');
     await build({}, ['--firebase']);
     assert.notEqual(await readFile(path.join(root, 'functions/site/index.html'), 'utf8'), template);

@@ -65,9 +65,18 @@ for (const name of [
   'cevrimdisi.html',
   'assets/logo-white.webp',
   'assets/favicon-32.png',
+  'assets/apple-touch-icon.png',
+  'assets/icon-192.png',
+  'assets/icon-512.png',
+  'favicon.ico',
+  'manifest.json',
 ])
   hash.update(await readFile(path.join(output, name)));
 const version = hash.digest('hex').slice(0, 12);
+const manifestFile = path.join(output, 'manifest.json');
+const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
+for (const icon of manifest.icons) icon.src += `?v=${version}`;
+await writeFile(manifestFile, JSON.stringify(manifest, null, 2) + '\n');
 await Promise.all(
   modules.map((name, i) =>
     writeFile(
@@ -91,7 +100,10 @@ for (const name of pages) {
         /(<main id="main"[^>]*>)\s*<\/main>/,
         `$1<div class="wrap page" data-startup>${skeletonHtml(2)}</div></main>`,
       )
-      .replace(/(src="\/?(?:app\.js|js\/offline\.js)|href="\/?style\.css)"/g, `$1?v=${version}"`),
+      .replace(
+        /(src="\/?(?:app\.js|js\/offline\.js)|href="\/?(?:style\.css|favicon\.ico|assets\/(?:favicon-32|apple-touch-icon)\.png))"/g,
+        `$1?v=${version}"`,
+      ),
   );
 }
 const worker = await readFile(path.join(output, 'sw.js'), 'utf8');
@@ -99,7 +111,10 @@ await writeFile(
   path.join(output, 'sw.js'),
   worker
     .replace('bc-offline-v1', `bc-offline-${version}`)
-    .replace(/'(\/(?:js\/[^']+\.js|style\.css))'/g, (_, url) => `'${url}?v=${version}'`),
+    .replace(
+      /'(\/(?:js\/[^']+\.js|style\.css|assets\/favicon-32\.png))'/g,
+      (_, url) => `'${url}?v=${version}'`,
+    ),
 );
 const templates = path.join(root, 'functions/site');
 await mkdir(templates, { recursive: true });
