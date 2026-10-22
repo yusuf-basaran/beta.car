@@ -2,10 +2,114 @@ import { state } from './state.js';
 import { bodyLabels, bodyStates, groupEn, groups, stateKeys } from './data.js';
 
 export const D = {
-  seoHomeTitle: ['KKTC Araç İlanları', 'North Cyprus Vehicle Listings'],
+  seoHomeTitle: ['KONTAK | KKTC Satılık Araç İlanları', 'KONTAK | Cars for Sale in North Cyprus'],
   seoHomeDescription: [
-    "KKTC'de kullanılmış araç, sıfır araç ve parça ilanları. Girne, Lefkoşa, Gazimağusa, İskele, Güzelyurt ve Lefke ilanlarını inceleyin.",
-    'Browse used vehicles, new vehicles and parts in North Cyprus. Listings in Kyrenia, Nicosia, Famagusta, İskele, Güzelyurt and Lefke.',
+    "KKTC'de sıfır ve ikinci el araçları marka, model, fiyat ve şehre göre filtreleyin. Girne, Lefkoşa, Gazimağusa, İskele, Güzelyurt ve Lefke ilanları KONTAK'ta.",
+    'Find new and used cars in North Cyprus by make, model, price and town. Compare listings in Kyrenia, Nicosia, Famagusta, İskele, Güzelyurt and Lefke on KONTAK.',
+  ],
+  seo_hakkimizda: [
+    "KONTAK'ın KKTC araç ilan platformunu tanıyın. Kullanılmış ve sıfır araç ilanları, satıcılarla iletişim ve platformun hizmet kapsamı hakkında bilgi alın.",
+    'Learn about KONTAK, the North Cyprus car listing platform. Find information on new and used car listings, contact with sellers and the scope of our services.',
+  ],
+  seoTitle_hakkimizda: [
+    'Hakkımızda: KKTC Araç İlan Platformunu Tanıyın | KONTAK',
+    'About KONTAK | North Cyprus Car Listing Platform',
+  ],
+  seo_iletisim: [
+    'Araç ilanları, üyelik, firma kaydı veya paket talepleri konusunda KONTAK ile iletişime geçin. İletişim kanallarını inceleyin ve destek formunu kullanın.',
+    'Contact KONTAK about car listings, accounts, business profiles or package requests. View contact channels and use the support form for your enquiry.',
+  ],
+  seoTitle_iletisim: [
+    'İletişim: Araç İlanları ve Üyelik İçin Destek | KONTAK',
+    'Contact KONTAK | Support for Car Listings and Accounts',
+  ],
+  'seo_reklam-ver': [
+    'KONTAK üzerinde reklam ve iş birliği olanakları hakkında iletişim formuyla bilgi isteyin. Talebinizi ve iletişim bilgilerinizi ilgili ekibe ulaştırın.',
+    'Contact KONTAK to enquire about advertising and business partnerships. Describe your request and provide your contact information through the enquiry form.',
+  ],
+  'seoTitle_reklam-ver': [
+    'Reklam ve İş Birliği Talepleri İçin İletişim | KONTAK',
+    'Advertising Enquiries and Business Contact | KONTAK',
+  ],
+  'seo_bireysel-uye-sozlesmesi': [
+    'KONTAK bireysel üyeliğinin kullanım koşullarını, ilan sahibinin sorumluluklarını ve hesap kurallarını okuyun. İlan yayınlamadan önce haklarınızı inceleyin.',
+    'Read the terms of individual membership on KONTAK, including account rules and listing owner responsibilities. Review your rights before publishing a listing.',
+  ],
+  'seoTitle_bireysel-uye-sozlesmesi': [
+    'Bireysel Üyelik ve Araç İlanı Kullanım Koşulları | KONTAK',
+    'Individual Membership and Car Listing Terms | KONTAK',
+  ],
+  'seo_kurumsal-uye-sozlesmesi': [
+    'KONTAK kurumsal üyeliğinin koşullarını, firma hesabı sorumluluklarını ve ilan yayınlama kurallarını inceleyin. Kurumsal hizmetlerin kapsamını okuyun.',
+    'Review KONTAK business membership terms, company account responsibilities and listing rules. Read the scope of business services before using your account.',
+  ],
+  'seoTitle_kurumsal-uye-sozlesmesi': [
+    'Kurumsal Üyelik ve Firma Hesabı Kullanım Koşulları | KONTAK',
+    'Business Membership and Company Account Terms | KONTAK',
+  ],
+  'seo_ilan-kurallari': [
+    'KONTAK araç ilanlarında başlık, açıklama, fiyat, fotoğraf ve satıcı beyanı kurallarını inceleyin. İlan yayınlama ve içerik denetimi hakkında bilgi alın.',
+    'Read KONTAK rules for vehicle listing titles, descriptions, prices, photos and seller declarations. Learn about publishing requirements and content review.',
+  ],
+  'seoTitle_ilan-kurallari': [
+    'Araç İlanı Yayınlama, İçerik ve Fotoğraf Kuralları | KONTAK',
+    'Car Listing Content, Photos and Publishing Rules | KONTAK',
+  ],
+  'seo_paket-ve-uyelik-kosullari': [
+    'KONTAK ilan paketlerinin talep, banka havalesi, onay, kota ve süre koşullarını okuyun. Paket iptali, süre bitimi ve site dışı iade sürecini inceleyin.',
+    'Read KONTAK listing package terms for requests, bank transfers, approval, quotas and duration. Review cancellation, expiry and refunds handled outside the site.',
+  ],
+  'seoTitle_paket-ve-uyelik-kosullari': [
+    'İlan Paketleri, Kota ve Üyelik Hizmeti Koşulları | KONTAK',
+    'Listing Packages, Quotas and Membership Terms | KONTAK',
+  ],
+  'seo_gizlilik-politikasi': [
+    'KONTAK hizmetlerinde kişisel verilerin hangi amaçlarla işlendiğini inceleyin. Veri saklama, paylaşım, güvenlik ve başvuru hakları hakkında bilgi alın.',
+    'Learn how personal data is processed when using KONTAK services. Read about storage, sharing, security measures and how to submit a privacy rights request.',
+  ],
+  'seoTitle_gizlilik-politikasi': [
+    'Gizlilik Politikası ve Kişisel Verilerin Korunması | KONTAK',
+    'Privacy Policy and Personal Data Protection | KONTAK',
+  ],
+  'seo_cerez-politikasi': [
+    'KONTAK oturum, dil, favori ve diğer işlevsel tercihler için kullanılan tarayıcı kayıtlarını inceleyin. Çerez ve depolama tercihlerinizi nasıl yöneteceğinizi öğrenin.',
+    'Review browser storage used for KONTAK sessions, language, favourites and functional preferences. Learn how to manage cookies and storage choices on your device.',
+  ],
+  'seoTitle_cerez-politikasi': [
+    'Çerez Politikası ve Tarayıcı Depolama Tercihleri | KONTAK',
+    'Cookie Policy and Browser Storage Preferences | KONTAK',
+  ],
+  'seo_kvkk-aydinlatma': [
+    'KONTAK kişisel veri aydınlatma metnini okuyun. İşlenen veri türleri, işleme amaçları, aktarım, saklama ve ilgili kişi başvuru yöntemleri hakkında bilgi alın.',
+    'Read the KONTAK personal data notice. Review the types of data processed, purposes, transfers, retention and how individuals can submit a data rights request.',
+  ],
+  'seoTitle_kvkk-aydinlatma': [
+    'KVKK Aydınlatma Metni ve Kişisel Veri Hakları | KONTAK',
+    'Personal Data Notice and Privacy Rights | KONTAK',
+  ],
+  'seo_guvenli-alim': [
+    'Araç alırken kapora ve ön ödeme taleplerine karşı dikkat edin. KONTAK güvenli alım rehberinde yerinde araç görme, belge kontrolü ve ekspertiz önerilerini okuyun.',
+    'Read KONTAK guidance on car inspections, paperwork and viewing a vehicle in person. Take care with deposit requests and do not pay before checking the vehicle.',
+  ],
+  'seoTitle_guvenli-alim': [
+    'Güvenli Araç Alımı ve Ekspertiz Kontrolü Rehberi | KONTAK',
+    'Safer Car Buying and Inspection Guidance | KONTAK',
+  ],
+  'seo_guvenli-satis': [
+    'Araç satışında belge, iletişim ve ödeme kontrolüne dikkat edin. KONTAK güvenli satış rehberini okuyun; kapora veya ön ödeme taleplerinden kaçının.',
+    'Read KONTAK guidance on paperwork, communication and checking payments when selling a car. Avoid deposit requests and verify the vehicle and parties in person.',
+  ],
+  'seoTitle_guvenli-satis': [
+    'Güvenli Araç Satışı ve Satıcı Kontrol Rehberi | KONTAK',
+    'Safer Car Selling and Seller Guidance | KONTAK',
+  ],
+  seo_sss: [
+    'KONTAK üyeliği, araç ilanı yayınlama, arama, mesajlaşma ve paket talepleri hakkında sık sorulan soruları inceleyin. İşlem adımlarıyla ilgili bilgi alın.',
+    'Find answers to common questions about KONTAK accounts, publishing vehicle listings, searching, messaging and package requests. Read how each process works.',
+  ],
+  seoTitle_sss: [
+    'Sık Sorulan Sorular: İlanlar, Üyelik ve Paketler | KONTAK',
+    'Frequently Asked Questions: Listings and Accounts | KONTAK',
   ],
   skip: ['İçeriğe geç', 'Skip to content'],
   used: ['Kullanılmış Araçlar', 'Used Vehicles'],
@@ -22,12 +126,12 @@ export const D = {
   favs: ['Favoriler', 'Favourites'],
   account: ['Hesabım', 'My Account'],
   firms: ['Firmalar', 'Businesses'],
-  gallery: ['Luxury & Prestige Gallery', 'Luxury & Prestige Gallery'],
+  gallery: ["KKTC'nin araç ilan sitesi", 'The car listing site for North Cyprus'],
   island: ['KUZEY KIBRIS / ARAÇ İLANLARI', 'NORTHERN CYPRUS / VEHICLE LISTINGS'],
   hero: ['Doğru araç. Net bilgi.', 'The right vehicle. Clear details.'],
   intro: [
-    'Kullanılmış araçlar, sıfır araçlar ve donanım. KKTC genelinde ilanları incele.',
-    'Browse used vehicles, new vehicles and equipment across Northern Cyprus.',
+    'Kullanılmış ve sıfır araçları marka, model ve bütçeye göre inceleyin.',
+    'Browse used and new cars across Northern Cyprus by make, model and budget.',
   ],
   usedShort: ['Kullanılmış', 'Used'],
   newShort: ['Sıfır', 'New'],
@@ -108,7 +212,7 @@ export const D = {
   track: ['Fiyat takibi', 'Price tracking'],
   noPhoto: ['Görsel eklenmemiş', 'No photo provided'],
   view: ['İlanı incele', 'View listing'],
-  beta: ['BETA.CAR', 'BETA.CAR'],
+  brand: ['KONTAK', 'KONTAK'],
   contracts: ['Sözleşmeler', 'Agreements'],
   privacyGroup: ['Gizlilik ve Veri', 'Privacy & Data'],
   help: ['Yardım Merkezi', 'Help Centre'],
@@ -130,6 +234,7 @@ export const D = {
     'Essential browser storage is used for your session and language preference. Optional cookies are disabled.',
   ],
   cookieOnly: ['Yalnızca gerekli', 'Essential only'],
+  listingUnavailable: ['İlan yayında değil', 'This listing is no longer available'],
   notFound: ['Sayfa bulunamadı', 'Page not found'],
   notFoundText: [
     'Adres değişmiş veya sayfa kaldırılmış olabilir.',
@@ -147,15 +252,15 @@ export const D = {
   mild: ['Mild hibrit', 'Mild hybrid'],
   plugin: ['Plug-in hibrit', 'Plug-in hybrid'],
   km: ['km', 'km'],
-  otomobil: ['Binek Araçlar', 'Passenger Cars'],
+  otomobil: ['Binek', 'Passenger Cars'],
   suv: ['SUV & Çift Kabin', 'SUVs & Pickups'],
   motosiklet: ['Motor & Scooter', 'Motorcycles & Scooters'],
-  minivan: ['Aile & Van Araçları', 'Family Cars & Vans'],
-  ticari: ['Yük & Taşıt Araçları', 'Commercial Vehicles'],
+  minivan: ['Aile & Van', 'Family Cars & Vans'],
+  ticari: ['Ticari/Yük', 'Commercial Vehicles'],
   is_makinesi: ['Şantiye Makineleri', 'Construction Machinery'],
   atv: ['Arazi Motorları (ATV/UTV)', 'Off-road Vehicles (ATV/UTV)'],
   karavan: ['Karavan & Kamp Araçları', 'Caravans & Campers'],
-  nostalji: ['Nostalji Araçlar', 'Classic Vehicles'],
+  nostalji: ['Nostalji', 'Classic Vehicles'],
   deniz: ['Tekne & Deniz Araçları', 'Boats & Marine Vehicles'],
   carParts: ['Binek Araç Parçaları', 'Car Parts'],
   motorParts: ['Motor Parçaları', 'Motorcycle Parts'],
@@ -250,8 +355,8 @@ export const D = {
     'Do not send deposits, advance payments or transfers to the site or seller; pay after seeing and inspecting the vehicle.',
   ],
   ibanWarning: [
-    'BETA.CAR hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.',
-    'BETA.CAR never requests an IBAN by message; package bank details appear only under My Account > My Packages.',
+    'KONTAK hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.',
+    'KONTAK never requests an IBAN by message; package bank details appear only under My Account > My Packages.',
   ],
   share: ['Linki kopyala', 'Copy link'],
   print: ['Yazdır / PDF', 'Print / PDF'],
@@ -274,8 +379,8 @@ export const D = {
   history: ['Fiyat geçmişi', 'Price history'],
   calculator: ['Aylık taksit hesaplayıcı', 'Monthly instalment calculator'],
   calcNote: [
-    'Yalnızca hesap aracıdır. BETA.CAR tutar tahsil etmez.',
-    'Calculation tool only. BETA.CAR does not collect funds.',
+    'Yalnızca hesap aracıdır. KONTAK tutar tahsil etmez.',
+    'Calculation tool only. KONTAK does not collect funds.',
   ],
   depositAmount: ['Peşinat', 'Down payment'],
   months: ['Vade (ay)', 'Term (months)'],

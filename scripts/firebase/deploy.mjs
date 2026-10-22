@@ -34,8 +34,8 @@ if (!project) {
 }
 const projects = run(['projects:list'], true);
 if (!project) {
-  project = 'beta-car-' + randomBytes(4).toString('hex');
-  run(['projects:create', project, '--display-name', 'BETA CAR']);
+  project = 'kontak-' + randomBytes(4).toString('hex');
+  run(['projects:create', project, '--display-name', 'KONTAK']);
 } else if (!projects.some((p) => p.projectId === project))
   throw Error('Proje hesabınızda görünmüyor');
 if (!/^[a-z][a-z0-9-]{4,29}$/.test(project)) throw Error('Proje kimliği geçersiz');
@@ -45,7 +45,7 @@ await writeFile(
 );
 let apps = run(['apps:list', 'WEB', '--project', project], true);
 if (!apps.length) {
-  run(['apps:create', 'WEB', 'BETA.CAR', '--project', project, '--non-interactive']);
+  run(['apps:create', 'WEB', 'KONTAK', '--project', project, '--non-interactive']);
   apps = run(['apps:list', 'WEB', '--project', project], true);
 }
 run(['deploy', '--project', project, '--only', 'auth,firestore', '--non-interactive']);

@@ -1,7 +1,7 @@
 import { params } from '../context.js';
 import { $, box, empty, meta, notify, pageHead, safety } from '../ui.js';
 import { state } from '../state.js';
-import { t } from '../i18n.js';
+import { D, t } from '../i18n.js';
 import { need, query, table } from '../api.js';
 import { esc } from '../utils.js';
 import { paragraphs } from './posts.js';
@@ -9,7 +9,7 @@ import { button, guard, inp, label } from '../forms.js';
 
 export async function legalPage() {
   const slug = params.get('s') || 'hakkimizda';
-  $('#main').innerHTML = pageHead('beta');
+  $('#main').innerHTML = pageHead('brand');
   if (!state.db) {
     $('#main').insertAdjacentHTML('beforeend', `<p class="empty">${esc(t('connect'))}</p>`);
     return;
@@ -20,7 +20,12 @@ export async function legalPage() {
     return;
   }
   const title = state.lang === 'en' ? p.baslik_en : p.baslik;
-  meta(title);
+  meta(
+    D['seoTitle_' + slug] ? t('seoTitle_' + slug) : title,
+    D['seo_' + slug]
+      ? t('seo_' + slug)
+      : (state.lang === 'en' ? p.icerik_en : p.icerik)?.replace(/\s+/g, ' ').trim().slice(0, 160),
+  );
   $('#main').innerHTML =
     `<article class="panel prose legal"><h1>` +
     `${esc(title)}` +

@@ -106,7 +106,7 @@ test('Mobil skeleton erişilebilir yüklenme metni sunar ve veri gelince kaldır
     f.guest = true;
   });
   await page.goto('/');
-  await expect(page.locator('#feed .skeleton')).toHaveCount(8);
+  await expect(page.locator('#feed .skeleton')).toHaveCount(7);
   await expect(page.locator('#feed .skeleton').first()).toHaveAttribute('aria-hidden', 'true');
   expect(
     await page
@@ -212,7 +212,7 @@ test('İlan detayında kaporta ve donanım gösterilir', async ({ page }) => {
   await expect(page.locator('.legend')).toHaveCount(2);
   await expect(page.locator('main')).toContainText('ABS');
   await expect(page.locator('main')).toContainText('Kaporta ve Ekspertiz');
-  await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
+  await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(2);
 });
 
 test('Karşılaştırma kaydedilen aracı gösterir', async ({ page }) => {
@@ -266,11 +266,11 @@ test('Dil değişimi sözlük ve sayfa dilini günceller', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('.hero h1')).toHaveText('The right vehicle. Clear details.');
   await expect(page).toHaveURL(/lang=en/);
-  await expect(page).toHaveTitle('North Cyprus Vehicle Listings | BETA.CAR');
+  await expect(page).toHaveTitle('KONTAK | Cars for Sale in North Cyprus');
   await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href', /\?lang=en$/);
   await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute(
     'content',
-    'North Cyprus Vehicle Listings | BETA.CAR',
+    'KONTAK | Cars for Sale in North Cyprus',
   );
   await page.locator('#language').click();
   await expect(page.locator('.hero h1')).toHaveText('Doğru araç. Net bilgi.');
@@ -319,4 +319,55 @@ test('Paket banka bilgisi yalnızca hesap talebinde görünür', async ({ page }
   await expect(page.locator('body')).not.toContainText('TEST-ACCOUNT');
   await page.goto('/hesabim.html?sekme=paketler');
   await expect(page.locator('.bank-details')).toContainText('TEST-ACCOUNT');
+});
+
+test('KONTAK sayfalarında ortak palet, meta ve mobil düzen tutarlıdır', async ({ page }) => {
+  await setup(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const path of [
+    '/',
+    '/ilanlar.html',
+    '/ilan.html?id=' + id,
+    '/firmalar.html',
+    '/firma.html?id=' + data.tables.firmalar[0].id,
+    '/paketler.html',
+    '/yazilar.html',
+    '/yazilar.html?s=' + data.tables.yazilar[0].slug,
+    '/ilan-ver.html',
+    '/giris.html',
+    '/hesabim.html',
+    '/mesajlar.html',
+    '/admin.html',
+  ]) {
+    await page.goto(path);
+    await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false');
+    await expect(page.locator('main h1')).toHaveCount(1);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'tr');
+    await expect(page).toHaveTitle(/KONTAK/);
+    await expect(page.locator('meta[name=description]')).not.toHaveAttribute(
+      'content',
+      /undefined|^$/,
+    );
+    await expect(page.locator('link[rel=canonical]')).toHaveAttribute(
+      'href',
+      /^https:\/\/kon-tak.vercel.app\//,
+    );
+    await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute(
+      'content',
+      'KONTAK',
+    );
+    await expect(page.locator('meta[name=theme-color]')).toHaveAttribute('content', '#0B1F3A');
+    await expect(page.locator('#header .brand img')).toHaveAttribute('alt', 'KONTAK');
+    await expect(page.locator('body')).not.toContainText(/BETA\.CAR|Luxury/);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(
+      false,
+    );
+    const graph = await page
+      .locator('#seo-schema')
+      .evaluate((n) => JSON.parse(n.textContent)['@graph']);
+    expect(graph.find((r) => r['@type'] === 'Organization').name).toBe('KONTAK');
+    expect(await page.locator('body').evaluate((n) => getComputedStyle(n).backgroundColor)).toBe(
+      'rgb(242, 244, 247)',
+    );
+  }
 });

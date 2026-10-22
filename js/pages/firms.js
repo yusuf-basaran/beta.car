@@ -59,7 +59,7 @@ export async function firmsPage() {
             `<a class="firm-card" href="firma.html?id=` +
             `${esc(c.id)}` +
             `">` +
-            `${c.logo ? `<img class="firm-logo" src="${path(c.logo)}" alt="${esc(c.ad)}" loading="lazy">` : `<span class="firm-initial">${esc(c.ad[0])}</span>`}` +
+            `${c.logo ? `<img width="80" height="80" class="firm-logo" src="${path(c.logo)}" alt="${esc(c.ad)}" loading="lazy">` : `<span class="firm-initial">${esc(c.ad[0])}</span>`}` +
             `<div><h3>` +
             `${esc(c.ad)}` +
             `</h3><p>` +
@@ -108,7 +108,11 @@ export async function firmPage() {
     $('#main').insertAdjacentHTML('beforeend', empty());
     return;
   }
-  meta(c.ad, c.hakkinda, c.kapak || c.logo);
+  meta(
+    c.ad + (state.lang === 'en' ? ' - Cars for Sale' : ' - Satılık Araçlar'),
+    c.hakkinda,
+    c.kapak || c.logo,
+  );
   const b = c.bilgiler || {},
     [list, reviews] = await Promise.all([
       rpc('ilan_ara', { p: { satici: c.kullanici_id } }),
@@ -117,7 +121,7 @@ export async function firmPage() {
     open = companyOpen(b.saatler);
   const href = new URL(`firma.html?id=${c.id}`, location.href).href;
   $('#main').innerHTML =
-    `${c.kapak ? `<img class="company-cover" src="${path(c.kapak)}" alt="${esc(c.ad)}">` : ''}` +
+    `${c.kapak ? `<img width="1200" height="360" fetchpriority="high" class="company-cover" src="${path(c.kapak)}" alt="${esc(c.ad)}">` : ''}` +
     `<div class="page-head"><h1>` +
     `${esc(c.ad)}` +
     `</h1>` +
@@ -125,7 +129,7 @@ export async function firmPage() {
     `</div><div class="detail-layout"><div>` +
     `${box(
       'aboutCompany',
-      `${c.logo ? `<img class="firm-logo" src="${path(c.logo)}" alt="${esc(c.ad)}">` : ''}` +
+      `${c.logo ? `<img width="80" height="80" class="firm-logo" src="${path(c.logo)}" alt="${esc(c.ad)}">` : ''}` +
         `<p class="prose">` +
         `${esc(c.hakkinda || '')}` +
         `</p><p>` +

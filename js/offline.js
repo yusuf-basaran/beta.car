@@ -28,7 +28,7 @@ const button = document.getElementById('offline-retry');
 const status = document.getElementById('offline-status');
 function render() {
   document.documentElement.lang = state.lang;
-  document.title = `${t('offlineTitle')} | BETA.CAR`;
+  document.title = `${t('offlineTitle')} | KONTAK`;
   document.querySelectorAll('[data-i]').forEach((n) => {
     n.textContent = t(n.dataset.i);
   });

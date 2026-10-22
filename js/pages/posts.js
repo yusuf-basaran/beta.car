@@ -23,6 +23,7 @@ export async function postsPage() {
     const title = state.lang === 'en' ? p.baslik_en : p.baslik,
       content = state.lang === 'en' ? p.icerik_en : p.icerik;
     meta(title, state.lang === 'en' ? p.ozet_en : p.ozet, p.kapak);
+    $('#main').innerHTML = '';
     $('#main').insertAdjacentHTML(
       'beforeend',
       `<article class="panel prose article"><h1>` +
@@ -32,7 +33,7 @@ export async function postsPage() {
         ` · ` +
         `${esc(new Date(p.yayin).toLocaleDateString(locale()))}` +
         `</p>` +
-        `${p.kapak ? `<img src="${path(p.kapak)}" alt="${esc(title)}">` : ''}` +
+        `${p.kapak ? `<img src="${path(p.kapak)}" alt="${esc(title)}" width="840" height="420">` : ''}` +
         `<div>` +
         `${paragraphs(content)}` +
         `</div></article>`,
@@ -60,7 +61,7 @@ export async function postsPage() {
                 `<a href="yazilar.html?s=` +
                 `${encodeURIComponent(p.slug)}` +
                 `">` +
-                `${p.kapak ? `<img src="${path(p.kapak)}" alt="${esc(state.lang === 'en' ? p.baslik_en : p.baslik)}" loading="lazy">` : ''}` +
+                `${p.kapak ? `<img src="${path(p.kapak)}" alt="${esc(state.lang === 'en' ? p.baslik_en : p.baslik)}" width="600" height="360" loading="lazy">` : ''}` +
                 `<span class="eyebrow">` +
                 `${esc(p.kategori)}` +
                 `</span><h2>` +

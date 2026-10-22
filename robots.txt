@@ -1,3 +1,11 @@
 User-agent: *
 Allow: /
-Sitemap: https://beta-car.vercel.app/sitemap.xml
+Disallow: /giris.html
+Disallow: /hesabim.html
+Disallow: /mesajlar.html
+Disallow: /ilan-ver.html
+Disallow: /foto.html
+Disallow: /admin.html
+Disallow: /cevrimdisi.html
+Disallow: /api/
+Sitemap: https://kon-tak.vercel.app/sitemap.xml

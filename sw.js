@@ -2,8 +2,8 @@ const cacheName = 'bc-offline-v1';
 const files = [
   '/cevrimdisi.html',
   '/style.css',
-  '/logo-header.webp',
-  '/favicon.png',
+  '/assets/logo-white.webp',
+  '/assets/favicon-32.png',
   '/js/offline.js',
   '/js/i18n.js',
   '/js/state.js',

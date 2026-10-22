@@ -9,12 +9,8 @@ const assets = [
   'style.css',
   'app.js',
   'sw.js',
-  'logo.png',
-  'logo-header.webp',
-  'favicon.png',
-  'apple-touch-icon.png',
-  'icon-192.png',
-  'icon-512.png',
+  'assets',
+  'favicon.ico',
   'manifest.json',
   'robots.txt',
   'sitemap.xml',
@@ -25,6 +21,7 @@ const { layouts, headerHtml, footerHtml, skeletonHtml } = await import(
   new URL('../js/layout.js', import.meta.url)
 );
 const pages = (await readdir(root)).filter((name) => name.endsWith('.html'));
+await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 for (const name of [...pages, ...assets]) {
   await cp(path.join(root, name), path.join(output, name), { recursive: true });
@@ -62,7 +59,13 @@ const modules = [
 const hash = createHash('sha256');
 const source = await Promise.all(modules.map((name) => readFile(path.join(output, name), 'utf8')));
 for (let i = 0; i < modules.length; i++) hash.update(modules[i]).update(source[i]);
-for (const name of ['style.css', 'sw.js', 'cevrimdisi.html', 'logo-header.webp', 'favicon.png'])
+for (const name of [
+  'style.css',
+  'sw.js',
+  'cevrimdisi.html',
+  'assets/logo-white.webp',
+  'assets/favicon-32.png',
+])
   hash.update(await readFile(path.join(output, name)));
 const version = hash.digest('hex').slice(0, 12);
 await Promise.all(

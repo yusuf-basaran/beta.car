@@ -1,8 +1,8 @@
-# BETA.CAR
+# KONTAK
 
-BETA.CAR, Kuzey Kıbrıs için araç ve parça ilan platformudur. Kullanılmış araç, sıfır araç ve parça ilanlarını bireysel ve kurumsal satıcılarla bir araya getirir. Marka sloganı: **Luxury & Prestige Gallery**.
+KONTAK, Kuzey Kıbrıs için araç ilan platformudur. Kullanılmış ve sıfır araç ilanlarını bireysel ve kurumsal satıcılarla bir araya getirir. Marka sloganı: **KKTC'nin araç ilan sitesi**.
 
-[Siteyi aç](https://beta-car.vercel.app) · [Yayın kaydı](docs/firebase-yayin.md)
+[Siteyi aç](https://kon-tak.vercel.app) · [Yayın kaydı](docs/firebase-yayin.md)
 
 ## Özellikler
 
@@ -32,7 +32,7 @@ Kota, abonelik ve yetki denetimleri sunucuda Firestore transaction işlemleriyle
 ## Dosya düzeni
 
 ```text
-*.html, style.css, app.js, logo.png
+*.html, style.css, app.js, assets/logo.webp
 js/                 Ortak yardımcılar ve sözlük
 js/pages/           Sayfa modülleri
 scripts/            Statik build, yerel sunucu ve ekran görüntüsü betikleri

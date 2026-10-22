@@ -12,6 +12,7 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
   try {
     await mkdir(path.join(root, 'scripts'));
     await mkdir(path.join(root, 'js'));
+    await mkdir(path.join(root, 'assets'));
     await cp(
       new URL('../scripts/build.mjs', import.meta.url),
       path.join(root, 'scripts/build.mjs'),
@@ -25,16 +26,17 @@ test('Build yalnız istemci dosyalarını yayımlar ve özel anahtarı reddeder'
       'sw.js',
       'style.css',
       'app.js',
-      'logo.png',
-      'logo-header.webp',
+      'assets/logo.webp',
+      'assets/logo-white.webp',
       'manifest.json',
       'robots.txt',
       'sitemap.xml',
-      'icon-192.png',
-      'icon-512.png',
-      'favicon.png',
-      'apple-touch-icon.png',
+      'assets/icon-192.png',
+      'assets/icon-512.png',
+      'assets/favicon-32.png',
+      'assets/apple-touch-icon.png',
       'og-image.png',
+      'favicon.ico',
       'supabase.sql',
       '.env',
     ])

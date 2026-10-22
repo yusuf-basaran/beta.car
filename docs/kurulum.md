@@ -20,7 +20,7 @@ npx firebase login --no-localhost
 npm run firebase:deploy
 ```
 
-Betik oturumu kontrol eder, `.firebaserc` yoksa benzersiz kimlikle BETA.CAR projesi açar ve web uygulamasını kaydeder. Auth, Firestore Standard, kurallar, indeksler, silme koruması ve başlangıç verilerini uygular. Public web yapılandırmasıyla build alır; Blaze denetiminden sonra Storage, Functions ve Hosting dağıtımını çalıştırır. Belirli proje için `npm run firebase:deploy -- PROJE_KIMLIGI` kullanılır. Mevcut veritabanı yeniden açılmaz ve silinmez. Google hesabında proje açma yetkisi bulunmalıdır.
+Betik oturumu kontrol eder, `.firebaserc` yoksa benzersiz kimlikle KONTAK projesi açar ve web uygulamasını kaydeder. Auth, Firestore Standard, kurallar, indeksler, silme koruması ve başlangıç verilerini uygular. Public web yapılandırmasıyla build alır; Blaze denetiminden sonra Storage, Functions ve Hosting dağıtımını çalıştırır. Belirli proje için `npm run firebase:deploy -- PROJE_KIMLIGI` kullanılır. Mevcut veritabanı yeniden açılmaz ve silinmez. Google hesabında proje açma yetkisi bulunmalıdır.
 
 Yayın betiği Cloud Storage varsayılan bucket alanını Firebase REST API üzerinden `europe-west1` bölgesinde hazırlar. Storage hizmet hesabına, dosya kurallarının Firestore sahiplik kayıtlarını okuyabilmesi için `roles/firebaserules.firestoreServiceAgent` rolünü ekler; mevcut yetkileri korur. Firebase CLI etkileşimsiz dağıtımda bu rolü otomatik denetlemez. Bu adımlar sabit sürümlü Firebase CLI oturumunu kullanır; kimlik bilgilerini dosyaya aktarmaz. Hesap veya faturalandırma nedeniyle engellenirse Firebase Console üzerinde bildirilen gereksinim tamamlanıp aynı komut yeniden çalıştırılır. Google hesabına giriş ve faturalandırma onayları hesap sahibi tarafından tamamlanır; dosyalara parola veya ödeme bilgisi yazılmaz.
 
@@ -102,7 +102,7 @@ Tarayıcı için isteğe bağlı `CHROMIUM_PATH` kullanılabilir. [Yayın kontro
 
 ## Vercel ön yüzü
 
-Geçici ana adres `https://beta-car.vercel.app` olarak kullanılır. Vercel, statik dosyaları `.build` dizininden sunar; Firebase web yapılandırması, API, herkese açık HTML ve sitemap isteklerini `vercel.json` üzerinden mevcut Firebase Hosting adresine iletir. Tarayıcıdaki adres Vercel olarak kalır. Kaynak bağlantı alanları boş kalabilir; Vercel ortamına service account ya da sunucu anahtarı girilmez. Üretim alan adı Firebase Auth yetkili alan adları arasında bulunmalıdır.
+Geçici ana adres `https://kon-tak.vercel.app` olarak kullanılır. Vercel, statik dosyaları `.build` dizininden sunar; Firebase web yapılandırması, API, herkese açık HTML ve sitemap isteklerini `vercel.json` üzerinden mevcut Firebase Hosting adresine iletir. Tarayıcıdaki adres Vercel olarak kalır. Kaynak bağlantı alanları boş kalabilir; Vercel ortamına service account ya da sunucu anahtarı girilmez. Üretim alan adı Firebase Auth yetkili alan adları arasında bulunmalıdır.
 
 Vercel projesinde Framework: Other, build komutu `npm run build -- --firebase`, çıktı dizini `.build` ve üretim dalı `main` kullanılır. Firebase sunucu şablonları veya SEO ayarları değiştiğinde önce Firebase `seo` işlevi yayımlanır; GitHub üretim commit'i Vercel yayınını başlatır. Ana alan adı geçişinde SEO ana adresi, canonical/paylaşım etiketleri, robots/sitemap ve Auth yetkili alan adları birlikte güncellenir. Firebase arka uç adresi yönlendirme hedefi olarak korunur.
 

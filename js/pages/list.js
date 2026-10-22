@@ -80,13 +80,13 @@ export function mapContent(list) {
         return (
           `<a href="ilanlar.html?sehir=` +
           `${encodeURIComponent(s)}` +
-          `"><g transform="translate(` +
+          `"><g class="map-marker" transform="translate(` +
           `${esc((x - base[0]) * 256)}` +
           `,` +
           `${esc((y - base[1]) * 256)}` +
-          `)"><circle r="21" fill="#22d3ee" stroke="#0d0f12" stroke-width="3"/><text text-anchor="middle" y="6" font-size="18" fill="#0d0f12">` +
+          `)"><circle r="21" stroke-width="3"/><text text-anchor="middle" y="6" font-size="18" >` +
           `${esc(n)}` +
-          `</text><text text-anchor="middle" y="-30" font-size="18" fill="#10161e" stroke="#fff" stroke-width="4" paint-order="stroke">` +
+          `</text><text text-anchor="middle" y="-30" font-size="18" stroke-width="4" paint-order="stroke">` +
           `${esc(s)}` +
           `</text></g></a>`
         );
@@ -205,6 +205,25 @@ export async function listPage(id) {
     p.sayfa = page;
     if (params.get('satici')) p.satici = params.get('satici');
     if (params.get('onecikarma')) p.onecikarma = params.get('onecikarma');
+    const chosen = [
+      state.lex.markalar.find((m) => String(m[0]) === String(p.marka))?.[1],
+      state.lex.modeller.find((m) => String(m[0]) === String(p.model))?.[2],
+      p.sehir,
+    ]
+      .filter(Boolean)
+      .join(' ');
+    meta(
+      chosen
+        ? state.lang === 'en'
+          ? `${chosen} Cars for Sale`
+          : `Satılık ${chosen} İlanları`
+        : t('listTitle'),
+      chosen
+        ? state.lang === 'en'
+          ? `Browse ${chosen} cars for sale in North Cyprus. Compare prices, mileage, body condition and equipment on KONTAK.`
+          : `${chosen} satılık araç ilanlarını KONTAK’ta inceleyin. Fiyat, yıl, kilometre, yakıt, vites ve kaporta bilgilerini karşılaştırın; satıcıyla iletişime geçin.`
+        : undefined,
+    );
     const url = new URL(location.href);
     url.search = filterUrl(p);
     if (state.lang === 'en') url.searchParams.set('lang', 'en');

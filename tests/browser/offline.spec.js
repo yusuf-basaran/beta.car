@@ -54,14 +54,14 @@ test('Özel sayfalar ve servis yanıtları çevrimdışı önbelleğe girmez', a
     return urls.sort();
   });
   expect(urls).toEqual([
+    '/assets/favicon-32.png',
+    '/assets/logo-white.webp',
     '/cevrimdisi.html',
-    '/favicon.png',
     '/js/data.js',
     '/js/i18n.js',
     '/js/offline.js',
     '/js/state.js',
     '/js/utils.js',
-    '/logo-header.webp',
     '/style.css',
   ]);
   const missing = await page.goto('/bulunamayan-sayfa');

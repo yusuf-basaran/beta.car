@@ -1,77 +1,72 @@
 {
-  "origin": "https://beta-car.vercel.app",
+  "origin": "https://kon-tak.vercel.app",
   "pages": {
     "/": [
-      "KKTC Araç İlanları | BETA.CAR",
-      "North Cyprus Vehicle Listings | BETA.CAR",
-      "KKTC'de kullanılmış araç, sıfır araç ve parça ilanları. Girne, Lefkoşa, Gazimağusa, İskele, Güzelyurt ve Lefke ilanlarını inceleyin.",
-      "Browse used vehicles, new vehicles and parts in North Cyprus. Listings in Kyrenia, Nicosia, Famagusta, İskele, Güzelyurt and Lefke."
+      "KONTAK | KKTC Satılık Araç İlanları",
+      "KONTAK | Cars for Sale in North Cyprus",
+      "KKTC'de sıfır ve ikinci el araçları marka, model, fiyat ve şehre göre filtreleyin. Girne, Lefkoşa, Gazimağusa, İskele, Güzelyurt ve Lefke ilanları KONTAK'ta.",
+      "Find new and used cars in North Cyprus by make, model, price and town. Compare listings in Kyrenia, Nicosia, Famagusta, İskele, Güzelyurt and Lefke on KONTAK."
     ],
     "/ilanlar.html": [
-      "Araç İlanları",
+      "Satılık Araç İlanları ve Güncel Araç Fiyatları | KONTAK",
       "Vehicle Listings",
-      "KKTC araç ilanlarını marka, model, yıl, fiyat ve şehre göre arayın. Kaporta, donanım ve ithalat bilgilerini karşılaştırın.",
+      "KKTC satılık araç ilanlarını marka, model, yıl, fiyat ve şehre göre filtreleyin. Kaporta, donanım ve satıcı bilgilerini KONTAK'ta karşılaştırın.",
       "Search North Cyprus vehicle listings by make, model, year, price and town. Compare body condition, equipment and import details."
     ],
     "/kullanilmis": [
-      "Kullanılmış Araçlar",
+      "KKTC Kullanılmış Araçlar ve İkinci El Fiyatları | KONTAK",
       "Used Vehicles",
-      "KKTC kullanılmış araç ilanları. Binek, SUV, motor, ticari araç ve diğer taşıtları marka, model ve bütçeye göre inceleyin.",
-      "Used vehicles in North Cyprus. Browse cars, SUVs, motorcycles, commercial vehicles and other vehicles by make, model and budget."
+      "KKTC ikinci el araç ilanlarını inceleyin. Binek, SUV, aile, van, ticari ve nostalji araçlarını marka, model, fiyat ve şehir seçerek KONTAK'ta karşılaştırın.",
+      "Browse used cars, SUVs, family cars, vans, commercial and classic vehicles in North Cyprus. Compare make, model, town and budget on KONTAK."
     ],
     "/sifir": [
-      "Sıfır Araçlar",
+      "KKTC Sıfır Araç İlanları ve Güncel Fiyatları | KONTAK",
       "New Vehicles",
-      "KKTC sıfır araç ilanları. Binek, SUV, motor, ticari ve deniz araçlarının fiyatlarını ve satıcı bilgilerini inceleyin.",
-      "New vehicles in North Cyprus. Browse prices and seller details for cars, SUVs, motorcycles, commercial vehicles and boats."
-    ],
-    "/parca": [
-      "Parça & Donanım",
-      "Parts & Equipment",
-      "Binek araç, motor ve yük aracı parçaları. KKTC'deki aksesuar, mekanik, lastik, jant, akü ve yağ ilanlarını inceleyin.",
-      "Car, motorcycle and commercial vehicle parts in North Cyprus. Browse accessories, mechanical parts, tyres, wheels, batteries and oils."
+      "KKTC sıfır araç ilanlarını inceleyin. Binek, SUV, aile, van ve ticari araçları marka, model, fiyat ve şehir seçerek KONTAK'ta karşılaştırın.",
+      "Browse new cars, SUVs, family cars, vans and commercial vehicles in North Cyprus. Compare make, model, town and budget on KONTAK."
     ],
     "/degerleme.html": [
-      "Araç Değerleme",
+      "KKTC Araç Değerleme ve Tahmini Satış Fiyatı | KONTAK",
       "Vehicle Valuation",
-      "Marka, model, yıl ve kilometre bilgilerine göre BETA.CAR ilanlarından tahmini fiyat aralığını hesaplayın.",
-      "Estimate a vehicle price range from BETA.CAR listings using make, model, year and mileage."
+      "Aracınızın marka, model, yıl ve kilometre bilgileriyle KKTC ilanlarındaki fiyat aralığını inceleyin. KONTAK verileriyle satış öncesi karşılaştırma yapın.",
+      "Estimate a vehicle price range from KONTAK listings using make, model, year and mileage."
     ],
     "/model.html": [
-      "Model Fiyatları",
+      "KKTC Marka ve Model Bazında Araç Fiyatları | KONTAK",
       "Model Prices",
-      "KKTC'de model bazında araç fiyatlarını, ilan sayısını ve fiyat dağılımını inceleyin. Değerler güncel BETA.CAR ilanlarına dayanır.",
-      "View model prices, listing counts and price distribution in North Cyprus, based on current BETA.CAR listings."
+      "KKTC'de araç modellerinin ortalama, en düşük ve en yüksek ilan fiyatlarını inceleyin. Güncel KONTAK ilanlarıyla model ve bütçe karşılaştırması yapın.",
+      "View model prices, listing counts and price distribution in North Cyprus, based on current KONTAK listings."
     ],
     "/paketler.html": [
-      "Paketler",
+      "Bireysel ve Kurumsal Araç İlanı Paketleri | KONTAK",
       "Packages",
-      "Bireysel ve kurumsal ilan paketlerinin kota, öne çıkarma hakkı ve sürelerini karşılaştırın. Paket ödemeleri site dışında yapılır.",
+      "Bireysel ve kurumsal ilan paketlerinin ilan kotası, öne çıkarma hakkı ve sürelerini karşılaştırın. KONTAK paket taleplerini hesabınızdan takip edin.",
       "Compare individual and business listing quotas, promotion rights and durations. Package payments take place outside the website."
     ],
     "/firmalar.html": [
-      "Firmalar",
+      "KKTC Galeriler, Yetkili Satıcılar ve Firmalar | KONTAK",
       "Businesses",
-      "KKTC galerileri, yetkili satıcıları, parça tedarikçileri ve ekspertiz merkezlerini şehir ve firma adına göre inceleyin.",
+      "KKTC galerilerini, yetkili araç satıcılarını ve ekspertiz merkezlerini şehir veya firma adına göre bulun. Firma bilgilerini ve aktif ilanlarını inceleyin.",
       "Browse North Cyprus dealerships, authorised sellers, parts suppliers and inspection centres by town and business name."
     ],
     "/yazilar.html": [
-      "Garaj Yazıları",
+      "Garaj Yazıları: Araç Alımı ve Bakım Rehberi | KONTAK",
       "Garage Journal",
-      "KKTC'de araç alımı, ekspertiz, ithalat belgeleri ve araç kullanımı üzerine BETA.CAR yazılarını okuyun.",
-      "Read BETA.CAR articles on buying vehicles, inspections, import documents and vehicle ownership in North Cyprus."
+      "KKTC'de araç alımı, ekspertiz, bakım kayıtları ve ithalat belgeleri üzerine Garaj Yazıları'nı okuyun. KONTAK rehberleriyle ilan bilgilerini değerlendirin.",
+      "Read KONTAK articles on buying vehicles, inspections, import documents and vehicle ownership in North Cyprus."
     ],
     "/talepler.html": [
-      "Aranan Araç Talepleri",
+      "KKTC Aranan Araçlar ve Güncel Alıcı Talepleri | KONTAK",
       "Wanted Vehicles",
-      "KKTC'de alıcıların marka, model, bütçe ve şehir tercihleriyle paylaştığı araç taleplerini inceleyin.",
+      "KKTC'de alıcıların marka, model, bütçe ve şehir tercihlerini inceleyin. Aranan araç taleplerini KONTAK'ta takip edin ve uygun araç için iletişime geçin.",
       "Browse vehicle requests from North Cyprus buyers with their preferred make, model, budget and town."
     ],
     "/karsilastir.html": [
-      "Araç Karşılaştırma",
+      "Araç Karşılaştırma: Fiyat, Donanım ve Kaporta | KONTAK",
       "Vehicle Comparison",
-      "Üç araca kadar fiyat, kaporta, donanım ve teknik bilgileri yan yana karşılaştırın.",
+      "Seçtiğiniz üç araca kadar fiyat, kilometre, teknik özellik, kaporta ve donanım bilgilerini yan yana inceleyin. KONTAK ilanları arasındaki farkları görün.",
       "Compare prices, body condition, equipment and specifications for up to three vehicles."
     ]
-  }
+  },
+  "modified": "2026-10-22"
 }

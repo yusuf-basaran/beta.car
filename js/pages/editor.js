@@ -324,7 +324,7 @@ export async function editorPage() {
         (src, i) =>
           `<div draggable="true" data-photo-index="` +
           `${esc(i)}` +
-          `"><img src="` +
+          `"><img width="160" height="120" loading="lazy" src="` +
           `${path(src)}` +
           `" alt="` +
           `${esc(t('photos'))}` +

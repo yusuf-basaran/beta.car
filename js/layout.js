@@ -17,16 +17,11 @@ export function skeletonHtml(count = 1, announce = true, lang = 'tr') {
 
 export function chipsHtml(category = 'kullanilmis', lang = 'tr') {
   const t = (k) => translate(k, lang);
-  const list =
-    category === 'parca'
-      ? ['carParts', 'motorParts', 'truckParts']
-      : category === 'sifir'
-        ? ['otomobil', 'motosiklet', 'minivan', 'suv', 'deniz', 'ticari', 'is_makinesi']
-        : catKeys;
+  const list = category === 'sifir' ? catKeys.filter((c) => c !== 'nostalji') : catKeys;
   return list
     .map(
-      (c, i) =>
-        `<a href="ilanlar.html?kategori=${esc(category)}-${esc(category === 'parca' ? ['binek', 'motor', 'yuk'][i] : slugs[catKeys.indexOf(c)])}">${esc(t(c))}</a>`,
+      (c) =>
+        `<a href="/ilanlar.html?kategori=${esc(category)}-${esc(slugs[catKeys.indexOf(c)])}">${esc(t(c))}</a>`,
     )
     .join('');
 }
@@ -40,18 +35,18 @@ export function headerHtml({
 } = {}) {
   const t = (k) => translate(k, lang);
   return (
-    `<header class="header"><div class="header-inner"><a class="brand" href="index.html" aria-label="BETA.CAR">` +
-    `<img src="logo-header.webp" alt="BETA.CAR" width="154" height="72" fetchpriority="high"><span hidden>BETA<span>.CAR</span></span></a><nav class="main-nav" aria-label="` +
+    `<header class="header"><div class="header-inner"><a class="brand" href="/" aria-label="KONTAK">` +
+    `<img src="/assets/logo-white.webp" alt="KONTAK" width="190" height="38" fetchpriority="high"><span hidden>KONTAK</span></a><nav class="main-nav" aria-label="` +
     `${esc(t('home'))}` +
     `">` +
-    `${nav.map(([s, k]) => `<a href="ilanlar.html?kategori=${esc(s)}" data-cat="${esc(s)}" class="${category === s ? 'active' : ''}">${esc(t(k))}</a>`).join('')}` +
+    `${nav.map(([s, k]) => `<a href="/ilanlar.html?kategori=${esc(s)}" data-cat="${esc(s)}" class="${category === s ? 'active' : ''}">${esc(t(k))}</a>`).join('')}` +
     `<a href="paketler.html">` +
     `${esc(t('packages'))}` +
     `</a><a href="firmalar.html">` +
     `${esc(t('firms'))}` +
     `</a></nav><div class="header-actions"><a class="icon-btn desktop" href="ilanlar.html" aria-label="` +
     `${esc(t('search'))}` +
-    `">` +
+    `" title="${esc(t('search'))}">` +
     `${icon('search')}` +
     `</a><button id="language" class="language" aria-label="` +
     `${esc(t('lang'))}` +
@@ -59,11 +54,11 @@ export function headerHtml({
     `${esc(lang.toUpperCase())}` +
     `</button><a class="icon-btn desktop" href="hesabim.html?sekme=bildirimler" aria-label="` +
     `${esc(t('notifications'))}` +
-    `">` +
+    `" title="${esc(t('notifications'))}">` +
     `${icon('bell')}` +
     `<span id="notification-count" class="count" hidden></span></a><a class="icon-btn desktop" href="mesajlar.html" aria-label="` +
     `${esc(t('messages'))}` +
-    `">` +
+    `" title="${esc(t('messages'))}">` +
     `${icon('message')}` +
     `<span id="message-count" class="count" hidden></span></a><a class="login desktop" href="` +
     `${user ? 'hesabim.html' : 'giris.html'}` +
@@ -108,15 +103,15 @@ export function footerHtml({
   lang = 'tr',
   social = {},
   consent = true,
-  base = 'https://beta-car.vercel.app/',
+  base = new URL('/', import.meta.url).href,
 } = {}) {
   const t = (k) => translate(k, lang);
   return (
-    `<footer class="footer"><div class="wrap footer-grid">` +
+    `<footer class="footer"><div class="wrap"><a href="/" aria-label="KONTAK"><img class="footer-logo" src="/assets/logo-white.webp" alt="KONTAK" width="190" height="38" loading="lazy"></a></div><div class="wrap footer-grid">` +
     `${footerGroups.map(([k, links]) => `<div><h2>${esc(t(k))}</h2>${links.map(([label, s]) => `<a href="${s === 'paketler' ? 'paketler.html' : `sayfa.html?s=${esc(s)}`}">${esc(t(label))}</a>`).join('')}</div>`).join('')}` +
     `</div><div class="wrap footer-bottom"><span>© ` +
     `${esc(new Date().getFullYear())}` +
-    ` BETA.CAR</span><span>` +
+    ` KONTAK</span><span>` +
     `${Object.entries(social || {})
       .map(
         ([n, url]) =>
@@ -150,6 +145,18 @@ export const layouts = () =>
           nav.map(([category]) => [category, headerHtml({ lang, category })]),
         ),
         footer: footerHtml({ lang }),
+        legal: Object.fromEntries(
+          footerGroups
+            .flatMap(([, links]) => links)
+            .filter(([, slug]) => slug !== 'paketler')
+            .map(([, slug]) => [
+              slug,
+              {
+                title: translate('seoTitle_' + slug, lang),
+                description: translate('seo_' + slug, lang),
+              },
+            ]),
+        ),
       },
     ]),
   );

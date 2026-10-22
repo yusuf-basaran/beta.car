@@ -224,7 +224,7 @@ export function fail(e) {
 }
 
 export function meta(title, desc, photo) {
-  document.title = `${title} | BETA.CAR`;
+  document.title = title.includes('KONTAK') ? title : `${title} | KONTAK`;
   desc ||= $('meta[name=description]')?.content || title;
   for (const s of ['meta[name=description]', 'meta[property="og:description"]'])
     $(s)?.setAttribute('content', desc);
@@ -248,11 +248,35 @@ export function syncMeta() {
   }
   const canonical = new URL(c.href || location.href);
   canonical.hash = '';
-  canonical.searchParams.delete('lang');
+  canonical.search = '';
+  const entity =
+    { detail: ['id', 's', 'no'], firm: ['id'], model: ['model'], posts: ['s'], legal: ['s'] }[
+      document.body.dataset.page
+    ] || [];
+  const current = new URLSearchParams(location.search);
+  for (const k of entity) if (current.has(k)) canonical.searchParams.set(k, current.get(k));
   if (state.lang === 'en') canonical.searchParams.set('lang', 'en');
   c.href = canonical.href;
+  const schema = $('#seo-schema');
+  if (schema) {
+    const data = JSON.parse(schema.textContent);
+    data['@graph'] = data['@graph'].filter((r) => r['@type'] !== 'BreadcrumbList');
+    data['@graph'].push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: t('home'), item: canonical.origin + '/' },
+        ...(canonical.pathname === '/'
+          ? []
+          : [{ '@type': 'ListItem', position: 2, name: document.title, item: canonical.href }]),
+      ],
+    });
+    schema.textContent = JSON.stringify(data);
+  }
+
   for (const [name, value] of [
     ['og:url', c.href],
+    ['og:site_name', 'KONTAK'],
+    ['og:image:alt', document.title],
     ['og:locale', state.lang === 'en' ? 'en_GB' : 'tr_TR'],
     ['twitter:title', document.title],
     ['twitter:description', $('meta[name=description]')?.content || document.title],

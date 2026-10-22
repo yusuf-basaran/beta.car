@@ -449,11 +449,11 @@ do $$ declare f record;begin
  end loop;end $$;
 insert into public.ayarlar(anahtar,deger) values ('sosyal','{}'),('iletisim_telefon','""') on conflict do nothing;
 
-insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('hakkimizda','Hakkımızda','About Us','BETA.CAR, Kuzey Kıbrıs için araç ve parça ilanlarının yayımlandığı bir platformdur. Luxury & Prestige Gallery, markanın sloganıdır. Bireysel satıcılar ve firmalar kendi beyanlarından sorumludur.
+insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('hakkimizda','Hakkımızda','About Us','KONTAK, Kuzey Kıbrıs için araç ve parça ilanlarının yayımlandığı bir platformdur. KKTC''nin araç ilan sitesi, markanın sloganıdır. Bireysel satıcılar ve firmalar kendi beyanlarından sorumludur.
 
 Platform, araç satış sözleşmesinin tarafı değildir. Araç bedeli, kapora veya ön ödeme toplamaz; emanet hizmeti sunmaz. Paket talepleri, banka transferinden sonra yapılan inceleme ve hak tanımlama kaydıyla yönetilir.
 
-Sorularınızı İletişim formundan hesabınızla iletebilirsiniz.','BETA.CAR is a vehicle and parts listing platform for Northern Cyprus. Luxury & Prestige Gallery is its slogan. Individual sellers and businesses are responsible for their own statements.
+Sorularınızı İletişim formundan hesabınızla iletebilirsiniz.','KONTAK is a vehicle and parts listing platform for Northern Cyprus. KKTC''nin araç ilan sitesi is its slogan. Individual sellers and businesses are responsible for their own statements.
 
 The platform is not a party to vehicle sales. It does not collect vehicle payments, deposits or advances, and offers no escrow service. Package requests are managed through transfer review and credit records.
 
@@ -461,20 +461,20 @@ Send questions using the Contact form while signed in.') on conflict(slug) do no
 insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('reklam-ver','Reklam Ver','Advertise','Banner ve firma görünürlüğü taleplerini iletişim formundan iletin. Konumu, yayın tarihini ve iletişim bilgilerinizi yazın. Uygunluk incelendikten sonra sizinle iletişim kurulur. Bu sayfada fiyat listesi veya ödeme alanı bulunmaz.','Use the contact form to enquire about banners and business visibility. Include placement, dates and your contact information. We will review suitability and contact you. This page contains no price list or payment form.') on conflict(slug) do nothing;
 insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('iletisim','İletişim','Contact','Hesabınızla giriş yaparak aşağıdaki formdan destek talebi gönderin. İlan veya paket hakkında yazarken ilan numarasını ya da talep referansını belirtin. Şifre, kart bilgisi veya kimlik belgesi göndermeyin.
 
-BETA.CAR hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.','Sign in and send a support request using the form below. Include the listing number or request reference when relevant. Do not send passwords, card details or identity documents.
+KONTAK hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.','Sign in and send a support request using the form below. Include the listing number or request reference when relevant. Do not send passwords, card details or identity documents.
 
-BETA.CAR never requests an IBAN by message; package bank details appear only under My Account > My Packages.') on conflict(slug) do nothing;
+KONTAK never requests an IBAN by message; package bank details appear only under My Account > My Packages.') on conflict(slug) do nothing;
 insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('bireysel-uye-sozlesmesi','Bireysel Üye Sözleşmesi','Individual Membership Agreement','Üyelik, geçerli e-posta adresinin doğrulanmasıyla kullanılır. Kullanıcı hesap bilgilerinin doğruluğundan ve şifresinin korunmasından sorumludur. Başkasına ait telefon veya kimlik bilgisi kullanılamaz.
 
 Yalnızca satma yetkisine sahip olduğunuz araçları ve parçaları ilan edin. Mülkiyet, fiyat, kilometre, hasar ve donanım bilgilerini doğru yazın. İlan yayımlanması, platformun aracı incelediği veya bilgileri garanti ettiği anlamına gelmez.
 
-BETA.CAR satış bedeli toplamaz ve satışa taraf olmaz. Şüpheli içerik incelenebilir, ilan gizlenebilir ve kötüye kullanım halinde hesap kısıtlanabilir. İtirazlar İletişim formundan iletilebilir.
+KONTAK satış bedeli toplamaz ve satışa taraf olmaz. Şüpheli içerik incelenebilir, ilan gizlenebilir ve kötüye kullanım halinde hesap kısıtlanabilir. İtirazlar İletişim formundan iletilebilir.
 
 Ücretsiz aktif ilan limiti ve varsa paket hakları veritabanındaki kayda göre uygulanır. Paket koşulları ayrı metindedir. Kullanıcı hesabını Profil ekranından kapatabilir. Yasal saklama zorunluluğu olan işlem kayıtları anonimleştirme veya saklama gerekliliklerine göre ele alınır. Emredici tüketici hakları saklıdır.','Membership uses a verified email address. Users are responsible for accurate account information and protecting their passwords. Do not use another person’s phone or identity.
 
 List only vehicles and parts you are entitled to sell. Provide accurate ownership, price, mileage, damage and equipment details. Publication does not mean the platform inspected the vehicle or guarantees its condition.
 
-BETA.CAR does not collect vehicle payments and is not a party to sales. Suspected abuse can lead to review, hidden listings or account restrictions. Appeals may be submitted through Contact.
+KONTAK does not collect vehicle payments and is not a party to sales. Suspected abuse can lead to review, hidden listings or account restrictions. Appeals may be submitted through Contact.
 
 The database record determines the free active listing limit and any package credits. Package terms are separate. Close your account in Profile. Records subject to legal retention are handled in line with applicable retention or anonymisation requirements. Mandatory consumer rights are preserved.') on conflict(slug) do nothing;
 insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('kurumsal-uye-sozlesmesi','Kurumsal Üye Sözleşmesi','Business Membership Agreement','Kurumsal hesap başvurusu yapan kişi, firmayı temsil etmeye yetkili olmalıdır. Firma adı, türü, vergi bilgisi ve iletişim kayıtları doğru olmalıdır. Doğrulanmış Firma rozeti, yalnızca platformun kayıt incelemesini gösterir; araçların durumuna, firmanın mali gücüne veya satış sonucuna garanti vermez.
@@ -529,22 +529,22 @@ Listing photos and content may be public. Phone numbers are shown according to t
 Data is stored using Supabase services and the site is hosted on Vercel. Service regions depend on the chosen project configuration and may involve international transfers. Disable optional email notifications in Profile.
 
 Submit account closure, access, correction and erasure requests through Contact. Identity verification may be required. Transaction and dispute records may be retained where needed for legal duties or the nature of a claim; unnecessary data is deleted or anonymised.') on conflict(slug) do nothing;
-insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('cerez-politikasi','Çerez Politikası','Cookie Policy','BETA.CAR oturum, dil, gerekli tercih ve güvenlik kayıtları için tarayıcı depolamasını kullanır. Dil, favoriler, son bakılan ilanlar, karşılaştırma ve arama geçmişi cihazınızda tutulabilir. Giriş yapınca favoriler hesabınıza aktarılır.
+insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('cerez-politikasi','Çerez Politikası','Cookie Policy','KONTAK oturum, dil, gerekli tercih ve güvenlik kayıtları için tarayıcı depolamasını kullanır. Dil, favoriler, son bakılan ilanlar, karşılaştırma ve arama geçmişi cihazınızda tutulabilir. Giriş yapınca favoriler hesabınıza aktarılır.
 
 Marka ve model sözlüğü oturum depolamasında en fazla bir gün önbelleğe alınır. Çevrimdışı sayfa önbelleği veya servis çalışanı yoktur. Reklam takip çerezi ve isteğe bağlı analiz çerezi etkin değildir.
 
-Tarayıcı ayarlarından yerel kayıtları silebilirsiniz. Bu işlem cihazdaki tercihleri ve giriş durumunu sıfırlayabilir. Harita açıldığında OpenStreetMap sunucularına görsel istekleri gider; bunun için IP adresiniz ve tarayıcı bilgisi ilgili hizmete iletilir.','BETA.CAR uses browser storage for sessions, language, essential preferences and security. Language, favourites, recently viewed listings, comparison and search history may be stored on your device. Favourites are transferred to your account after sign-in.
+Tarayıcı ayarlarından yerel kayıtları silebilirsiniz. Bu işlem cihazdaki tercihleri ve giriş durumunu sıfırlayabilir. Harita açıldığında OpenStreetMap sunucularına görsel istekleri gider; bunun için IP adresiniz ve tarayıcı bilgisi ilgili hizmete iletilir.','KONTAK uses browser storage for sessions, language, essential preferences and security. Language, favourites, recently viewed listings, comparison and search history may be stored on your device. Favourites are transferred to your account after sign-in.
 
 The make/model dictionary is cached in session storage for up to one day. There is no offline page cache or service worker. Advertising tracking and optional analytics cookies are not enabled.
 
 Delete local records using your browser settings. This may reset preferences and sign-in status. Opening a map requests images from OpenStreetMap servers, which receive your IP address and browser information.') on conflict(slug) do nothing;
-insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('kvkk-aydinlatma','KVKK Aydınlatma Metni','Personal Data Notice','BETA.CAR kapsamında kimlik ve iletişim bilgileri, üyelik işlemleri, ilan içerikleri, mesajlar ve paket talebi kayıtları hizmetin yürütülmesi için işlenir. Başvuru sahibinin sağladığı veriler, hesap ve ilan formları, oturum kayıtları ve destek taleplerinden elde edilir.
+insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('kvkk-aydinlatma','KVKK Aydınlatma Metni','Personal Data Notice','KONTAK kapsamında kimlik ve iletişim bilgileri, üyelik işlemleri, ilan içerikleri, mesajlar ve paket talebi kayıtları hizmetin yürütülmesi için işlenir. Başvuru sahibinin sağladığı veriler, hesap ve ilan formları, oturum kayıtları ve destek taleplerinden elde edilir.
 
 İşleme amaçları; üyelik sözleşmesinin yürütülmesi, ilanların yayımlanması, paket haklarının kayıt altına alınması, kötüye kullanımın engellenmesi, destek ve hukuki taleplerin karşılanmasıdır. İşlemenin dayanağı duruma göre sözleşmenin ifası, hukuki yükümlülük, hakkın tesisi veya ölçülü meşru menfaattir; isteğe bağlı bildirim tercihleri geri alınabilir.
 
 Veriler hizmet sağlayıcılarla teknik işletim amacıyla ve yetkili makamlarla yasal gereklilik halinde paylaşılabilir. Seçilen barındırma bölgesine göre yurt dışına aktarım değerlendirilmeli ve uygulanabilir KKTC kişisel veri kuralları ile uygulanabildiği ölçüde 6698 sayılı Kanun dikkate alınmalıdır.
 
-Veriye erişme, düzeltme, silme, işlemeye itiraz ve aktarım hakkında bilgi taleplerini İletişim formundan iletin. Başvurunun aidiyeti doğrulanarak uygulanabilir yasal süre içinde yanıtlanır.','BETA.CAR processes identity and contact details, membership activity, listing content, messages and package request records to provide the service. Information is obtained through account and listing forms, session records and support requests.
+Veriye erişme, düzeltme, silme, işlemeye itiraz ve aktarım hakkında bilgi taleplerini İletişim formundan iletin. Başvurunun aidiyeti doğrulanarak uygulanabilir yasal süre içinde yanıtlanır.','KONTAK processes identity and contact details, membership activity, listing content, messages and package request records to provide the service. Information is obtained through account and listing forms, session records and support requests.
 
 Purposes include performing the membership agreement, publishing listings, recording package rights, preventing abuse, support and responding to legal claims. The basis may be contractual performance, legal obligation, establishment of rights or proportionate legitimate interests. Optional notification preferences can be withdrawn.
 
@@ -557,26 +557,26 @@ Ruhsat, şasi numarası ve satıcının satış yetkisini karşılaştır. İtha
 
 Çok düşük fiyat, acele transfer isteği veya başka hesaba ödeme talebi varsa görüşmeyi durdur ve ilanı şikayet et.
 
-BETA.CAR hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.','Do not send deposits, advance payments or transfers to the site or seller; pay after seeing and inspecting the vehicle.
+KONTAK hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.','Do not send deposits, advance payments or transfers to the site or seller; pay after seeing and inspecting the vehicle.
 
 Compare registration, VIN and the seller’s authority to sell. Independently verify registration and customs status for imports. Body diagrams and equipment lists are seller declarations. Check report details with the issuing inspection centre.
 
 Stop and report the listing if the price is unusually low or someone pressures you to transfer money or pay a different account.
 
-BETA.CAR never requests an IBAN by message; package bank details appear only under My Account > My Packages.') on conflict(slug) do nothing;
+KONTAK never requests an IBAN by message; package bank details appear only under My Account > My Packages.') on conflict(slug) do nothing;
 insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('guvenli-satis','Güvenli Satış','Selling Safely','Siteye veya satıcıya kapora, ön ödeme, havale yapma; ödemeyi aracı yerinde görüp ekspertiz yaptırdıktan sonra yap.
 
 İlan bilgilerini belgelerle karşılaştır, kişisel kimlik veya ruhsatın tamamını herkese açık fotoğraflara ekleme. Aracı güvenli bir yerde göster. Üçüncü kişilerin yönlendirdiği bağlantılara hesap veya banka şifresi girme.
 
 Transfer ekran görüntüsü tek başına ödeme kanıtı değildir. Aracın teslimi ve devir işlemi öncesinde kendi bankandan ve ilgili resmi kanallardan gerekli doğrulamaları yap.
 
-BETA.CAR hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.','Do not send deposits, advance payments or transfers to the site or seller; pay after seeing and inspecting the vehicle.
+KONTAK hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.','Do not send deposits, advance payments or transfers to the site or seller; pay after seeing and inspecting the vehicle.
 
 Check listing details against documents and do not publish complete identity or registration documents in photos. Show the vehicle in a safe place. Never enter account or bank passwords into links sent by third parties.
 
 A transfer screenshot alone is not proof of payment. Before delivery and ownership transfer, verify through your own bank and the relevant official channels.
 
-BETA.CAR never requests an IBAN by message; package bank details appear only under My Account > My Packages.') on conflict(slug) do nothing;
+KONTAK never requests an IBAN by message; package bank details appear only under My Account > My Packages.') on conflict(slug) do nothing;
 insert into public.sayfalar(slug,baslik,baslik_en,icerik,icerik_en) values('sss','SSS','FAQ','İlan nasıl verilir? Aracını Sat bağlantısından bilgileri doldur, fotoğrafları ekle, önizlemeyi kontrol et ve yayınla. E-posta doğrulaması gerekir; SMS denetimi etkinleştirildiğinde telefon doğrulaması da istenir.
 
 Ücretsiz kaç ilan verilebilir? Bireysel hesapların aktif limiti yönetim ayarından okunur. Kurumsal hesaplar paket kotası kullanır. Paketlerin güncel hakları Paketler ekranında gösterilir.

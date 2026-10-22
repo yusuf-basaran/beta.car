@@ -18,7 +18,7 @@ import {
   titleLink,
 } from '../ui.js';
 import { state } from '../state.js';
-import { locale, number, status, t } from '../i18n.js';
+import { locale, number, t } from '../i18n.js';
 import { need, query, rpc, signed, table } from '../api.js';
 import { params } from '../context.js';
 import { esc, read, write } from '../utils.js';
@@ -38,15 +38,27 @@ export async function detailPage(id) {
   const c = await query(q.maybeSingle());
   if (id !== state.routeId) return;
   if (!c) {
-    let s = params.get('no') ? await rpc('ilan_durum', { p_no: Number(params.get('no')) }) : null;
+    document.querySelector('meta[name=robots]').content = 'noindex,follow';
+    meta(t('listingUnavailable'));
+    const similar = await rpc('ilan_ara', { p: { sayfa: 1 } });
+    if (id !== state.routeId) return;
     $('#main').innerHTML =
-      pageHead('detailTitle') + `<p class="empty">${esc(s ? status(s.durum) : t('notFound'))}</p>`;
+      pageHead('listingUnavailable') +
+      titleLink('similar', 'ilanlar.html') +
+      '<div class="listing-list">' +
+      (similar.ilanlar.slice(0, 3).map(card).join('') || empty()) +
+      '</div>';
+    bindCards();
     return;
   }
   write('bc-recent', [c.id, ...read('bc-recent').filter((x) => x !== c.id)].slice(0, 10));
   meta(
-    c.baslik,
-    `${c.marka || c.diger_marka || ''} ${c.model || c.diger_model || ''}, ${c.yil || ''}, ${money(c.fiyat, c.para_birimi)}, ${c.sehir || ''}`,
+    [c.yil, c.marka || c.diger_marka, c.model || c.diger_model, c.detay?.paket]
+      .filter(Boolean)
+      .join(' ') +
+      ' - ' +
+      price(c),
+    `${c.marka || c.diger_marka || ''} ${c.model || c.diger_model || ''}, ${c.yil || ''}, ${c.km != null ? number(c.km) + ' km, ' : ''}${c.yakit ? t(c.yakit) + ', ' : ''}${c.vites ? t(c.vites) + ', ' : ''}${money(c.fiyat, c.para_birimi)}, ${c.sehir || ''}`,
     c.fotograflar?.[0],
   );
   const [ps, es, report, seller, hist, market] = await Promise.all([
@@ -95,9 +107,9 @@ export async function detailPage(id) {
       `${c.model_id ? `<a class="text-btn" href="model.html?model=${esc(c.model_id)}">${esc(t('modelTitle'))}</a>` : ''}` +
       `${c.uyari ? safety() : ''}` +
       `<div class="detail-layout"><div><section class="panel gallery"><button class="gallery-main" id="photo-open">` +
-      `${c.fotograflar[0] ? `<img id="main-photo" src="${path(c.fotograflar[0])}" alt="${esc(c.baslik)}">` : `<span class="no-photo">${icon('car')}${esc(t('noPhoto'))}</span>`}` +
+      `${c.fotograflar[0] ? `<img id="main-photo" src="${path(c.fotograflar[0])}" alt="${esc(c.baslik)}" width="960" height="640" fetchpriority="high">` : `<span class="no-photo">${icon('car')}${esc(t('noPhoto'))}</span>`}` +
       `</button><div class="thumbs">` +
-      `${c.fotograflar.map((src, i) => `<button data-photo="${esc(i)}" aria-label="${esc(c.baslik)} ${esc(i + 1)}"><img src="${path(src)}" alt="${esc(c.baslik)} ${esc(i + 1)}" loading="lazy"></button>`).join('')}` +
+      `${c.fotograflar.map((src, i) => `<button data-photo="${esc(i)}" aria-label="${esc(c.baslik)} ${esc(i + 1)}"><img src="${path(src)}" alt="${esc(c.baslik)} ${esc(i + 1)}" width="72" height="56" loading="lazy"></button>`).join('')}` +
       `</div>` +
       `${c.video ? `<a target="_blank" rel="noopener" href="${path(c.video)}">${esc(t('video'))}</a>` : ''}` +
       `</section>` +
@@ -190,7 +202,7 @@ export async function detailPage(id) {
       `${esc(t('cancel'))}` +
       `">×</button><button id="photo-prev" aria-label="` +
       `${esc(t('prev'))}` +
-      `">‹</button><img alt="` +
+      `">‹</button><img width="1200" height="800" alt="` +
       `${esc(c.baslik)}` +
       `"><button id="photo-next" aria-label="` +
       `${esc(t('next'))}` +
@@ -292,7 +304,7 @@ export async function detailPage(id) {
       'aria-label',
       items.map((h) => `${h.tarih.slice(0, 10)}: ${money(h.fiyat, h.para_birimi)}`).join('; '),
     );
-    ctx.strokeStyle = '#22d3ee';
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--orange');
     ctx.lineWidth = 3;
     ctx.beginPath();
     vals.forEach((v, i) => {
@@ -301,7 +313,7 @@ export async function detailPage(id) {
       i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
     });
     ctx.stroke();
-    ctx.fillStyle = '#a4aebd';
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--muted');
     ctx.font = '14px Arial';
     ctx.fillText(money(lo, c.para_birimi), 40, 202);
     ctx.fillText(money(hi, c.para_birimi), 40, 20);
@@ -341,14 +353,29 @@ export async function detailPage(id) {
     '@context': 'https://schema.org',
     '@type': 'Vehicle',
     name: c.baslik,
-    brand: c.marka,
-    model: c.model,
-    vehicleModelDate: String(c.yil || ''),
-    image: c.fotograflar,
+    ...(c.marka || c.diger_marka ? { brand: c.marka || c.diger_marka } : {}),
+    ...(c.model || c.diger_model ? { model: c.model || c.diger_model } : {}),
+    ...(c.yil ? { vehicleModelDate: String(c.yil) } : {}),
+    ...(c.km != null
+      ? {
+          mileageFromOdometer: {
+            '@type': 'QuantitativeValue',
+            value: Number(c.km),
+            unitCode: 'KMT',
+          },
+        }
+      : {}),
+    ...(c.yakit ? { fuelType: t(c.yakit) } : {}),
+    ...(c.vites ? { vehicleTransmission: t(c.vites) } : {}),
+    ...(c.detay?.kasa ? { bodyType: c.detay.kasa } : {}),
+    ...(c.detay?.renk ? { color: c.detay.renk } : {}),
+    ...(c.fotograflar?.length ? { image: c.fotograflar } : {}),
     offers:
       c.fiyat != null
         ? {
             '@type': 'Offer',
+            areaServed: 'KKTC',
+            availability: 'https://schema.org/' + (c.durum === 'satildi' ? 'SoldOut' : 'InStock'),
             price: c.fiyat,
             priceCurrency: c.para_birimi === 'TL' ? 'TRY' : c.para_birimi,
             url: $('link[rel=canonical]')?.href || location.href,

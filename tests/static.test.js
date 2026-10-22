@@ -59,9 +59,9 @@ test('Vercel Firebase yapılandırmasını, API ve SEO sayfalarını arka uca il
     assert.ok(routes.has(file === 'index.html' ? '/' : '/' + file), file);
   for (const category of ['/kullanilmis', '/sifir', '/parca'])
     assert.equal(routes.get(category), backend + category);
-  assert.ok(hosting.auth.authorizedDomains.includes('beta-car.vercel.app'));
+  assert.ok(hosting.auth.authorizedDomains.includes('kon-tak.vercel.app'));
   const seo = JSON.parse(await readFile(new URL('functions/seo-config.json', root), 'utf8'));
-  assert.equal(seo.origin, 'https://beta-car.vercel.app');
+  assert.equal(seo.origin, 'https://kon-tak.vercel.app');
   assert.ok(!/^firebase\.json$/m.test(await readFile(new URL('.vercelignore', root), 'utf8')));
   const api = config.headers.find((h) => h.source === '/api/:path*');
   assert.ok(api.headers.some((h) => h.key === 'Cache-Control' && h.value === 'no-store'));

@@ -121,7 +121,7 @@ await test('Firebase sunucu işlemleri ve erişim kuralları', async (t) => {
       assert.match(await home.text(), /id="seo-schema"/);
       assert.match(home.headers.get('content-security-policy'), /frame-ancestors 'none'/);
       assert.equal(home.headers.get('x-content-type-options'), 'nosniff');
-      assert.equal((await fetch('http://127.0.0.1:5000/icon-192.png')).status, 200);
+      assert.equal((await fetch('http://127.0.0.1:5000/assets/icon-192.png')).status, 200);
       assert.equal((await fetch('http://127.0.0.1:5000/bulunamayan-sayfa')).status, 404);
       const response = await fetch('http://127.0.0.1:5000/api', {
         method: 'POST',

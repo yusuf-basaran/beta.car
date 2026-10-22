@@ -1,47 +1,10 @@
 export const nav = [
   ['kullanilmis', 'used'],
   ['sifir', 'new'],
-  ['parca', 'parts'],
 ];
-
-export const types = [
-  'otomobil',
-  'suv',
-  'motosiklet',
-  'minivan',
-  'ticari',
-  'is_makinesi',
-  'atv',
-  'karavan',
-  'deniz',
-];
-
-export const catKeys = [
-  'otomobil',
-  'suv',
-  'motosiklet',
-  'minivan',
-  'ticari',
-  'is_makinesi',
-  'atv',
-  'karavan',
-  'nostalji',
-  'deniz',
-];
-
-export const slugs = [
-  'binek',
-  'suv',
-  'motor',
-  'aile',
-  'yuk',
-  'santiye',
-  'atv',
-  'karavan',
-  'nostalji',
-  'deniz',
-];
-
+export const types = ['otomobil', 'suv', 'minivan', 'ticari'];
+export const catKeys = ['otomobil', 'suv', 'minivan', 'ticari', 'nostalji'];
+export const slugs = ['binek', 'suv', 'aile', 'yuk', 'nostalji'];
 export const sections = [
   ['featured', 'seckin'],
   ['quick', 'hizli'],
@@ -49,7 +12,6 @@ export const sections = [
   ['recent', ''],
   ['galleries', 'galeri'],
   ['dealers', 'yetkili_satici'],
-  ['parts', 'parca'],
   ['journal', ''],
 ];
 
@@ -77,7 +39,7 @@ export const paths = {
 
 export const footerGroups = [
   [
-    'beta',
+    'brand',
     [
       ['about', 'hakkimizda'],
       ['packages', 'paketler'],

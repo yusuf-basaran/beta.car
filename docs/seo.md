@@ -1,6 +1,6 @@
 # SEO
 
-Ana adres: https://beta-car.vercel.app/ · Kontrol tarihi: 20 Ekim 2026.
+Ana adres: https://kon-tak.vercel.app/ · Kontrol tarihi: 22 Ekim 2026.
 
 ## Yayındaki düzen
 
@@ -35,7 +35,7 @@ Birim testleri zararlı metin kaçışı, JSON-LD, canonical, sitemap kapsamı/p
 
 Mevcut Firebase CLI oturumu Search Console yetkisini içermez; API denetimi `403: insufficient authentication scopes` döndürdü. Mülk doğrulaması ve sitemap gönderimi bu oturumla yapılmadı.
 
-1. [Search Console](https://search.google.com/search-console) içinde **URL ön eki** mülkü olarak `https://beta-car.vercel.app/` adresini ekleyin.
+1. [Search Console](https://search.google.com/search-console) içinde **URL ön eki** mülkü olarak `https://kon-tak.vercel.app/` adresini ekleyin.
 2. Google'ın sunduğu yöntemle sahipliği doğrulayın. HTML etiketi yöntemi seçilirse verilen `google-site-verification` etiketi site başlığına eklenip yeniden yayımlanır.
 3. **Site Haritaları** bölümüne `sitemap.xml` gönderin; URL Denetimi ile ana sayfayı kontrol edin.
 
@@ -46,3 +46,7 @@ Mevcut Firebase CLI oturumu Search Console yetkisini içermez; API denetimi `403
 `npm run firebase:deploy`, Firebase için build alır. Açık HTML şablonları Git dışındaki `functions/site/` dizinine kopyalanır ve işlevle yayımlanır. `--firebase` build seçeneği bu sayfaların statik kopyalarını çıktıdan ayırır; Hosting isteği `seo` işlevine ulaşır. Yerel emülatör aynı düzeni kullanır.
 
 Sitemap ve açık HTML önbelleğinin okuma maliyeti kayıt sayısıyla izlenir. İşletme içerikleri, gerçek ilanlar ve yasal işletmeci bilgileri yönetim panelinden tamamlanır.
+
+KONTAK logo ve ikonları `assets/` altında, paylaşım görseli kökte bulunur. Ana sayfa, ilan, firma ve yasal sayfaların başlıkları ayrıdır. Küçük yazılarda turuncunun kontrast sağlayan koyu tonu kullanılır. Kaldırılmış kategoriler sitemap kapsamından çıkarılır; mevcut araç kayıtları korunur.
+
+Firebase Authentication hazır e-posta şablonlarına yapılan düzenleme isteği `EMAIL_TEMPLATE_UPDATE_NOT_ALLOWED` yanıtıyla reddedildi. Projenin görünen adı KONTAK olarak güncellendi; uygulamanın bildirim ve kod e-postası metinleri KONTAK kullanır. Hazır doğrulama ve parola sıfırlama e-postaları için Authentication > Templates ekranındaki gönderen ve uygulama adı yayın kontrolünde doğrulanır.

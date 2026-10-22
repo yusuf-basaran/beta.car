@@ -1,6 +1,6 @@
-# BETA.CAR kullanım rehberi
+# KONTAK kullanım rehberi
 
-BETA.CAR, KKTC için bireysel ve kurumsal araç/parça ilan platformudur. Slogan: Luxury & Prestige Gallery. Ana adres `https://beta-car.vercel.app` olarak kullanılır; Firebase üyelik, veri, dosya ve sunucu işlemlerini yürütür.
+KONTAK, KKTC için bireysel ve kurumsal araç/parça ilan platformudur. Slogan: KKTC'nin araç ilan sitesi. Ana adres `https://kon-tak.vercel.app` olarak kullanılır; Firebase üyelik, veri, dosya ve sunucu işlemlerini yürütür.
 
 ## 1. Gezinme ve dil
 

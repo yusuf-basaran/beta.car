@@ -1,23 +1,23 @@
 {
   "id": "/",
-  "name": "BETA.CAR",
-  "short_name": "BETA.CAR",
-  "description": "Luxury & Prestige Gallery",
+  "name": "KONTAK",
+  "short_name": "KONTAK",
+  "description": "KKTC'nin araç ilan sitesi",
   "lang": "tr",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#0d0f12",
-  "theme_color": "#0d0f12",
+  "background_color": "#F2F4F7",
+  "theme_color": "#0B1F3A",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

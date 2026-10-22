@@ -28,7 +28,7 @@ export function render() {
   if (document.body.dataset.page === 'home') home();
   else if (document.body.dataset.page !== '404') route().catch(fail);
   else if (document.body.dataset.page === '404') {
-    document.title = `${t('notFound')} | BETA.CAR`;
+    document.title = `${t('notFound')} | KONTAK`;
     $('#main').innerHTML =
       `<section class="wrap missing"><span class="error-code">404</span><h1>` +
       `${esc(t('notFound'))}` +

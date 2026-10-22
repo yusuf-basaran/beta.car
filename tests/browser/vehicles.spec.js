@@ -7,12 +7,12 @@ async function catalogue(page) {
       markalar: [
         [1, 'Toyota', 'otomobil'],
         [2, 'Toyota', 'suv'],
-        [3, 'Honda', 'motosiklet'],
+        [3, 'Honda', 'minivan'],
       ],
       modeller: [
         [1, 1, 'Passo', 2004, 2023],
         [2, 2, 'RAV4', 1994, 2027],
-        [3, 3, 'PCX', 2010, 2027],
+        [3, 3, 'Odyssey', 1994, 2027],
       ],
     };
     f.tables.kategoriler.push(
@@ -51,12 +51,17 @@ async function catalogue(page) {
         arac_tipi: 'motosiklet',
       },
     );
+    f.tables.kategoriler.push(
+      { id: 5, ust_id: 1, slug: 'kullanilmis-aile', ad: 'Aile & Van', arac_tipi: 'minivan' },
+      { id: 10, ust_id: null, slug: 'sifir', ad: 'Sıfır Araçlar' },
+      { id: 11, ust_id: 10, slug: 'sifir-suv', ad: 'SUV & Çift Kabin', arac_tipi: 'suv' },
+    );
     f.tables.donanimlar.push({
       id: 999,
       grup: 'Güvenlik',
-      ad: 'Motosiklet ABS',
-      ad_en: 'Motorcycle ABS',
-      arac_tipi: ['motosiklet'],
+      ad: 'Van Sürüş Desteği',
+      ad_en: 'Van Driving Assistance',
+      arac_tipi: ['minivan'],
     });
   });
 }
@@ -84,11 +89,11 @@ test('Kategori marka, model, yıl ve donanımı birlikte değiştirir', async ({
   await expect(page.locator('#models option[value=RAV4]')).toHaveCount(1);
   await expect(page.locator('#models option[value=Passo]')).toHaveCount(0);
   await page.locator('#step-prev').click();
-  await page.locator('[name=kategori_id]').selectOption('4');
+  await page.locator('[name=kategori_id]').selectOption('5');
   await page.locator('#step-next').click();
   await expect(page.locator('#makes option[value=Toyota]')).toHaveCount(0);
   await page.locator('[name=marka]').fill('Honda');
-  await page.locator('[name=model]').fill('PCX');
+  await page.locator('[name=model]').fill('Odyssey');
   await page.locator('[name=yil]').selectOption('2024');
   await page.locator('#step-next').click();
   await expect(page.locator('[name=donanim][value="999"]')).toBeVisible();
@@ -141,22 +146,28 @@ test('Serbest metin seçili model gibi gönderilmez ve Diğer alanları temizlen
   await expect(page.locator('[name=diger_model]')).toHaveValue('');
 });
 
-test('Ana sayfa sekmesi ve arama kategorisi uygun araç türlerini sınırlar', async ({ page }) => {
+test('Yalnız araç kategorileri görünür ve sekme seçimi bağlı listeleri sınırlar', async ({
+  page,
+}) => {
   await catalogue(page);
   await page.goto('/');
-  await page.locator('[name=tip]').selectOption('suv');
+  await expect(page.getByRole('tab', { name: 'Parça & Donanım' })).toHaveCount(0);
+  await expect(page.locator('[name=tip] option[value=motosiklet]')).toHaveCount(0);
+  await page.locator('[name=tip]').selectOption('otomobil');
   await page.locator('[name=marka]').fill('Toyota');
-  await page.locator('[name=model]').fill('RAV4');
-  await page.getByRole('tab', { name: 'Parça & Donanım' }).click();
-  await expect(page.locator('[name=tip] option[value=suv]')).toHaveCount(0);
+  await page.locator('[name=model]').fill('Passo');
+  await page.getByRole('tab', { name: 'Sıfır', exact: true }).click();
+  await expect(page.locator('[name=tip] option[value=otomobil]')).toHaveCount(0);
   await expect(page.locator('[name=marka]')).toHaveValue('');
   await expect(page.locator('[name=model]')).toHaveValue('');
-  await page.goto('/ilanlar.html?kategori=kullanilmis-motor');
-  await expect(page.locator('[name=tip]')).toHaveValue('motosiklet');
+  await page.goto('/ilanlar.html?kategori=kullanilmis-aile');
+  await expect(page.locator('[name=kategori] option[value=kullanilmis-motor]')).toHaveCount(0);
+  await expect(page.locator('[name=kategori] option[value^=parca]')).toHaveCount(0);
+  await expect(page.locator('[name=tip]')).toHaveValue('minivan');
   await expect(page.locator('[name=tip]')).toBeDisabled();
   await expect(page.locator('#makes option[value=Toyota]')).toHaveCount(0);
   await page.locator('[name=marka]').fill('Honda');
-  await expect(page.locator('#models option[value=PCX]')).toHaveCount(1);
+  await expect(page.locator('#models option[value=Odyssey]')).toHaveCount(1);
   await expect(page.locator('[name=donanim][value="999"]')).toHaveCount(1);
   await expect(page.locator('[name=donanim][value="1"]')).toHaveCount(0);
 });

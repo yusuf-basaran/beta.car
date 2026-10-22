@@ -14,7 +14,7 @@ const mail = {
   enabled: true,
   url: 'https://mail.example.invalid/send',
   key: 'test-mail-key',
-  from: 'BETA.CAR <site@example.invalid>',
+  from: 'KONTAK <site@example.invalid>',
   fetch: async (url, options) => {
     sent.push(JSON.parse(options.body));
     return new Response('{}', { status: 200 });

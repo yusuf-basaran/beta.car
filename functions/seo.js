@@ -12,7 +12,7 @@ const summary = (s) =>
   String(s || '')
     .replace(/\s+/g, ' ')
     .trim()
-    .slice(0, 170);
+    .slice(0, 160);
 const slug = (s) =>
   String(s || '')
     .normalize('NFKD')
@@ -27,7 +27,11 @@ const url = (path, lang = 'tr') => {
   if (lang === 'en') u.searchParams.set('lang', 'en');
   return u.href;
 };
-const link = (href, text) => '<a href="' + esc(href) + '">' + esc(text) + '</a>';
+const relative = (href) => {
+  const u = new URL(href, origin);
+  return u.origin === origin ? u.pathname + u.search + u.hash : u.href;
+};
+const link = (href, text) => '<a href="' + esc(relative(href)) + '">' + esc(text) + '</a>';
 const paragraphs = (s) =>
   String(s || '')
     .split(/\n\s*\n/)
@@ -71,9 +75,8 @@ const structured = (id, data) =>
 export function renderSeo(template, page, layout) {
   const category = new URL(page.path, origin).searchParams.get('kategori') || page.path.slice(1),
     active =
-      ['kullanilmis', 'sifir', 'parca'].find(
-        (k) => category === k || category.startsWith(k + '-'),
-      ) || 'kullanilmis';
+      ['kullanilmis', 'sifir'].find((k) => category === k || category.startsWith(k + '-')) ||
+      'kullanilmis';
   if (layout)
     template = template
       .replace(
@@ -94,7 +97,7 @@ export function renderSeo(template, page, layout) {
     '" content="' +
     esc(content) +
     '">';
-  const title = page.title.includes('BETA.CAR') ? page.title : page.title + ' | BETA.CAR';
+  const title = page.title.includes('KONTAK') ? page.title : page.title + ' | KONTAK';
   const desc = summary(page.description),
     photo = image(page.image);
   const head =
@@ -108,7 +111,7 @@ export function renderSeo(template, page, layout) {
       ['og:description', desc],
       ['og:type', page.type || 'website'],
       ['og:url', canonical],
-      ['og:site_name', 'BETA.CAR'],
+      ['og:site_name', 'KONTAK'],
       ['og:locale', en ? 'en_GB' : 'tr_TR'],
       ['og:image', photo],
       ...(photo === origin + '/og-image.png'
@@ -143,16 +146,16 @@ export function renderSeo(template, page, layout) {
         {
           '@type': 'WebSite',
           '@id': origin + '/#site',
-          name: 'BETA.CAR',
+          name: 'KONTAK',
           url: origin + '/',
           inLanguage: ['tr', 'en'],
         },
         {
           '@type': 'Organization',
           '@id': origin + '/#organization',
-          name: 'BETA.CAR',
+          name: 'KONTAK',
           url: origin + '/',
-          logo: origin + '/logo.png',
+          logo: origin + '/assets/logo.webp',
         },
         {
           '@type': 'BreadcrumbList',
@@ -178,6 +181,7 @@ export function renderSeo(template, page, layout) {
       /<title>[\s\S]*?<\/title>|<meta\s+(?:name="(?:description|robots|twitter:[^"]+)"|property="og:[^"]+")[\s\S]*?\/?\s*>|<link\s+rel="(?:canonical|alternate)"[^>]*>/g,
       '',
     )
+    .replace(/<script type="application\/ld\+json" id="seo-schema">[\s\S]*?<\/script>/g, '')
     .replace('</head>', head + '</head>')
     .replace(
       /<noscript>[\s\S]*?<\/noscript>/,
@@ -189,12 +193,12 @@ export function renderSeo(template, page, layout) {
     )
     .replace(
       /<main id="main"[^>]*>[\s\S]*?<\/main>/,
-      '<main id="main" tabindex="-1"><section class="wrap page server-page" data-server-page><div class="server-heading"><div><p class="eyebrow">Luxury &amp; Prestige Gallery</p><h1>' +
-        esc(page.title.replace(/\s*\|\s*BETA\.CAR$/i, '')) +
+      '<main id="main" tabindex="-1"><section class="wrap page server-page" data-server-page><div class="server-heading"><div><p class="eyebrow">KKTC\'nin araç ilan sitesi</p><h1>' +
+        esc((page.heading || page.title).replace(/\s*\|\s*KONTAK$/i, '')) +
         '</h1><p class="server-description">' +
         esc(desc) +
         '</p></div><a class="btn secondary" href="' +
-        esc(url(page.path === '/' ? '/ilanlar.html' : '/', page.lang)) +
+        esc(relative(url(page.path === '/' ? '/ilanlar.html' : '/', page.lang))) +
         '">' +
         (page.path === '/'
           ? en
@@ -263,7 +267,15 @@ export function createSeo(
   let sitemap, layout;
   const render = async (file, page) => {
     layout ||= template('layout.json').then(JSON.parse);
-    return renderSeo(await template(file), page, (await layout)[page.lang]);
+    const frame = (await layout)[page.lang];
+    if (file === 'sayfa.html') {
+      const slug = new URL(page.path, origin).searchParams.get('s') || 'hakkimizda';
+      if (frame.legal?.[slug]) {
+        page.heading = page.title;
+        Object.assign(page, frame.legal[slug]);
+      }
+    }
+    return renderSeo(await template(file), page, frame);
   };
   const call = async (name, data = {}) => (await service.execute({ name, data })).data;
   const query = async (table, filters = [], more = {}) =>
@@ -288,11 +300,24 @@ export function createSeo(
     body: await render(file, {
       lang,
       path: '/404.html',
-      title: lang === 'en' ? 'Page not found' : 'Sayfa bulunamadı',
+      title:
+        file === 'ilan.html'
+          ? lang === 'en'
+            ? 'This listing is no longer available'
+            : 'İlan yayında değil'
+          : lang === 'en'
+            ? 'Page not found'
+            : 'Sayfa bulunamadı',
       description:
-        lang === 'en' ? 'Return to BETA.CAR vehicle listings.' : 'BETA.CAR araç ilanlarına dönün.',
+        lang === 'en' ? 'Return to KONTAK vehicle listings.' : 'KONTAK araç ilanlarına dönün.',
       noindex: true,
-      content: link(url('/', lang), lang === 'en' ? 'Home' : 'Ana Sayfa'),
+      content:
+        file === 'ilan.html'
+          ? '<h2>' +
+            (lang === 'en' ? 'Similar listings' : 'Benzer ilanlar') +
+            '</h2>' +
+            cards((await call('ilan_ara')).ilanlar.slice(0, 3), lang)
+          : link(url('/', lang), lang === 'en' ? 'Home' : 'Ana Sayfa'),
     }),
   });
   async function sitemapEntries() {
@@ -303,16 +328,37 @@ export function createSeo(
           .select(...fields)
           .get()
       ).docs.map((d) => ({ ...d.data(), id: d.id }));
-    const [listings, firms, posts, pages] = await Promise.all([
-      select('ilanlar', ['baslik', 'durum', 'gizli', 'bitis', 'guncelleme', 'yayin', 'model_id']),
+    const [listings, firms, posts, pages, categories] = await Promise.all([
+      select('ilanlar', [
+        'baslik',
+        'durum',
+        'gizli',
+        'bitis',
+        'guncelleme',
+        'yayin',
+        'model_id',
+        'marka_id',
+        'kategori_id',
+      ]),
       select('firmalar', ['guncelleme', 'olusturma']),
       select('yazilar', ['slug', 'aktif', 'yayin', 'guncelleme']),
       select('sayfalar', ['slug', 'guncelleme']),
+      select('kategoriler', ['slug']),
     ]);
     const rows = Object.keys(config.pages)
       .filter((p) => p !== '/karsilastir.html')
-      .map((path) => ({ path }));
-    for (const r of listings.filter(published))
+      .map((path) => ({ path, modified: config.modified }));
+    const visibleCategories = categories.filter((c) =>
+      /^(kullanilmis|sifir)(-(binek|suv|aile|yuk|nostalji))?$/.test(c.slug),
+    );
+    const currentListings = listings.filter(
+      (r) =>
+        published(r) &&
+        (!r.kategori_id || visibleCategories.some((c) => c.id === String(r.kategori_id))),
+    );
+    for (const c of visibleCategories.filter((c) => c.slug.includes('-')))
+      rows.push({ path: '/ilanlar.html?kategori=' + c.slug, modified: config.modified });
+    for (const r of currentListings)
       rows.push({ path: listingPath(r), modified: r.guncelleme || r.yayin });
     for (const r of firms)
       rows.push({
@@ -326,13 +372,10 @@ export function createSeo(
       });
     for (const r of pages)
       rows.push({ path: '/sayfa.html?s=' + encodeURIComponent(r.slug), modified: r.guncelleme });
-    for (const id of new Set(
-      listings
-        .filter(published)
-        .map((r) => r.model_id)
-        .filter(Boolean),
-    ))
+    for (const id of new Set(currentListings.map((r) => r.model_id).filter(Boolean)))
       rows.push({ path: '/model.html?model=' + encodeURIComponent(id) });
+    for (const id of new Set(currentListings.map((r) => r.marka_id).filter(Boolean)))
+      rows.push({ path: '/ilanlar.html?marka=' + encodeURIComponent(id) });
     return rows.flatMap((r) => [
       { ...r, lang: 'tr' },
       { ...r, lang: 'en' },
@@ -357,7 +400,7 @@ export function createSeo(
       return body ? { status: 200, body, type: 'application/xml' } : missing(lang);
     }
     const path = u.pathname === '/index.html' ? '/' : u.pathname;
-    const category = { '/kullanilmis': 'kullanilmis', '/sifir': 'sifir', '/parca': 'parca' }[path];
+    const category = { '/kullanilmis': 'kullanilmis', '/sifir': 'sifir' }[path];
     const base = config.pages[path];
     const page = {
       path,
@@ -368,7 +411,7 @@ export function createSeo(
       schemas: [],
     };
     let file = path === '/' ? 'index.html' : category ? 'ilanlar.html' : path.slice(1);
-    if (['/', '/ilanlar.html', '/kullanilmis', '/sifir', '/parca', '/model.html'].includes(path)) {
+    if (['/', '/ilanlar.html', '/kullanilmis', '/sifir', '/model.html'].includes(path)) {
       if (path === '/model.html' && u.searchParams.has('model')) {
         if (!/^\d{1,10}$/.test(u.searchParams.get('model'))) return missing(lang);
         const model = (
@@ -381,13 +424,40 @@ export function createSeo(
           (make?.ad || '') + ' ' + model.ad + ' · ' + (en ? 'Model Prices' : 'Model Fiyatları');
         page.description =
           page.title +
-          (en
-            ? ' in North Cyprus. Current BETA.CAR listings.'
-            : ' · KKTC güncel BETA.CAR ilanları.');
+          (en ? ' in North Cyprus. Current KONTAK listings.' : ' · KKTC güncel KONTAK ilanları.');
+      }
+      if (path === '/ilanlar.html') {
+        const makeId = Number(u.searchParams.get('marka')),
+          modelId = Number(u.searchParams.get('model'));
+        const make = makeId ? (await query('markalar', [['id', 'eq', makeId]]))[0] : null;
+        const model = modelId ? (await query('modeller', [['id', 'eq', modelId]]))[0] : null;
+        const chosen = [make?.ad, model?.ad, u.searchParams.get('sehir')].filter(Boolean).join(' ');
+        if (chosen) {
+          page.title = en ? chosen + ' Cars for Sale' : 'Satılık ' + chosen + ' İlanları';
+          page.description = en
+            ? 'Browse ' +
+              chosen +
+              ' cars for sale in North Cyprus. Compare price, mileage, equipment, body condition and seller details on KONTAK.'
+            : chosen +
+              ' satılık araç ilanlarını KONTAK’ta inceleyin. Fiyat, yıl, kilometre, yakıt, vites ve kaporta bilgilerini karşılaştırın; satıcıyla iletişime geçin.';
+        }
+        if (
+          makeId &&
+          !modelId &&
+          [...u.searchParams.keys()].every((k) => ['marka', 'lang'].includes(k))
+        )
+          page.path += '?marka=' + makeId;
       }
       const found = await call('ilan_ara', {
         p: {
-          ...(category ? { kategori: category } : {}),
+          ...(category || u.searchParams.get('kategori')
+            ? { kategori: category || u.searchParams.get('kategori') }
+            : {}),
+          ...Object.fromEntries(
+            ['marka', 'model', 'sehir']
+              .filter((k) => u.searchParams.has(k))
+              .map((k) => [k, u.searchParams.get(k)]),
+          ),
           ...(path === '/model.html' && u.searchParams.has('model')
             ? { model: u.searchParams.get('model') }
             : {}),
@@ -416,9 +486,13 @@ export function createSeo(
       }
       if (
         path === '/ilanlar.html' &&
-        ['kullanilmis', 'sifir', 'parca'].includes(u.searchParams.get('kategori'))
+        /^(kullanilmis|sifir)(-(binek|suv|aile|yuk|nostalji))?$/.test(
+          u.searchParams.get('kategori') || '',
+        )
       )
-        page.path = '/' + u.searchParams.get('kategori');
+        page.path = ['kullanilmis', 'sifir'].includes(u.searchParams.get('kategori'))
+          ? '/' + u.searchParams.get('kategori')
+          : '/ilanlar.html?kategori=' + encodeURIComponent(u.searchParams.get('kategori'));
     } else if (path === '/ilan.html') {
       const no = u.searchParams.get('no'),
         id = no ? null : u.searchParams.get('id');
@@ -438,14 +512,21 @@ export function createSeo(
         );
       }
       page.path = listingPath(r);
-      page.title = r.baslik;
+      page.title =
+        [r.yil, r.marka || r.diger_marka, r.model || r.diger_model, r.detay?.paket]
+          .filter(Boolean)
+          .join(' ') +
+        ' - ' +
+        money(r, lang);
       page.description = [
         r.marka || r.diger_marka,
         r.model || r.diger_model,
         r.yil,
         r.km != null ? r.km + ' km' : '',
-        money(r, lang),
+        r.yakit,
+        r.vites,
         r.sehir,
+        money(r, lang),
       ]
         .filter(Boolean)
         .join(' · ');
@@ -455,10 +536,14 @@ export function createSeo(
         '@type': 'Vehicle',
         name: r.baslik,
         url: url(page.path, lang),
-        brand: r.marka || r.diger_marka,
-        model: r.model || r.diger_model,
-        vehicleModelDate: String(r.yil || ''),
-        image: (r.fotograflar || []).map(image),
+        ...(r.marka || r.diger_marka ? { brand: r.marka || r.diger_marka } : {}),
+        ...(r.model || r.diger_model ? { model: r.model || r.diger_model } : {}),
+        ...(r.yil ? { vehicleModelDate: String(r.yil) } : {}),
+        ...(r.yakit ? { fuelType: r.yakit } : {}),
+        ...(r.vites ? { vehicleTransmission: r.vites } : {}),
+        ...(r.detay?.kasa ? { bodyType: r.detay.kasa } : {}),
+        ...(r.detay?.renk ? { color: r.detay.renk } : {}),
+        ...((r.fotograflar || []).length ? { image: r.fotograflar.map(image) } : {}),
         ...(r.km != null
           ? { mileageFromOdometer: { '@type': 'QuantitativeValue', value: r.km, unitCode: 'KMT' } }
           : {}),
@@ -466,6 +551,7 @@ export function createSeo(
           ? {
               offers: {
                 '@type': 'Offer',
+                areaServed: 'KKTC',
                 price: r.fiyat,
                 priceCurrency: r.para_birimi === 'TL' ? 'TRY' : r.para_birimi,
                 availability:
@@ -481,9 +567,9 @@ export function createSeo(
       const r = (await query('firmalar', [['id', 'eq', id]]))[0];
       if (!r) return missing(lang);
       page.path += '?id=' + encodeURIComponent(r.id);
-      page.title = r.ad;
+      page.title = r.ad + (en ? ' - Cars for Sale' : ' - Satılık Araçlar');
       page.description =
-        summary(r.hakkinda) || [r.ad, r.sehir, 'BETA.CAR'].filter(Boolean).join(' · ');
+        summary(r.hakkinda) || [r.ad, r.sehir, 'KONTAK'].filter(Boolean).join(' · ');
       page.image = r.kapak || r.logo;
       page.content =
         paragraphs(r.hakkinda) +
@@ -579,7 +665,7 @@ export function createSeo(
         '/yazilar.html': ['s'],
         '/sayfa.html': ['s'],
         '/model.html': ['model'],
-        '/ilanlar.html': ['kategori'],
+        '/ilanlar.html': ['kategori', 'marka'],
       }[path] || [];
     page.noindex ||= [...u.searchParams.keys()].some(
       (k) => k !== 'lang' && !allowed.includes(k) && !/^utm_|^gclid$|^fbclid$/.test(k),

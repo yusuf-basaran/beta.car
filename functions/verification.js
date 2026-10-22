@@ -71,10 +71,10 @@ export async function verification(db, auth, c, name, p, mail = {}) {
         body: JSON.stringify({
           from: mail.from,
           to: [email],
-          subject: en ? 'BETA.CAR · Email verification code' : 'BETA.CAR · E-posta doğrulama kodu',
+          subject: en ? 'KONTAK · Email verification code' : 'KONTAK · E-posta doğrulama kodu',
           text: en
-            ? `Your BETA.CAR verification code: ${code}\n\nEnter this code on the BETA.CAR website within 10 minutes. Do not share it. If you did not request this code, ignore this email.`
-            : `BETA.CAR doğrulama kodunuz: ${code}\n\nBu kodu 10 dakika içinde BETA.CAR sitesine yazın. Kodu kimseyle paylaşmayın. Bu kodu siz istemediyseniz e-postayı dikkate almayın.`,
+            ? `Your KONTAK verification code: ${code}\n\nEnter this code on the KONTAK website within 10 minutes. Do not share it. If you did not request this code, ignore this email.`
+            : `KONTAK doğrulama kodunuz: ${code}\n\nBu kodu 10 dakika içinde KONTAK sitesine yazın. Kodu kimseyle paylaşmayın. Bu kodu siz istemediyseniz e-postayı dikkate almayın.`,
         }),
         signal: AbortSignal.timeout(10000),
       });

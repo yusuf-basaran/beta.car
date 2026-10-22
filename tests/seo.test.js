@@ -148,7 +148,7 @@ test('İngilizce yazı kendi canonical ve Article verisini sunar', async () => {
   const page = await seo('/yazilar.html?s=bakim-kaydi&lang=en');
   assert.equal(page.status, 200);
   assert.match(page.body, /<html lang="en"/);
-  assert.match(page.body, /<title>Service history \| BETA.CAR<\/title>/);
+  assert.match(page.body, /<title>Service history \| KONTAK<\/title>/);
   assert.match(page.body, /Check records with the vehicle/);
   assert.equal(canonical(page.body), origin + '/yazilar.html?s=bakim-kaydi&amp;lang=en');
   assert.match(page.body, /"@type":"Article"/);
@@ -196,4 +196,28 @@ test('Sitemap yalnız açık kayıtları, dil eşlerini ve gerçek güncelleme t
   const entries = [1, 2, 3].map((n) => ({ path: '/ilan.html?id=' + n }));
   assert.match(sitemapXml(entries, 0, 2), /sitemapindex/);
   assert.equal((sitemapXml(entries, 2, 2).match(/<url>/g) || []).length, 1);
+});
+
+test('KONTAK başlıkları, göreli gezinme ve tek kurum şeması sunulur', async () => {
+  const home = await seo('/');
+  assert.match(home.body, /<title>KONTAK \| KKTC Satılık Araç İlanları<\/title>/);
+  assert.doesNotMatch(
+    home.body,
+    /href="https:\/\/kon-tak.vercel.app\/(?:ilanlar|yazilar|firma)\.html/,
+  );
+  const schemas = [...home.body.matchAll(/id="seo-schema">([\s\S]*?)<\/script>/g)];
+  assert.equal(schemas.length, 1);
+  const graph = JSON.parse(schemas[0][1])['@graph'];
+  assert.equal(graph.find((r) => r['@type'] === 'Organization').name, 'KONTAK');
+  assert.equal(graph.find((r) => r['@type'] === 'Organization').logo, origin + '/assets/logo.webp');
+  const listing = await seo('/ilan.html?id=' + id);
+  const vehicle = JSON.parse(/id="vehicle-schema">([\s\S]*?)<\/script>/.exec(listing.body)[1]);
+  assert.equal(vehicle.offers.areaServed, 'KKTC');
+  assert.ok(!('fuelType' in vehicle) && !('bodyType' in vehicle));
+  const filtered = await seo('/ilanlar.html?marka=1&model=1&sehir=Girne&sira=fiyat_artan');
+  assert.match(filtered.body, /<title>Satılık Kıyı Seri Girne İlanları \| KONTAK<\/title>/);
+  assert.equal(canonical(filtered.body), origin + '/ilanlar.html');
+  const removed = await seo('/ilan.html?id=' + rows.ilanlar[2].id);
+  assert.match(removed.body, /İlan yayında değil/);
+  assert.match(removed.body, /Benzer ilanlar/);
 });

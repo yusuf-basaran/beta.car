@@ -51,11 +51,7 @@ export const seo = onRequest(async (req, res) => {
       .send(page.body);
   } catch (error) {
     console.error('Sayfa sunulamadı', error.code || error.message);
-    res
-      .set('Cache-Control', 'no-store')
-      .set('X-Robots-Tag', 'noindex')
-      .status(503)
-      .send('BETA.CAR');
+    res.set('Cache-Control', 'no-store').set('X-Robots-Tag', 'noindex').status(503).send('KONTAK');
   }
 });
 export const api = onRequest(

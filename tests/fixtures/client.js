@@ -209,8 +209,8 @@ export async function createClient() {
       from() {
         return {
           upload: async () => ({ data: { path: 'test.jpg' } }),
-          getPublicUrl: () => ({ data: { publicUrl: '/logo.png' } }),
-          createSignedUrl: async () => ({ data: { signedUrl: '/logo.png' } }),
+          getPublicUrl: () => ({ data: { publicUrl: '/assets/logo.webp' } }),
+          createSignedUrl: async () => ({ data: { signedUrl: '/assets/logo.webp' } }),
         };
       },
     },

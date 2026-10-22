@@ -162,8 +162,8 @@ export async function emailQueue(db, auth, config) {
         body: JSON.stringify({
           from: config.from,
           to: [user.email],
-          subject: 'BETA.CAR · Hesap bildirimi',
-          text: 'Hesabınızda yeni bildirim var. Ayrıntıları Hesabım > Bildirimler ekranından inceleyin.\n\nBETA.CAR hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.',
+          subject: 'KONTAK · Hesap bildirimi',
+          text: 'Hesabınızda yeni bildirim var. Ayrıntıları Hesabım > Bildirimler ekranından inceleyin.\n\nKONTAK hiçbir zaman mesajla IBAN istemez; paket ödeme bilgisi yalnızca Hesabım > Paketlerim ekranında görünür.',
         }),
         signal: AbortSignal.timeout(10000),
       });

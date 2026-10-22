@@ -16,7 +16,7 @@ export async function resizePhoto(file, watermark = false) {
   image.close();
   if (watermark) {
     const logo = new Image();
-    logo.src = 'logo.png';
+    logo.src = 'assets/logo.webp';
     await logo.decode();
     const w = Math.min(260, canvas.width * 0.23),
       h = (w * logo.height) / logo.width;
@@ -146,7 +146,7 @@ export function qrSvg(text) {
     up = !up;
   }
   return (
-    `<svg class="qr" viewBox="0 0 57 57" role="img" aria-label="QR"><path fill="white" d="M0 0h57v57H0z"/><path fill="black" d="` +
+    `<svg class="qr" viewBox="0 0 57 57" role="img" aria-label="QR"><path fill="var(--surface)" d="M0 0h57v57H0z"/><path fill="var(--navy)" d="` +
     `${esc(m.flatMap((row, y) => row.map((v, x) => (v ? `M${esc(x + 4)} ${esc(y + 4)}h1v1h-1z` : ''))).join(''))}` +
     `"/></svg>`
   );

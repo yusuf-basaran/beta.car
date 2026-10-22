@@ -38,7 +38,7 @@ Teknik kurulum ve kabul kontrolleri bu belgedeki ilgili başlıklarda tamamlanı
 - [ ] Hosting `.build` çıktısını sunuyor; Functions API yolları aynı alan adında çalışıyor.
 - [ ] Kaynak bağlantı alanları boş. Statik çıktıda yalnız public web config var; sunucu, SQL, seed, kimlik ve belge dosyaları yok.
 - [ ] Gerçek alan adı Firebase Hosting'e bağlandı, DNS sahipliği ve HTTPS sertifikası doğrulandı.
-- [ ] `/kullanilmis`, `/sifir`, `/parca` filtreli listeyi açıyor; bilinmeyen yol 404 durum koduyla 404 sayfasını sunuyor.
+- [ ] `/kullanilmis`, `/sifir` filtreli listeyi açıyor; bilinmeyen yol 404 durum koduyla 404 sayfasını sunuyor.
 - [ ] CSP, HSTS, Referrer-Policy, Permissions-Policy ve X-Content-Type-Options canlı yanıtta mevcut; Firebase ve harita istekleri çalışıyor.
 - [ ] Mobil ekran, klavye odağı, alan doğrulaması ve görseller kontrol edildi.
 - [ ] Üretim test edilmiş commit'ten yayımlandı; GitHub CI ve yayın erişimleri yalnız gerekli kişilerde.
@@ -49,7 +49,7 @@ Teknik kurulum ve kabul kontrolleri bu belgedeki ilgili başlıklarda tamamlanı
 - [ ] Sayfa title, description ve sosyal paylaşım görselleri kontrol edildi. İlan JSON-LD verisi güncel başlık ve fiyatla uyumlu.
 - [ ] Hesap, mesaj, giriş, ilan düzenleme, telefon fotoğraf oturumu ve admin sayfaları noindex; özel paket talebi sayfası hesaba bağlı.
 - [ ] Sitemap yalnız açık sayfaları içeriyor; ilan/model sayfalarının dinamik sitemap ihtiyacı kayıt sayısına göre değerlendirildi.
-- [ ] Manifest adı, başlangıç adresi, renkleri ve ikon URL'leri kontrol edildi. `logo.png` geniş kaynak logodur; ana ekrana ekleme için kare 192×192 ve 512×512 ikon sürümleri hazırlanıp manifestte tanımlandı ve cihazda denendi.
+- [ ] Manifest adı, başlangıç adresi, renkleri ve ikon URL'leri kontrol edildi. `assets/logo.webp` geniş kaynak logodur; ana ekrana ekleme için kare 192×192 ve 512×512 ikon sürümleri hazırlanıp manifestte tanımlandı ve cihazda denendi.
 - [ ] Search Console alan adı doğrulandı ve sitemap gönderildi; özel sayfaların indekslenmediği kontrol edildi.
 
 ## İşletim ve kabul

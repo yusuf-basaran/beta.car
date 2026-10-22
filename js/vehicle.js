@@ -1,5 +1,14 @@
 import { bodyName, groupName, locale, t } from './i18n.js';
-import { bodyLabels, bodyStates, groups, partsDef, popular, types } from './data.js';
+import {
+  bodyLabels,
+  bodyStates,
+  groups,
+  partsDef,
+  popular,
+  types,
+  catKeys,
+  slugs,
+} from './data.js';
 import { $, $$, box } from './ui.js';
 import { esc, key } from './utils.js';
 import { state } from './state.js';
@@ -33,11 +42,15 @@ export function vehicleForm() {
 }
 
 export function categorySelect(name, value = '', any = true) {
-  const title = (c) => (state.lang === 'en' && c?.ad_en ? c.ad_en : c?.ad || '');
+  const visible = (c) => /^(kullanilmis|sifir)(-(binek|suv|aile|yuk|nostalji))?$/.test(c.slug);
+  const title = (c) => {
+    const i = slugs.indexOf(c.slug.split('-')[1]);
+    return i >= 0 ? t(catKeys[i]) : state.lang === 'en' && c?.ad_en ? c.ad_en : c?.ad || '';
+  };
   return `<select name="${esc(name)}">${any ? `<option value="">${esc(t('any'))}</option>` : ''}${state.cats
-    .filter((c) => !c.ust_id)
+    .filter((c) => !c.ust_id && visible(c))
     .map((root) => {
-      const rows = state.cats.filter((c) => c.slug.startsWith(root.slug + '-'));
+      const rows = state.cats.filter((c) => visible(c) && c.slug.startsWith(root.slug + '-'));
       return `<optgroup label="${esc(title(root))}">${(any ? [root, ...rows] : rows)
         .map((c) => {
           const v = name === 'kategori_id' ? c.id : c.slug,
@@ -180,10 +193,10 @@ export function bodySvg(data = {}, edit = false) {
   return (
     `<svg class="body-svg" viewBox="0 0 240 390" role="group" aria-label="` +
     `${esc(t('bodyBox'))}` +
-    `"><defs><pattern id="damage-pattern" width="7" height="7" patternUnits="userSpaceOnUse"><path fill="#70232a" d="M0 0h7v7H0z"/>` +
-    `<path stroke="#e8949b" d="M-1 1l7 7M3-3l7 7"/></pattern></defs>` +
-    `<path fill="#111820" stroke="#46546a" d="M70 18Q120 0 170 18L206 63V325L173 365Q120 388 67 365L34 325V63Z"/>` +
-    `<path fill="#22314b" stroke="#526079" d="M77 124Q120 110 163 124L159 149Q120 139 81 149ZM81 248Q120 260 159 248L163 273Q120 286 77 273Z"/>` +
+    `"><defs><pattern id="damage-pattern" width="7" height="7" patternUnits="userSpaceOnUse"><path class="damage-base" d="M0 0h7v7H0z"/>` +
+    `<path class="damage-stripe" d="M-1 1l7 7M3-3l7 7"/></pattern></defs>` +
+    `<path class="body-frame" d="M70 18Q120 0 170 18L206 63V325L173 365Q120 388 67 365L34 325V63Z"/>` +
+    `<path class="body-glass" d="M77 124Q120 110 163 124L159 149Q120 139 81 149ZM81 248Q120 260 159 248L163 273Q120 286 77 273Z"/>` +
     `${partsDef
       .map(
         ([id, tr, en, d]) =>

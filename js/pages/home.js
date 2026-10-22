@@ -20,13 +20,13 @@ import { rpc } from '../api.js';
 
 export const drawing = () =>
   `<svg class="hero-car" viewBox="0 0 840 300" fill="none" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M100 286H770" stroke="var(--line)"/>
+    <path d="M100 286H770" stroke="var(--border)"/>
     ${[232, 650]
       .map(
         (x) => `<g transform="translate(${x} 232)">
-      <circle r="49" fill="var(--bg)" stroke="var(--line)" stroke-width="2"/>
+      <circle r="49" fill="var(--bg)" stroke="var(--border)" stroke-width="2"/>
       <circle r="38" stroke="var(--muted)" stroke-width="3"/>
-      <circle r="29" fill="var(--surface)" stroke="var(--line)"/>
+      <circle r="29" fill="var(--surface)" stroke="var(--border)"/>
       <path d="M20-18Q32-8 28 11" stroke="currentColor" stroke-width="5"/>
       ${[0, 72, 144, 216, 288].map((a) => `<path d="M-5-8-8-33 1-36 7-9 19 24 11 31 0 9Z" fill="var(--muted)" transform="rotate(${a})"/>`).join('')}
       <circle r="9" fill="var(--bg)" stroke="var(--text)" stroke-width="2"/>
@@ -41,14 +41,14 @@ export const drawing = () =>
     <path d="M318 88Q342 76 375 76M388 76H454Q479 76 498 86" stroke="currentColor" stroke-width="2"/>
     <path d="M516 130 537 124Q548 124 551 135L529 141Z" fill="var(--muted)"/>
     <path d="M90 177 154 161 227 151H558Q585 151 607 143L730 161" stroke="currentColor" stroke-width="1.7"/>
-    <path d="M296 146 286 188 293 221H548Q563 220 566 205L570 157M493 143 508 215" stroke="var(--line)" stroke-width="1.5"/>
+    <path d="M296 146 286 188 293 221H548Q563 220 566 205L570 157M493 143 508 215" stroke="var(--border)" stroke-width="1.5"/>
     <path d="M309 159H333" stroke="var(--muted)" stroke-width="3"/>
     <path d="M301 229H575" stroke="var(--muted)" stroke-width="2"/>
-    <path d="M110 190 155 181M111 199 151 190M610 159 641 153" stroke="var(--line)" stroke-width="2"/>
+    <path d="M110 190 155 181M111 199 151 190M610 159 641 153" stroke="var(--border)" stroke-width="2"/>
     <path d="M716 169 759 179 773 193 733 184Z" fill="var(--text)"/>
     <path d="M732 188 774 198" stroke="currentColor" stroke-width="2"/>
-    <path d="M752 209 781 205 775 222 740 227Z" fill="var(--bg)" stroke="var(--line)"/>
-    <path d="M78 177 112 171 107 183 73 190" stroke="var(--red)" stroke-width="3"/>
+    <path d="M752 209 781 205 775 222 740 227Z" fill="var(--bg)" stroke="var(--border)"/>
+    <path d="M78 177 112 171 107 183 73 190" stroke="var(--danger)" stroke-width="3"/>
     <path d="M91 220 122 228H161M721 234 771 225" stroke="var(--muted)" stroke-width="2"/>
   </svg>`;
 
@@ -99,7 +99,6 @@ export function home() {
     `${[
       ['kullanilmis', 'usedCount'],
       ['sifir', 'newCount'],
-      ['parca', 'partCount'],
       ['firma', 'firmCount'],
     ]
       .map(
@@ -277,7 +276,7 @@ export function banner(place) {
   const b = state.banners.find((b) => b.yer === place);
   if (!b) return '';
   const image = b.resim
-    ? `<img src="${path(b.resim)}" alt="" width="500" height="160" loading="lazy">`
+    ? `<img src="${path(b.resim)}" alt="${esc(b.baslik || t('brand'))}" width="500" height="160" loading="lazy">`
     : '';
   return (
     `<aside class="banner">` +
