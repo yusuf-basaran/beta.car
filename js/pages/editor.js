@@ -20,7 +20,7 @@ import { bodyStates, cityList, partsDef } from '../data.js';
 import { qrSvg, resizePhoto } from '../media.js';
 
 export async function editorPage() {
-  meta(t('editorTitle'));
+  meta(t('seoEditorTitle'), t('seoEditorDescription'));
   $('#main').innerHTML = pageHead('editorTitle');
   if (!state.db || !state.user) {
     $('#main').insertAdjacentHTML('beforeend', loginPrompt());

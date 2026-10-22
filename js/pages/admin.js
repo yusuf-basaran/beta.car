@@ -7,7 +7,7 @@ import { esc, key } from '../utils.js';
 import { button, check, guard, inp, label, safeAction, select } from '../forms.js';
 
 export async function adminPage() {
-  meta(t('adminTitle'));
+  meta(t('seoAdminTitle'), t('seoAdminDescription'));
   $('#main').innerHTML = pageHead('adminTitle');
   if (!state.db || !state.user) {
     $('#main').insertAdjacentHTML('beforeend', loginPrompt());

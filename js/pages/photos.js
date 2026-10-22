@@ -8,7 +8,7 @@ import { button, check, guard } from '../forms.js';
 import { resizePhoto } from '../media.js';
 
 export async function photosPage() {
-  meta(t('photosTitle'));
+  meta(t('seoPhotosTitle'), t('seoPhotosDescription'));
   $('#main').innerHTML = pageHead('photosTitle');
   if (!state.db || !state.user) {
     $('#main').insertAdjacentHTML('beforeend', loginPrompt());

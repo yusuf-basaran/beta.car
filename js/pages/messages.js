@@ -7,7 +7,7 @@ import { esc } from '../utils.js';
 import { button, guard, reportForm, safeAction } from '../forms.js';
 
 export async function messagesPage() {
-  meta(t('messages'));
+  meta(t('seoMessagesTitle'), t('seoMessagesDescription'));
   $('#main').innerHTML = pageHead('messages');
   if (!state.db || !state.user) {
     $('#main').insertAdjacentHTML('beforeend', loginPrompt());

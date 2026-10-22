@@ -23,7 +23,7 @@ import { qrSvg } from '../media.js';
 import { mapContent } from './list.js';
 
 export async function firmsPage() {
-  meta(t('firms'));
+  meta(t('seoFirmsTitle'), t('seoFirmsDescription'));
   $('#main').innerHTML =
     pageHead(
       'firms',
@@ -93,7 +93,7 @@ export function companyOpen(hours) {
 }
 
 export async function firmPage() {
-  meta(t('firms'));
+  meta(t('seoFirmsTitle'), t('seoFirmsDescription'));
   $('#main').innerHTML = pageHead('firms');
   if (!state.db) {
     $('#main').insertAdjacentHTML('beforeend', empty());

@@ -9,7 +9,10 @@ import { state } from '../state.js';
 import { params } from '../context.js';
 
 export async function valuationPage(modelOnly) {
-  meta(t(modelOnly ? 'modelTitle' : 'valuationTitle'));
+  meta(
+    t(modelOnly ? 'seoModelTitle' : 'seoValuationTitle'),
+    t(modelOnly ? 'seoModelDescription' : 'seoValuationDescription'),
+  );
   $('#main').innerHTML =
     pageHead(modelOnly ? 'modelTitle' : 'valuationTitle') +
     (`<form id="valuation" class="panel">` +

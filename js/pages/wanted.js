@@ -8,7 +8,7 @@ import { state } from '../state.js';
 import { esc } from '../utils.js';
 
 export async function wantedPage() {
-  meta(t('wantedTitle'));
+  meta(t('seoWantedTitle'), t('seoWantedDescription'));
   $('#main').innerHTML =
     pageHead('wantedTitle') +
     box(

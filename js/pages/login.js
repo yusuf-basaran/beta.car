@@ -19,7 +19,7 @@ export function nextUrl() {
 }
 
 export async function loginPage() {
-  meta(t('signin'));
+  meta(t('seoLoginTitle'), t('seoLoginDescription'));
   let mode = params.get('mode') || 'signin';
   const pending = await state.db?.auth.pendingEmail?.();
   if (pending?.error) throw pending.error;

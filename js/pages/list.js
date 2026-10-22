@@ -97,9 +97,7 @@ export function mapContent(list) {
 }
 
 export async function listPage(id) {
-  meta(
-    t({ kullanilmis: 'used', sifir: 'new', parca: 'parts' }[params.get('kategori')] || 'listTitle'),
-  );
+  meta(t('seoListTitle'), t('seoListDescription'));
   const order = [
     ['yeni', 'latest'],
     ['fiyat_artan', 'priceAsc'],
@@ -217,12 +215,15 @@ export async function listPage(id) {
         ? state.lang === 'en'
           ? `${chosen} Cars for Sale`
           : `Satılık ${chosen} İlanları`
-        : t('listTitle'),
+        : t({ kullanilmis: 'seoUsedTitle', sifir: 'seoNewTitle' }[p.kategori] || 'seoListTitle'),
       chosen
         ? state.lang === 'en'
           ? `Browse ${chosen} cars for sale in North Cyprus. Compare prices, mileage, body condition and equipment on KONTAK.`
           : `${chosen} satılık araç ilanlarını KONTAK’ta inceleyin. Fiyat, yıl, kilometre, yakıt, vites ve kaporta bilgilerini karşılaştırın; satıcıyla iletişime geçin.`
-        : undefined,
+        : t(
+            { kullanilmis: 'seoUsedDescription', sifir: 'seoNewDescription' }[p.kategori] ||
+              'seoListDescription',
+          ),
     );
     const url = new URL(location.href);
     url.search = filterUrl(p);

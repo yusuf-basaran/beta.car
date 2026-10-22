@@ -111,6 +111,128 @@ export const D = {
     'Sık Sorulan Sorular: İlanlar, Üyelik ve Paketler | KONTAK',
     'Frequently Asked Questions: Listings and Accounts | KONTAK',
   ],
+  seoAccountTitle: [
+    'Hesabım: İlanlar, Favoriler ve Paketlerim | KONTAK',
+    'Account: Listings, Favourites and Packages | KONTAK',
+  ],
+  seoAccountDescription: [
+    'KONTAK hesabınızdaki ilanları, favorileri, kayıtlı aramaları ve paket haklarını yönetin. Bildirimlerinizi takip edin ve profil bilgilerinizi güncelleyin.',
+    'Manage your KONTAK listings, favourites, saved searches and package quotas. Follow account notifications and update your personal or business profile.',
+  ],
+  seoCompareTitle: [
+    'Araç Karşılaştırma: Fiyat, Donanım ve Kaporta | KONTAK',
+    'Compare Cars: Prices, Equipment and Condition | KONTAK',
+  ],
+  seoCompareDescription: [
+    'Seçtiğiniz üç araca kadar fiyat, kilometre, teknik özellik, kaporta ve donanım bilgilerini yan yana inceleyin. KONTAK ilanları arasındaki farkları görün.',
+    'Compare prices, body condition, equipment and specifications for up to three vehicles.',
+  ],
+  seoAdminTitle: [
+    'Yönetim Paneli: İlan, Üyelik ve Paket Yönetimi | KONTAK',
+    'Administration: Listings, Accounts and Packages | KONTAK',
+  ],
+  seoAdminDescription: [
+    'KONTAK yönetim panelinden ilanları, üyelikleri, firmaları, paket taleplerini ve site içeriklerini yönetin. Yetkili yönetici hesabınızla işlem yapın.',
+    'Manage KONTAK listings, accounts, businesses, package requests and site content. Review reports and maintain service settings with an authorised administrator account.',
+  ],
+  seoEditorTitle: [
+    'İlanını Yayınla: Araç Bilgileri ve Fotoğraflar | KONTAK',
+    'Publish a Car Listing: Details, Photos and Price | KONTAK',
+  ],
+  seoEditorDescription: [
+    'Aracınızın marka, model, yıl, kaporta ve donanım bilgilerini girin. Fotoğrafları ekleyin, fiyatı belirleyin ve KONTAK araç ilanınızı yayına hazırlayın.',
+    'Enter your car make, model, year, body condition and equipment. Add photos, set a price and prepare your vehicle listing for publication on KONTAK.',
+  ],
+  seoFirmsTitle: [
+    'KKTC Galeriler, Yetkili Satıcılar ve Firmalar | KONTAK',
+    'North Cyprus Car Dealers and Business Directory | KONTAK',
+  ],
+  seoFirmsDescription: [
+    'KKTC galerilerini, yetkili araç satıcılarını ve ekspertiz merkezlerini şehir veya firma adına göre bulun. Firma bilgilerini ve aktif ilanlarını inceleyin.',
+    'Browse North Cyprus dealerships, authorised sellers, parts suppliers and inspection centres by town and business name.',
+  ],
+  seoMessagesTitle: [
+    'Mesajlarım ve Araç İlanlarına Özel Görüşmeler | KONTAK',
+    'My Messages: Conversations About Car Listings | KONTAK',
+  ],
+  seoMessagesDescription: [
+    'KONTAK ilanlarıyla ilgili görüşmelerinizi hesabınızdan takip edin. Alıcı ve satıcı mesajlarını okuyun, yanıtlayın ve ilan bağlamındaki bilgileri inceleyin.',
+    'Follow conversations about KONTAK vehicle listings from your account. Read and reply to buyer and seller messages in the context of each vehicle listing.',
+  ],
+  seoPhotosTitle: [
+    'Araç İlanınıza Telefondan Fotoğraf Ekleme | KONTAK',
+    'Add Photos to Your Car Listing from Your Phone | KONTAK',
+  ],
+  seoPhotosDescription: [
+    'KONTAK ilanınıza telefonunuzdan araç fotoğrafları ekleyin. İlan düzenleme oturumuyla eşleşen görüntüleri kontrol edin ve kapak fotoğrafını belirleyin.',
+    'Add vehicle photos to your KONTAK listing from your phone. Review images linked to your editing session and choose the main cover photo for your listing.',
+  ],
+  seoLoginTitle: [
+    'Üye Girişi ve Bireysel veya Kurumsal Kayıt | KONTAK',
+    'Sign In or Create a Personal or Business Account | KONTAK',
+  ],
+  seoLoginDescription: [
+    'KONTAK hesabınıza giriş yapın veya bireysel ya da kurumsal üyelik açın. İlanlarınızı, favorilerinizi, mesajlarınızı ve paket taleplerinizi yönetin.',
+    'Sign in to KONTAK or register a personal or business account. Manage your vehicle listings, favourites, messages and package requests from your account.',
+  ],
+  seoWantedTitle: [
+    'KKTC Aranan Araçlar ve Güncel Alıcı Talepleri | KONTAK',
+    'North Cyprus Wanted Cars and Buyer Requests | KONTAK',
+  ],
+  seoWantedDescription: [
+    "KKTC'de alıcıların marka, model, bütçe ve şehir tercihlerini inceleyin. Aranan araç taleplerini KONTAK'ta takip edin ve uygun araç için iletişime geçin.",
+    'Browse vehicle requests from North Cyprus buyers with their preferred make, model, budget and town.',
+  ],
+  seoPackagesTitle: [
+    'Bireysel ve Kurumsal Araç İlanı Paketleri | KONTAK',
+    'Personal and Business Vehicle Listing Packages | KONTAK',
+  ],
+  seoPackagesDescription: [
+    'Bireysel ve kurumsal ilan paketlerinin ilan kotası, öne çıkarma hakkı ve sürelerini karşılaştırın. KONTAK paket taleplerini hesabınızdan takip edin.',
+    'Compare individual and business listing quotas, promotion rights and durations. Package payments take place outside the website.',
+  ],
+  seoPostsTitle: [
+    'Garaj Yazıları: Araç Alımı ve Bakım Rehberi | KONTAK',
+    'Garage Journal: Car Buying and Ownership Guides | KONTAK',
+  ],
+  seoPostsDescription: [
+    "KKTC'de araç alımı, ekspertiz, bakım kayıtları ve ithalat belgeleri üzerine Garaj Yazıları'nı okuyun. KONTAK rehberleriyle ilan bilgilerini değerlendirin.",
+    'Read KONTAK articles on buying vehicles, inspections, import documents and vehicle ownership in North Cyprus.',
+  ],
+  seoValuationTitle: [
+    'KKTC Araç Değerleme ve Tahmini Satış Fiyatı | KONTAK',
+    'North Cyprus Vehicle Valuation and Price Estimates | KONTAK',
+  ],
+  seoValuationDescription: [
+    'Aracınızın marka, model, yıl ve kilometre bilgileriyle KKTC ilanlarındaki fiyat aralığını inceleyin. KONTAK verileriyle satış öncesi karşılaştırma yapın.',
+    'Estimate a vehicle price range from KONTAK listings using make, model, year and mileage.',
+  ],
+  seoModelTitle: [
+    'KKTC Marka ve Model Bazında Araç Fiyatları | KONTAK',
+    'North Cyprus Car Prices by Make and Model | KONTAK',
+  ],
+  seoModelDescription: [
+    "KKTC'de araç modellerinin ortalama, en düşük ve en yüksek ilan fiyatlarını inceleyin. Güncel KONTAK ilanlarıyla model ve bütçe karşılaştırması yapın.",
+    'View model prices, listing counts and price distribution in North Cyprus, based on current KONTAK listings.',
+  ],
+  seoListTitle: [
+    'Satılık Araç İlanları ve Güncel Araç Fiyatları | KONTAK',
+    'New and Used Cars for Sale in North Cyprus | KONTAK',
+  ],
+  seoListDescription: [
+    "KKTC satılık araç ilanlarını marka, model, yıl, fiyat ve şehre göre filtreleyin. Kaporta, donanım ve satıcı bilgilerini KONTAK'ta karşılaştırın.",
+    'Search North Cyprus vehicle listings by make, model, year, price and town. Compare body condition, equipment and import details.',
+  ],
+  seoUsedTitle: ['KKTC Kullanılmış Araçlar ve İkinci El Fiyatları | KONTAK', 'Used Vehicles'],
+  seoUsedDescription: [
+    "KKTC ikinci el araç ilanlarını inceleyin. Binek, SUV, aile, van, ticari ve nostalji araçlarını marka, model, fiyat ve şehir seçerek KONTAK'ta karşılaştırın.",
+    'Browse used cars, SUVs, family cars, vans, commercial and classic vehicles in North Cyprus. Compare make, model, town and budget on KONTAK.',
+  ],
+  seoNewTitle: ['KKTC Sıfır Araç İlanları ve Güncel Fiyatları | KONTAK', 'New Vehicles'],
+  seoNewDescription: [
+    "KKTC sıfır araç ilanlarını inceleyin. Binek, SUV, aile, van ve ticari araçları marka, model, fiyat ve şehir seçerek KONTAK'ta karşılaştırın.",
+    'Browse new cars, SUVs, family cars, vans and commercial vehicles in North Cyprus. Compare make, model, town and budget on KONTAK.',
+  ],
   skip: ['İçeriğe geç', 'Skip to content'],
   used: ['Kullanılmış Araçlar', 'Used Vehicles'],
   new: ['Sıfır Araçlar', 'New Vehicles'],

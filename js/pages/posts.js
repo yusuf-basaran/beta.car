@@ -6,7 +6,7 @@ import { query, table } from '../api.js';
 import { esc } from '../utils.js';
 
 export async function postsPage() {
-  meta(t('journal'));
+  meta(t('seoPostsTitle'), t('seoPostsDescription'));
   $('#main').innerHTML = pageHead('journal');
   if (!state.db) {
     $('#main').insertAdjacentHTML('beforeend', empty());

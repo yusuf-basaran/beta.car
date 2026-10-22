@@ -23,7 +23,7 @@ import { myPackages } from './packages.js';
 import { profilePage } from './profile.js';
 
 export async function accountPage() {
-  meta(t('account'));
+  meta(t('seoAccountTitle'), t('seoAccountDescription'));
   $('#main').innerHTML = pageHead('account', button('logout', 'logout', 'text-btn'));
   if (!state.db || !state.user) {
     $('#main').insertAdjacentHTML('beforeend', loginPrompt());

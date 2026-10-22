@@ -6,7 +6,7 @@ import { query, table } from '../api.js';
 import { groups, partsDef } from '../data.js';
 
 export async function comparePage() {
-  meta(t('compare'));
+  meta(t('seoCompareTitle'), t('seoCompareDescription'));
   $('#main').innerHTML = pageHead('compare');
   const ids = read('bc-compare').slice(0, 3);
   if (!state.db || !ids.length) {

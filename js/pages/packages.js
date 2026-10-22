@@ -156,7 +156,7 @@ export async function myPackages(target) {
 }
 
 export async function packagesPage() {
-  meta(t('packages'));
+  meta(t('seoPackagesTitle'), t('seoPackagesDescription'));
   $('#main').innerHTML =
     pageHead('packages') +
     (`<p class="warning">` +
